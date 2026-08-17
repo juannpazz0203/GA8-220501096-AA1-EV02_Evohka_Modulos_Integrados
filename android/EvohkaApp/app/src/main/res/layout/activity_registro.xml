@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F4F4F4">
+
+    <TextView
+        android:id="@+id/btnVolver"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="← Volver"
+        android:textSize="16sp"
+        android:textColor="#7B2FF7"
+        android:textStyle="bold"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="30dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <TextView
+        android:id="@+id/tituloRegistro"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Registro de usuario"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:textColor="#7B2FF7"
+        app:layout_constraintTop_toBottomOf="@id/btnVolver"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="50dp" />
+
+    <EditText
+        android:id="@+id/nombreCompleto"
+        android:layout_width="280dp"
+        android:layout_height="wrap_content"
+        android:hint="Nombre completo"
+        android:inputType="textPersonName"
+        app:layout_constraintTop_toBottomOf="@id/tituloRegistro"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="28dp" />
+
+    <EditText
+        android:id="@+id/tipoDocumento"
+        android:layout_width="280dp"
+        android:layout_height="wrap_content"
+        android:hint="Tipo de documento"
+        app:layout_constraintTop_toBottomOf="@id/nombreCompleto"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="12dp" />
+
+    <EditText
+        android:id="@+id/correoRegistro"
+        android:layout_width="280dp"
+        android:layout_height="wrap_content"
+        android:hint="Correo electrónico"
+        android:inputType="textEmailAddress"
+        app:layout_constraintTop_toBottomOf="@id/tipoDocumento"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="12dp" />
+
+    <EditText
+        android:id="@+id/telefono"
+        android:layout_width="280dp"
+        android:layout_height="wrap_content"
+        android:hint="Teléfono"
+        android:inputType="phone"
+        app:layout_constraintTop_toBottomOf="@id/correoRegistro"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="12dp" />
+
+    <EditText
+        android:id="@+id/contrasenaRegistro"
+        android:layout_width="280dp"
+        android:layout_height="wrap_content"
+        android:hint="Contraseña"
+        android:inputType="textPassword"
+        app:layout_constraintTop_toBottomOf="@id/telefono"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="12dp" />
+
+    <EditText
+        android:id="@+id/confirmarContrasena"
+        android:layout_width="280dp"
+        android:layout_height="wrap_content"
+        android:hint="Confirmar contraseña"
+        android:inputType="textPassword"
+        app:layout_constraintTop_toBottomOf="@id/contrasenaRegistro"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="12dp" />
+
+    <Button
+        android:id="@+id/btnConfirmarRegistro"
+        android:layout_width="280dp"
+        android:layout_height="wrap_content"
+        android:text="CONFIRMAR REGISTRO"
+        android:textColor="#FFFFFF"
+        android:backgroundTint="#7B2FF7"
+        app:layout_constraintTop_toBottomOf="@id/confirmarContrasena"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="24dp" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

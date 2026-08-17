@@ -1,0 +1,15 @@
+# Backend Node.js
+backend/node_modules/
+backend/.env
+
+# Android
+android/EvohkaApp/.gradle/
+android/EvohkaApp/.idea/
+android/EvohkaApp/.kotlin/
+android/EvohkaApp/local.properties
+android/EvohkaApp/build/
+android/EvohkaApp/app/build/
+
+# Archivos del sistema
+.DS_Store
+Thumbs.db
