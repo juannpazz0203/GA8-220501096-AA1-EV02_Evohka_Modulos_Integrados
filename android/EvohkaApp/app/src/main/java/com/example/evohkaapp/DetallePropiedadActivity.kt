@@ -18,17 +18,26 @@ class DetallePropiedadActivity : Activity() {
         val txtTitulo =
             findViewById<TextView>(R.id.txt_titulo_detalle)
 
+        val txtTipo =
+            findViewById<TextView>(R.id.txt_tipo_detalle)
+
         val txtCiudad =
             findViewById<TextView>(R.id.txt_ciudad_detalle)
+
+        val txtBarrio =
+            findViewById<TextView>(R.id.txt_barrio_detalle)
 
         val txtDireccion =
             findViewById<TextView>(R.id.txt_direccion_detalle)
 
-        val txtPrecio =
-            findViewById<TextView>(R.id.txt_precio_detalle)
+        val txtCanon =
+            findViewById<TextView>(R.id.txt_canon_detalle)
 
-        val txtEstado =
-            findViewById<TextView>(R.id.txt_estado_detalle)
+        val txtHabitaciones =
+            findViewById<TextView>(R.id.txt_habitaciones_detalle)
+
+        val txtBanos =
+            findViewById<TextView>(R.id.txt_banos_detalle)
 
         val btnSolicitarArriendo =
             findViewById<Button>(R.id.btn_solicitar_arriendo)
@@ -36,27 +45,49 @@ class DetallePropiedadActivity : Activity() {
         val btnVolver =
             findViewById<Button>(R.id.btn_volver_detalle)
 
+        val idPropiedad =
+            intent.getIntExtra(
+                "id_propiedad",
+                0
+            )
+
         val titulo =
             intent.getStringExtra("titulo")
                 ?: "Inmueble"
 
-        val ciudad =
-            intent.getStringExtra("ciudad")
-                ?: "Sin ciudad"
+        val tipoInmueble =
+            intent.getStringExtra("tipo_inmueble")
+                ?: "No definido"
 
         val direccion =
             intent.getStringExtra("direccion")
                 ?: "Sin dirección"
 
-        val precio =
+        val barrio =
+            intent.getStringExtra("barrio")
+                ?: "Sin barrio"
+
+        val ciudad =
+            intent.getStringExtra("ciudad")
+                ?: "Sin ciudad"
+
+        val canon =
             intent.getDoubleExtra(
-                "precio_mensual",
+                "canon",
                 0.0
             )
 
-        val estado =
-            intent.getStringExtra("estado")
-                ?: "Disponible"
+        val habitaciones =
+            intent.getIntExtra(
+                "habitaciones",
+                0
+            )
+
+        val banos =
+            intent.getIntExtra(
+                "banos",
+                0
+            )
 
         val formatoMoneda =
             NumberFormat.getCurrencyInstance(
@@ -66,17 +97,26 @@ class DetallePropiedadActivity : Activity() {
         txtTitulo.text =
             titulo
 
+        txtTipo.text =
+            "Tipo: $tipoInmueble"
+
         txtCiudad.text =
             "Ciudad: $ciudad"
+
+        txtBarrio.text =
+            "Barrio: $barrio"
 
         txtDireccion.text =
             "Dirección: $direccion"
 
-        txtPrecio.text =
-            "Canon mensual: ${formatoMoneda.format(precio)}"
+        txtCanon.text =
+            "Canon mensual: ${formatoMoneda.format(canon)}"
 
-        txtEstado.text =
-            "Estado: $estado"
+        txtHabitaciones.text =
+            "Habitaciones: $habitaciones"
+
+        txtBanos.text =
+            "Baños: $banos"
 
         btnVolver.setOnClickListener {
             finish()
@@ -86,7 +126,7 @@ class DetallePropiedadActivity : Activity() {
 
             Toast.makeText(
                 this,
-                "Módulo de solicitud de arriendo no incluido en esta evidencia",
+                "Solicitud de arriendo para propiedad #$idPropiedad pendiente de implementar",
                 Toast.LENGTH_LONG
             ).show()
         }

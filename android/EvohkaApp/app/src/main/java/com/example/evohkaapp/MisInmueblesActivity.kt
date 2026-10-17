@@ -1,6 +1,7 @@
 package com.example.evohkaapp
 
 import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.LinearLayout
@@ -19,12 +20,6 @@ class MisInmueblesActivity : Activity() {
 
         setContentView(R.layout.activity_mis_inmuebles)
 
-        val txtEstadoCarga =
-            findViewById<TextView>(R.id.txtEstadoCarga)
-
-        val contenedorInmuebles =
-            findViewById<LinearLayout>(R.id.contenedorInmuebles)
-
         val btnVolverInicio =
             findViewById<Button>(R.id.btnVolverInicio)
 
@@ -36,18 +31,13 @@ class MisInmueblesActivity : Activity() {
         }
 
         btnPublicarNuevo.setOnClickListener {
-            val intent = android.content.Intent(
+            val intent = Intent(
                 this,
                 PublicarInmuebleActivity::class.java
             )
 
             startActivity(intent)
         }
-
-        cargarInmuebles(
-            txtEstadoCarga,
-            contenedorInmuebles
-        )
     }
 
     override fun onResume() {
@@ -82,7 +72,13 @@ class MisInmueblesActivity : Activity() {
                 null
             )
 
-        if (token.isNullOrEmpty()) {
+        val idUsuario =
+            preferencias.getInt(
+                "id_usuario",
+                0
+            )
+
+        if (token.isNullOrBlank() || idUsuario == 0) {
 
             txtEstadoCarga.text =
                 "Sesión no válida"
@@ -115,8 +111,13 @@ class MisInmueblesActivity : Activity() {
                                 response.body()?.datos
                                     ?: emptyList()
 
+                            val misPropiedades =
+                                propiedades.filter {
+                                    it.id_propietario == idUsuario
+                                }
+
                             mostrarPropiedades(
-                                propiedades,
+                                misPropiedades,
                                 txtEstadoCarga,
                                 contenedorInmuebles
                             )
@@ -163,13 +164,13 @@ class MisInmueblesActivity : Activity() {
         if (propiedades.isEmpty()) {
 
             txtEstadoCarga.text =
-                "No hay inmuebles registrados"
+                "No tienes inmuebles registrados"
 
             return
         }
 
         txtEstadoCarga.text =
-            "Inmuebles encontrados: ${propiedades.size}"
+            "Mis inmuebles: ${propiedades.size}"
 
         val formatoMoneda =
             NumberFormat.getCurrencyInstance(
@@ -181,18 +182,21 @@ class MisInmueblesActivity : Activity() {
             val tarjeta =
                 TextView(this)
 
-            val precio =
+            val canon =
                 formatoMoneda.format(
-                    propiedad.precio_mensual ?: 0
+                    propiedad.canon ?: 0
                 )
 
             tarjeta.text = """
                 ${propiedad.titulo ?: "Inmueble"}
-                
+
+                Tipo: ${propiedad.tipo_inmueble ?: "No definido"}
                 Dirección: ${propiedad.direccion ?: "Sin dirección"}
+                Barrio: ${propiedad.barrio ?: "Sin barrio"}
                 Ciudad: ${propiedad.ciudad ?: "Sin ciudad"}
-                Canon mensual: $precio
-                Estado: ${propiedad.estado ?: "No definido"}
+                Canon mensual: $canon
+                Habitaciones: ${propiedad.habitaciones ?: 0}
+                Baños: ${propiedad.banos ?: 0}
             """.trimIndent()
 
             tarjeta.textSize = 16f
