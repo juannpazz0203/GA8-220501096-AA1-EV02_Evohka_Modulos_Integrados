@@ -5,6 +5,8 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
+import android.widget.RadioButton
+import android.widget.RadioGroup
 import android.widget.TextView
 import android.widget.Toast
 import retrofit2.Call
@@ -18,12 +20,23 @@ class MainActivity : Activity() {
 
         setContentView(R.layout.activity_login)
 
-        val correo = findViewById<EditText>(R.id.correo)
-        val password = findViewById<EditText>(R.id.password)
-        val btnContinuar = findViewById<Button>(R.id.btnContinuar)
-        val txtRegistrarse = findViewById<TextView>(R.id.txtRegistrarse)
+        val correo =
+            findViewById<EditText>(R.id.correo)
+
+        val password =
+            findViewById<EditText>(R.id.password)
+
+        val grupoTipoIngreso =
+            findViewById<RadioGroup>(R.id.grupo_tipo_ingreso)
+
+        val btnContinuar =
+            findViewById<Button>(R.id.btnContinuar)
+
+        val txtRegistrarse =
+            findViewById<TextView>(R.id.txtRegistrarse)
 
         txtRegistrarse.setOnClickListener {
+
             val intent = Intent(
                 this,
                 RegistroActivity::class.java
@@ -44,6 +57,7 @@ class MainActivity : Activity() {
                 correoIngresado.isEmpty() ||
                 contrasenaIngresada.isEmpty()
             ) {
+
                 Toast.makeText(
                     this,
                     "Ingrese correo y contraseña",
@@ -53,10 +67,35 @@ class MainActivity : Activity() {
                 return@setOnClickListener
             }
 
-            val datosLogin = LoginRequest(
-                correoIngresado,
-                contrasenaIngresada
-            )
+            val opcionSeleccionada =
+                grupoTipoIngreso.checkedRadioButtonId
+
+            if (opcionSeleccionada == -1) {
+
+                Toast.makeText(
+                    this,
+                    "Seleccione si desea ingresar como inquilino o propietario",
+                    Toast.LENGTH_SHORT
+                ).show()
+
+                return@setOnClickListener
+            }
+
+            val radioSeleccionado =
+                findViewById<RadioButton>(
+                    opcionSeleccionada
+                )
+
+            val tipoIngreso =
+                radioSeleccionado.text
+                    .toString()
+                    .lowercase()
+
+            val datosLogin =
+                LoginRequest(
+                    correoIngresado,
+                    contrasenaIngresada
+                )
 
             RetrofitClient.apiService
                 .login(datosLogin)
@@ -76,11 +115,55 @@ class MainActivity : Activity() {
                                 val respuesta =
                                     response.body()
 
+                                val preferencias =
+                                    getSharedPreferences(
+                                        "EvohkaSesion",
+                                        MODE_PRIVATE
+                                    )
+
+                                preferencias.edit()
+                                    .putString(
+                                        "token",
+                                        respuesta?.token
+                                    )
+                                    .putInt(
+                                        "id_usuario",
+                                        respuesta?.usuario?.id_usuario ?: 0
+                                    )
+                                    .putString(
+                                        "nombre",
+                                        respuesta?.usuario?.nombre
+                                    )
+                                    .putString(
+                                        "tipo_ingreso",
+                                        tipoIngreso
+                                    )
+                                    .apply()
+
                                 Toast.makeText(
                                     this@MainActivity,
                                     "Bienvenido ${respuesta?.usuario?.nombre}",
                                     Toast.LENGTH_LONG
                                 ).show()
+
+                                if (tipoIngreso == "propietario") {
+
+                                    val intent = Intent(
+                                        this@MainActivity,
+                                        InicioPropietarioActivity::class.java
+                                    )
+
+                                    startActivity(intent)
+
+                                } else {
+
+                                    val intent = Intent(
+                                        this@MainActivity,
+                                        PropiedadesDisponiblesActivity::class.java
+                                    )
+
+                                    startActivity(intent)
+                                }
 
                             } else {
 
