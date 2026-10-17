@@ -11,6 +11,7 @@ async function listarPropiedades(req, res) {
     });
   } catch (error) {
     console.error('Error al listar propiedades:', error.message);
+
     return res.status(500).json({
       mensaje: 'No fue posible consultar las propiedades',
       error: error.message
@@ -20,26 +21,72 @@ async function listarPropiedades(req, res) {
 
 async function registrarPropiedad(req, res) {
   try {
-    const { titulo, ciudad, direccion, precio_mensual } = req.body;
+    const {
+      titulo,
+      tipo_inmueble,
+      direccion,
+      barrio,
+      ciudad,
+      canon,
+      habitaciones,
+      banos
+    } = req.body;
 
-    if (!titulo || !ciudad || !direccion || precio_mensual === undefined) {
+    const id_propietario = req.usuario.id_usuario;
+
+    if (
+      !titulo ||
+      !tipo_inmueble ||
+      !direccion ||
+      !barrio ||
+      !ciudad ||
+      canon === undefined ||
+      habitaciones === undefined ||
+      banos === undefined
+    ) {
       return res.status(400).json({
-        mensaje: 'Los campos titulo, ciudad, direccion y precio_mensual son obligatorios'
+        mensaje: 'Todos los campos de la propiedad son obligatorios'
       });
     }
 
-    const precio = Number(precio_mensual);
-    if (!Number.isFinite(precio) || precio <= 0) {
+    const canonNumero = Number(canon);
+    const habitacionesNumero = Number(habitaciones);
+    const banosNumero = Number(banos);
+
+    if (!Number.isFinite(canonNumero) || canonNumero <= 0) {
       return res.status(400).json({
-        mensaje: 'El precio_mensual debe ser un número mayor que cero'
+        mensaje: 'El canon debe ser un número mayor que cero'
+      });
+    }
+
+    if (
+      !Number.isInteger(habitacionesNumero) ||
+      habitacionesNumero < 0
+    ) {
+      return res.status(400).json({
+        mensaje: 'La cantidad de habitaciones debe ser un número entero válido'
+      });
+    }
+
+    if (
+      !Number.isInteger(banosNumero) ||
+      banosNumero < 0
+    ) {
+      return res.status(400).json({
+        mensaje: 'La cantidad de baños debe ser un número entero válido'
       });
     }
 
     const propiedadCreada = await propiedadService.crearPropiedad({
       titulo,
-      ciudad,
+      tipo_inmueble,
       direccion,
-      precio_mensual: precio
+      barrio,
+      ciudad,
+      canon: canonNumero,
+      habitaciones: habitacionesNumero,
+      banos: banosNumero,
+      id_propietario
     });
 
     return res.status(201).json({
@@ -48,6 +95,7 @@ async function registrarPropiedad(req, res) {
     });
   } catch (error) {
     console.error('Error al registrar propiedad:', error.message);
+
     return res.status(500).json({
       mensaje: 'No fue posible registrar la propiedad',
       error: error.message

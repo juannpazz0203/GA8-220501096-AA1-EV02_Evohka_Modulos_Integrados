@@ -2,32 +2,75 @@ const { pool } = require('../config/db');
 
 async function obtenerTodasLasPropiedades() {
   const [filas] = await pool.execute(
-    `SELECT id, titulo, ciudad, direccion, precio_mensual, estado, created_at
-     FROM propiedades_servicio
-     ORDER BY id DESC`
+    `SELECT
+      id_propiedad,
+      titulo,
+      tipo_inmueble,
+      direccion,
+      barrio,
+      ciudad,
+      canon,
+      habitaciones,
+      banos,
+      id_propietario
+     FROM propiedades
+     ORDER BY id_propiedad DESC`
   );
 
   return filas;
 }
 
 async function crearPropiedad(datosPropiedad) {
-  const { titulo, ciudad, direccion, precio_mensual } = datosPropiedad;
+  const {
+    titulo,
+    tipo_inmueble,
+    direccion,
+    barrio,
+    ciudad,
+    canon,
+    habitaciones,
+    banos,
+    id_propietario
+  } = datosPropiedad;
 
-  // Consulta preparada: los signos ? evitan concatenar datos directamente en el SQL.
   const [resultado] = await pool.execute(
-    `INSERT INTO propiedades_servicio
-      (titulo, ciudad, direccion, precio_mensual)
-     VALUES (?, ?, ?, ?)`,
-    [titulo.trim(), ciudad.trim(), direccion.trim(), Number(precio_mensual)]
+    `INSERT INTO propiedades
+      (
+        titulo,
+        tipo_inmueble,
+        direccion,
+        barrio,
+        ciudad,
+        canon,
+        habitaciones,
+        banos,
+        id_propietario
+      )
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+    [
+      titulo.trim(),
+      tipo_inmueble.trim(),
+      direccion.trim(),
+      barrio.trim(),
+      ciudad.trim(),
+      Number(canon),
+      Number(habitaciones),
+      Number(banos),
+      Number(id_propietario)
+    ]
   );
 
   return {
-    id: resultado.insertId,
+    id_propiedad: resultado.insertId,
     titulo: titulo.trim(),
-    ciudad: ciudad.trim(),
+    tipo_inmueble: tipo_inmueble.trim(),
     direccion: direccion.trim(),
-    precio_mensual: Number(precio_mensual),
-    estado: 'disponible'
+    barrio: barrio.trim(),
+    ciudad: ciudad.trim(),
+    canon: Number(canon),
+    habitaciones: Number(habitaciones),
+    banos: Number(banos),
+    id_propietario: Number(id_propietario)
   };
 }
 
