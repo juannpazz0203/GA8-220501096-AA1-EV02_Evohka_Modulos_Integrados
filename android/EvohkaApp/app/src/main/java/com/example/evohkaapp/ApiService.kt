@@ -20,6 +20,7 @@ interface ApiService {
 
     @POST("api/propiedades")
     fun registrarPropiedad(
+        @Header("Authorization") token: String,
         @Body propiedad: PropiedadRequest
     ): Call<RespuestaPropiedad>
 }

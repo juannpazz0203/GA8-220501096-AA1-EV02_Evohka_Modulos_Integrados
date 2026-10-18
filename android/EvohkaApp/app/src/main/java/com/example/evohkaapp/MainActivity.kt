@@ -86,7 +86,7 @@ class MainActivity : Activity() {
                     opcionSeleccionada
                 )
 
-            val tipoIngreso =
+            val tipoIngresoSeleccionado =
                 radioSeleccionado.text
                     .toString()
                     .lowercase()
@@ -115,6 +115,54 @@ class MainActivity : Activity() {
                                 val respuesta =
                                     response.body()
 
+                                val usuario =
+                                    respuesta?.usuario
+
+                                if (usuario == null) {
+
+                                    Toast.makeText(
+                                        this@MainActivity,
+                                        "No se pudo identificar el usuario",
+                                        Toast.LENGTH_LONG
+                                    ).show()
+
+                                    return
+                                }
+
+                                val rolReal =
+                                    usuario.rol
+                                        .trim()
+                                        .lowercase()
+
+                                val rolSeleccionado =
+                                    if (
+                                        tipoIngresoSeleccionado == "inquilino"
+                                    ) {
+                                        "arrendatario"
+                                    } else {
+                                        "propietario"
+                                    }
+
+                                if (rolReal != rolSeleccionado) {
+
+                                    val mensajeRol =
+                                        if (rolReal == "arrendatario") {
+                                            "Este usuario está registrado como inquilino"
+                                        } else if (rolReal == "propietario") {
+                                            "Este usuario está registrado como propietario"
+                                        } else {
+                                            "El rol de este usuario no está habilitado"
+                                        }
+
+                                    Toast.makeText(
+                                        this@MainActivity,
+                                        mensajeRol,
+                                        Toast.LENGTH_LONG
+                                    ).show()
+
+                                    return
+                                }
+
                                 val preferencias =
                                     getSharedPreferences(
                                         "EvohkaSesion",
@@ -124,29 +172,33 @@ class MainActivity : Activity() {
                                 preferencias.edit()
                                     .putString(
                                         "token",
-                                        respuesta?.token
+                                        respuesta.token
                                     )
                                     .putInt(
                                         "id_usuario",
-                                        respuesta?.usuario?.id_usuario ?: 0
+                                        usuario.id_usuario
                                     )
                                     .putString(
                                         "nombre",
-                                        respuesta?.usuario?.nombre
+                                        usuario.nombre
+                                    )
+                                    .putString(
+                                        "rol",
+                                        rolReal
                                     )
                                     .putString(
                                         "tipo_ingreso",
-                                        tipoIngreso
+                                        tipoIngresoSeleccionado
                                     )
                                     .apply()
 
                                 Toast.makeText(
                                     this@MainActivity,
-                                    "Bienvenido ${respuesta?.usuario?.nombre}",
+                                    "Bienvenido ${usuario.nombre}",
                                     Toast.LENGTH_LONG
                                 ).show()
 
-                                if (tipoIngreso == "propietario") {
+                                if (rolReal == "propietario") {
 
                                     val intent = Intent(
                                         this@MainActivity,

@@ -110,7 +110,7 @@ class PropiedadesDisponiblesActivity : Activity() {
                 null
             )
 
-        if (token.isNullOrEmpty()) {
+        if (token.isNullOrBlank()) {
 
             txtEstadoPropiedades.text =
                 "Sesión no válida"
@@ -182,31 +182,23 @@ class PropiedadesDisponiblesActivity : Activity() {
 
         contenedorPropiedades.removeAllViews()
 
-        val disponibles =
-            propiedades.filter {
-                it.estado.equals(
-                    "disponible",
-                    ignoreCase = true
-                )
-            }
-
-        if (disponibles.isEmpty()) {
+        if (propiedades.isEmpty()) {
 
             txtEstadoPropiedades.text =
-                "No hay propiedades disponibles"
+                "No hay propiedades registradas"
 
             return
         }
 
         txtEstadoPropiedades.text =
-            "Propiedades encontradas: ${disponibles.size}"
+            "Propiedades encontradas: ${propiedades.size}"
 
         val formatoMoneda =
             NumberFormat.getCurrencyInstance(
                 Locale("es", "CO")
             )
 
-        disponibles.forEach { propiedad ->
+        propiedades.forEach { propiedad ->
 
             val tarjeta =
                 LinearLayout(this).apply {
@@ -237,9 +229,9 @@ class PropiedadesDisponiblesActivity : Activity() {
             tarjeta.layoutParams =
                 parametrosTarjeta
 
-            val precio =
+            val canon =
                 formatoMoneda.format(
-                    propiedad.precio_mensual ?: 0
+                    propiedad.canon ?: 0
                 )
 
             val informacion =
@@ -247,11 +239,14 @@ class PropiedadesDisponiblesActivity : Activity() {
 
                     text = """
                         ${propiedad.titulo ?: "Inmueble"}
-                        
+
+                        Tipo: ${propiedad.tipo_inmueble ?: "No definido"}
                         Ciudad: ${propiedad.ciudad ?: "Sin ciudad"}
+                        Barrio: ${propiedad.barrio ?: "Sin barrio"}
                         Dirección: ${propiedad.direccion ?: "Sin dirección"}
-                        Canon mensual: $precio
-                        Estado: ${propiedad.estado ?: "Disponible"}
+                        Canon mensual: $canon
+                        Habitaciones: ${propiedad.habitaciones ?: 0}
+                        Baños: ${propiedad.banos ?: 0}
                     """.trimIndent()
 
                     textSize = 16f
@@ -266,7 +261,7 @@ class PropiedadesDisponiblesActivity : Activity() {
             val btnSeleccionar =
                 Button(this).apply {
 
-                    text = "Seleccionar"
+                    text = "Ver detalle"
                     isAllCaps = false
 
                     setOnClickListener {
@@ -277,28 +272,53 @@ class PropiedadesDisponiblesActivity : Activity() {
                         )
 
                         intent.putExtra(
-                            "titulo",
-                            propiedad.titulo
+                            "id_propiedad",
+                            propiedad.id_propiedad ?: 0
                         )
 
                         intent.putExtra(
-                            "ciudad",
-                            propiedad.ciudad
+                            "titulo",
+                            propiedad.titulo ?: ""
+                        )
+
+                        intent.putExtra(
+                            "tipo_inmueble",
+                            propiedad.tipo_inmueble ?: ""
                         )
 
                         intent.putExtra(
                             "direccion",
-                            propiedad.direccion
+                            propiedad.direccion ?: ""
                         )
 
                         intent.putExtra(
-                            "precio_mensual",
-                            propiedad.precio_mensual
+                            "barrio",
+                            propiedad.barrio ?: ""
                         )
 
                         intent.putExtra(
-                            "estado",
-                            propiedad.estado
+                            "ciudad",
+                            propiedad.ciudad ?: ""
+                        )
+
+                        intent.putExtra(
+                            "canon",
+                            propiedad.canon ?: 0.0
+                        )
+
+                        intent.putExtra(
+                            "habitaciones",
+                            propiedad.habitaciones ?: 0
+                        )
+
+                        intent.putExtra(
+                            "banos",
+                            propiedad.banos ?: 0
+                        )
+
+                        intent.putExtra(
+                            "id_propietario",
+                            propiedad.id_propietario ?: 0
                         )
 
                         startActivity(intent)

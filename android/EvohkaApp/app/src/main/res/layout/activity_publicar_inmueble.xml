@@ -52,11 +52,11 @@
             android:paddingEnd="14dp" />
 
         <EditText
-            android:id="@+id/et_ciudad"
+            android:id="@+id/et_tipo_inmueble"
             android:layout_width="match_parent"
             android:layout_height="55dp"
             android:layout_marginTop="16dp"
-            android:hint="Ciudad"
+            android:hint="Tipo de inmueble"
             android:inputType="textCapWords"
             android:paddingStart="14dp"
             android:paddingEnd="14dp" />
@@ -72,12 +72,52 @@
             android:paddingEnd="14dp" />
 
         <EditText
-            android:id="@+id/et_precio_mensual"
+            android:id="@+id/et_barrio"
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:layout_marginTop="16dp"
+            android:hint="Barrio"
+            android:inputType="textCapWords"
+            android:paddingStart="14dp"
+            android:paddingEnd="14dp" />
+
+        <EditText
+            android:id="@+id/et_ciudad"
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:layout_marginTop="16dp"
+            android:hint="Ciudad"
+            android:inputType="textCapWords"
+            android:paddingStart="14dp"
+            android:paddingEnd="14dp" />
+
+        <EditText
+            android:id="@+id/et_canon"
             android:layout_width="match_parent"
             android:layout_height="55dp"
             android:layout_marginTop="16dp"
             android:hint="Canon mensual"
             android:inputType="numberDecimal"
+            android:paddingStart="14dp"
+            android:paddingEnd="14dp" />
+
+        <EditText
+            android:id="@+id/et_habitaciones"
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:layout_marginTop="16dp"
+            android:hint="Número de habitaciones"
+            android:inputType="number"
+            android:paddingStart="14dp"
+            android:paddingEnd="14dp" />
+
+        <EditText
+            android:id="@+id/et_banos"
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:layout_marginTop="16dp"
+            android:hint="Número de baños"
+            android:inputType="number"
             android:paddingStart="14dp"
             android:paddingEnd="14dp" />
 

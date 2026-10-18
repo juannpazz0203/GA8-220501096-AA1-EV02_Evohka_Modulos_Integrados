@@ -12,7 +12,7 @@ const router = Router();
 // GET /api/propiedades - Ruta protegida
 router.get('/', verificarToken, listarPropiedades);
 
-// POST /api/propiedades
-router.post('/', registrarPropiedad);
+// POST /api/propiedades - Ruta protegida
+router.post('/', verificarToken, registrarPropiedad);
 
 module.exports = router;

@@ -35,11 +35,29 @@
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/txt_ciudad_detalle"
+            android:id="@+id/txt_tipo_detalle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
+            android:text="Tipo de inmueble"
+            android:textColor="#444444"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/txt_ciudad_detalle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
             android:text="Ciudad"
+            android:textColor="#444444"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/txt_barrio_detalle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="Barrio"
             android:textColor="#444444"
             android:textSize="16sp" />
 
@@ -53,7 +71,7 @@
             android:textSize="16sp" />
 
         <TextView
-            android:id="@+id/txt_precio_detalle"
+            android:id="@+id/txt_canon_detalle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
@@ -63,11 +81,20 @@
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/txt_estado_detalle"
+            android:id="@+id/txt_habitaciones_detalle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:text="Estado"
+            android:text="Habitaciones"
+            android:textColor="#444444"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/txt_banos_detalle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="Baños"
             android:textColor="#444444"
             android:textSize="16sp" />
 
@@ -84,7 +111,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:text="Propiedad disponible para arrendamiento a través de EVOHKA. Consulta la información registrada y continúa con el proceso de solicitud cuando el módulo esté habilitado."
+            android:text="Consulta la información registrada del inmueble y continúa con el proceso de solicitud de arriendo."
             android:textColor="#555555"
             android:textSize="15sp" />
 

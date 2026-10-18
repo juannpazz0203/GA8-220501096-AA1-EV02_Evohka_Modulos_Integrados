@@ -19,14 +19,26 @@ class PublicarInmuebleActivity : Activity() {
         val etTitulo =
             findViewById<EditText>(R.id.et_titulo)
 
-        val etCiudad =
-            findViewById<EditText>(R.id.et_ciudad)
+        val etTipoInmueble =
+            findViewById<EditText>(R.id.et_tipo_inmueble)
 
         val etDireccion =
             findViewById<EditText>(R.id.et_direccion)
 
-        val etPrecioMensual =
-            findViewById<EditText>(R.id.et_precio_mensual)
+        val etBarrio =
+            findViewById<EditText>(R.id.et_barrio)
+
+        val etCiudad =
+            findViewById<EditText>(R.id.et_ciudad)
+
+        val etCanon =
+            findViewById<EditText>(R.id.et_canon)
+
+        val etHabitaciones =
+            findViewById<EditText>(R.id.et_habitaciones)
+
+        val etBanos =
+            findViewById<EditText>(R.id.et_banos)
 
         val btnGuardarInmueble =
             findViewById<Button>(R.id.btn_guardar_inmueble)
@@ -43,22 +55,37 @@ class PublicarInmuebleActivity : Activity() {
             val titulo =
                 etTitulo.text.toString().trim()
 
-            val ciudad =
-                etCiudad.text.toString().trim()
+            val tipoInmueble =
+                etTipoInmueble.text.toString().trim()
 
             val direccion =
                 etDireccion.text.toString().trim()
 
-            val precioTexto =
-                etPrecioMensual.text.toString().trim()
+            val barrio =
+                etBarrio.text.toString().trim()
+
+            val ciudad =
+                etCiudad.text.toString().trim()
+
+            val canonTexto =
+                etCanon.text.toString().trim()
+
+            val habitacionesTexto =
+                etHabitaciones.text.toString().trim()
+
+            val banosTexto =
+                etBanos.text.toString().trim()
 
             if (
                 titulo.isEmpty() ||
-                ciudad.isEmpty() ||
+                tipoInmueble.isEmpty() ||
                 direccion.isEmpty() ||
-                precioTexto.isEmpty()
+                barrio.isEmpty() ||
+                ciudad.isEmpty() ||
+                canonTexto.isEmpty() ||
+                habitacionesTexto.isEmpty() ||
+                banosTexto.isEmpty()
             ) {
-
                 Toast.makeText(
                     this,
                     "Completa todos los campos",
@@ -68,14 +95,16 @@ class PublicarInmuebleActivity : Activity() {
                 return@setOnClickListener
             }
 
-            val precioMensual =
-                precioTexto.toDoubleOrNull()
+            val canon =
+                canonTexto.toDoubleOrNull()
 
-            if (
-                precioMensual == null ||
-                precioMensual <= 0
-            ) {
+            val habitaciones =
+                habitacionesTexto.toIntOrNull()
 
+            val banos =
+                banosTexto.toIntOrNull()
+
+            if (canon == null || canon <= 0) {
                 Toast.makeText(
                     this,
                     "Ingresa un canon mensual válido",
@@ -85,19 +114,68 @@ class PublicarInmuebleActivity : Activity() {
                 return@setOnClickListener
             }
 
+            if (habitaciones == null || habitaciones < 0) {
+                Toast.makeText(
+                    this,
+                    "Ingresa una cantidad válida de habitaciones",
+                    Toast.LENGTH_SHORT
+                ).show()
+
+                return@setOnClickListener
+            }
+
+            if (banos == null || banos < 0) {
+                Toast.makeText(
+                    this,
+                    "Ingresa una cantidad válida de baños",
+                    Toast.LENGTH_SHORT
+                ).show()
+
+                return@setOnClickListener
+            }
+
+            val preferencias =
+                getSharedPreferences(
+                    "EvohkaSesion",
+                    MODE_PRIVATE
+                )
+
+            val token =
+                preferencias.getString(
+                    "token",
+                    null
+                )
+
+            if (token.isNullOrBlank()) {
+                Toast.makeText(
+                    this,
+                    "La sesión ha finalizado. Inicia sesión nuevamente.",
+                    Toast.LENGTH_LONG
+                ).show()
+
+                return@setOnClickListener
+            }
+
             val nuevaPropiedad =
                 PropiedadRequest(
                     titulo = titulo,
-                    ciudad = ciudad,
+                    tipo_inmueble = tipoInmueble,
                     direccion = direccion,
-                    precio_mensual = precioMensual
+                    barrio = barrio,
+                    ciudad = ciudad,
+                    canon = canon,
+                    habitaciones = habitaciones,
+                    banos = banos
                 )
 
             btnGuardarInmueble.isEnabled = false
             btnGuardarInmueble.text = "Publicando..."
 
             RetrofitClient.apiService
-                .registrarPropiedad(nuevaPropiedad)
+                .registrarPropiedad(
+                    token,
+                    nuevaPropiedad
+                )
                 .enqueue(
                     object : Callback<RespuestaPropiedad> {
 
@@ -105,13 +183,10 @@ class PublicarInmuebleActivity : Activity() {
                             call: Call<RespuestaPropiedad>,
                             response: Response<RespuestaPropiedad>
                         ) {
-
                             btnGuardarInmueble.isEnabled = true
-                            btnGuardarInmueble.text =
-                                "Publicar inmueble"
+                            btnGuardarInmueble.text = "Publicar inmueble"
 
                             if (response.isSuccessful) {
-
                                 Toast.makeText(
                                     this@PublicarInmuebleActivity,
                                     "Propiedad publicada correctamente",
@@ -119,9 +194,7 @@ class PublicarInmuebleActivity : Activity() {
                                 ).show()
 
                                 finish()
-
                             } else {
-
                                 Toast.makeText(
                                     this@PublicarInmuebleActivity,
                                     "No se pudo registrar la propiedad",
@@ -134,10 +207,8 @@ class PublicarInmuebleActivity : Activity() {
                             call: Call<RespuestaPropiedad>,
                             t: Throwable
                         ) {
-
                             btnGuardarInmueble.isEnabled = true
-                            btnGuardarInmueble.text =
-                                "Publicar inmueble"
+                            btnGuardarInmueble.text = "Publicar inmueble"
 
                             Toast.makeText(
                                 this@PublicarInmuebleActivity,
