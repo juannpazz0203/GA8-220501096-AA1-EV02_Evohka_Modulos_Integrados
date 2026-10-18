@@ -1,3 +1,21 @@
+import java.util.Properties
+
+val evohkaProperties = Properties()
+val evohkaPropertiesFile = rootProject.file("evohka.properties")
+
+if (evohkaPropertiesFile.exists()) {
+    evohkaPropertiesFile.inputStream().use { input ->
+        evohkaProperties.load(input)
+    }
+}
+
+val evohkaBaseUrl = evohkaProperties.getProperty(
+    "EVOHKA_BASE_URL",
+    "http://10.0.2.2:3000/"
+).let { url ->
+    if (url.endsWith("/")) url else "$url/"
+}
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
@@ -5,6 +23,7 @@ plugins {
 
 android {
     namespace = "com.example.evohkaapp"
+
     compileSdk {
         version = release(36) {
             minorApiLevel = 1
@@ -18,24 +37,37 @@ android {
         versionCode = 1
         versionName = "1.0"
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner =
+            "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField(
+            "String",
+            "EVOHKA_BASE_URL",
+            "\"$evohkaBaseUrl\""
+        )
     }
 
     buildTypes {
         release {
             isMinifyEnabled = false
+
             proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
+                getDefaultProguardFile(
+                    "proguard-android-optimize.txt"
+                ),
                 "proguard-rules.pro"
             )
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
+
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
 
@@ -49,20 +81,22 @@ dependencies {
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.material3)
     implementation(libs.androidx.activity)
+
     testImplementation(libs.junit)
+
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
+
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
+
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     implementation("androidx.appcompat:appcompat:1.7.0")
     implementation("com.google.android.material:material:1.12.0")
 
-    // Conexión con la API de Evohka
     implementation("com.squareup.retrofit2:retrofit:2.11.0")
     implementation("com.squareup.retrofit2:converter-gson:2.11.0")
     implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
-
 }
