@@ -21,6 +21,12 @@ async function listarPropiedades(req, res) {
 
 async function registrarPropiedad(req, res) {
   try {
+    if (!req.usuario || req.usuario.rol !== 'propietario') {
+      return res.status(403).json({
+        mensaje: 'Solo los usuarios con rol propietario pueden registrar propiedades'
+      });
+    }
+
     const {
       titulo,
       tipo_inmueble,
