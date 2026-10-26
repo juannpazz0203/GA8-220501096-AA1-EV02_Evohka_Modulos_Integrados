@@ -1,112 +1,227 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F4F4F4">
+    android:background="#FFFFFF"
+    android:fillViewport="true">
 
-    <TextView
-        android:id="@+id/btnVolver"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="← Volver"
-        android:textSize="16sp"
-        android:textColor="#7B2FF7"
-        android:textStyle="bold"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="30dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        android:paddingStart="28dp"
+        android:paddingEnd="28dp"
+        android:paddingTop="24dp"
+        android:paddingBottom="30dp">
 
-    <TextView
-        android:id="@+id/tituloRegistro"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Registro de usuario"
-        android:textSize="22sp"
-        android:textStyle="bold"
-        android:textColor="#7B2FF7"
-        app:layout_constraintTop_toBottomOf="@id/btnVolver"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="50dp" />
+        <TextView
+            android:id="@+id/btnVolver"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="← Volver"
+            android:textColor="#125AEA"
+            android:textSize="16sp"
+            android:textStyle="bold" />
 
-    <EditText
-        android:id="@+id/nombreCompleto"
-        android:layout_width="280dp"
-        android:layout_height="wrap_content"
-        android:hint="Nombre completo"
-        android:inputType="textPersonName"
-        app:layout_constraintTop_toBottomOf="@id/tituloRegistro"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="28dp" />
+        <ImageView
+            android:layout_width="90dp"
+            android:layout_height="90dp"
+            android:layout_marginTop="4dp"
+            android:alpha="0.18"
+            android:contentDescription="Logo EVOHKA"
+            android:scaleType="centerInside"
+            android:src="@drawable/evohka_logo" />
 
-    <EditText
-        android:id="@+id/tipoDocumento"
-        android:layout_width="280dp"
-        android:layout_height="wrap_content"
-        android:hint="Tipo de documento"
-        app:layout_constraintTop_toBottomOf="@id/nombreCompleto"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="12dp" />
+        <TextView
+            android:layout_width="297dp"
+            android:layout_height="42dp"
+            android:layout_marginTop="-6dp"
+            android:background="@drawable/bg_title_evohka"
+            android:gravity="center"
+            android:text="Registro de usuario"
+            android:textColor="#000000"
+            android:textSize="20sp"
+            android:textStyle="bold" />
 
-    <EditText
-        android:id="@+id/correoRegistro"
-        android:layout_width="280dp"
-        android:layout_height="wrap_content"
-        android:hint="Correo electrónico"
-        android:inputType="textEmailAddress"
-        app:layout_constraintTop_toBottomOf="@id/tipoDocumento"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="12dp" />
+        <EditText
+            android:id="@+id/etNombre"
+            android:layout_width="319dp"
+            android:layout_height="44dp"
+            android:layout_marginTop="22dp"
+            android:background="@drawable/bg_input_evohka"
+            android:hint="Nombre"
+            android:inputType="textPersonName"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:singleLine="true"
+            android:textColor="#000000"
+            android:textColorHint="#828282"
+            android:textSize="16sp" />
 
-    <EditText
-        android:id="@+id/telefono"
-        android:layout_width="280dp"
-        android:layout_height="wrap_content"
-        android:hint="Teléfono"
-        android:inputType="phone"
-        app:layout_constraintTop_toBottomOf="@id/correoRegistro"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="12dp" />
+        <EditText
+            android:id="@+id/etApellido"
+            android:layout_width="319dp"
+            android:layout_height="44dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/bg_input_evohka"
+            android:hint="Apellido"
+            android:inputType="textPersonName"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:singleLine="true"
+            android:textColor="#000000"
+            android:textColorHint="#828282"
+            android:textSize="16sp" />
 
-    <EditText
-        android:id="@+id/contrasenaRegistro"
-        android:layout_width="280dp"
-        android:layout_height="wrap_content"
-        android:hint="Contraseña"
-        android:inputType="textPassword"
-        app:layout_constraintTop_toBottomOf="@id/telefono"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="12dp" />
+        <EditText
+            android:id="@+id/etCorreo"
+            android:layout_width="319dp"
+            android:layout_height="44dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/bg_input_evohka"
+            android:hint="Correo electrónico"
+            android:inputType="textEmailAddress"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:singleLine="true"
+            android:textColor="#000000"
+            android:textColorHint="#828282"
+            android:textSize="16sp" />
 
-    <EditText
-        android:id="@+id/confirmarContrasena"
-        android:layout_width="280dp"
-        android:layout_height="wrap_content"
-        android:hint="Confirmar contraseña"
-        android:inputType="textPassword"
-        app:layout_constraintTop_toBottomOf="@id/contrasenaRegistro"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="12dp" />
+        <EditText
+            android:id="@+id/etTelefono"
+            android:layout_width="319dp"
+            android:layout_height="44dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/bg_input_evohka"
+            android:hint="Teléfono (opcional)"
+            android:inputType="phone"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:singleLine="true"
+            android:textColor="#000000"
+            android:textColorHint="#828282"
+            android:textSize="16sp" />
 
-    <Button
-        android:id="@+id/btnConfirmarRegistro"
-        android:layout_width="280dp"
-        android:layout_height="wrap_content"
-        android:text="CONFIRMAR REGISTRO"
-        android:textColor="#FFFFFF"
-        android:backgroundTint="#7B2FF7"
-        app:layout_constraintTop_toBottomOf="@id/confirmarContrasena"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="24dp" />
+        <FrameLayout
+            android:layout_width="319dp"
+            android:layout_height="44dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/bg_input_evohka">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+            <EditText
+                android:id="@+id/etContrasena"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@android:color/transparent"
+                android:hint="Contraseña"
+                android:inputType="textPassword"
+                android:paddingStart="12dp"
+                android:paddingEnd="48dp"
+                android:singleLine="true"
+                android:textColor="#000000"
+                android:textColorHint="#828282"
+                android:textSize="16sp" />
+
+            <ImageButton
+                android:id="@+id/btnVerContrasena"
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+                android:layout_gravity="end"
+                android:background="@android:color/transparent"
+                android:contentDescription="Mostrar contraseña"
+                android:padding="10dp"
+                android:src="@drawable/ic_visibility"
+                android:tint="#828282" />
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="319dp"
+            android:layout_height="44dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/bg_input_evohka">
+
+            <EditText
+                android:id="@+id/etConfirmarContrasena"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@android:color/transparent"
+                android:hint="Confirmar contraseña"
+                android:inputType="textPassword"
+                android:paddingStart="12dp"
+                android:paddingEnd="48dp"
+                android:singleLine="true"
+                android:textColor="#000000"
+                android:textColorHint="#828282"
+                android:textSize="16sp" />
+
+            <ImageButton
+                android:id="@+id/btnVerConfirmacion"
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+                android:layout_gravity="end"
+                android:background="@android:color/transparent"
+                android:contentDescription="Mostrar confirmación"
+                android:padding="10dp"
+                android:src="@drawable/ic_visibility"
+                android:tint="#828282" />
+
+        </FrameLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="¿Qué vas a hacer en EVOHKA?"
+            android:textColor="#000000"
+            android:textSize="17sp"
+            android:textStyle="bold" />
+
+        <RadioGroup
+            android:id="@+id/rgRol"
+            android:layout_width="280dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:orientation="vertical">
+
+            <RadioButton
+                android:id="@+id/rbInquilino"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:buttonTint="#CE74FF"
+                android:text="Busco alquilar"
+                android:textColor="#828282"
+                android:textSize="17sp"
+                android:textStyle="bold" />
+
+            <RadioButton
+                android:id="@+id/rbPropietario"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:buttonTint="#CE74FF"
+                android:text="Quiero publicar"
+                android:textColor="#828282"
+                android:textSize="17sp"
+                android:textStyle="bold" />
+
+        </RadioGroup>
+
+        <Button
+            android:id="@+id/btnConfirmarRegistro"
+            android:layout_width="316dp"
+            android:layout_height="44dp"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/bg_button_evohka"
+            android:backgroundTint="@null"
+            android:text="Confirmar registro"
+            android:textAllCaps="false"
+            android:textColor="#170E0E"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+</ScrollView>

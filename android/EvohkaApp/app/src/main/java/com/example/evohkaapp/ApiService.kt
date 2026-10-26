@@ -13,6 +13,11 @@ interface ApiService {
         @Body datos: LoginRequest
     ): Call<LoginResponse>
 
+    @POST("api/auth/registro")
+    fun registrarUsuario(
+        @Body datos: RegistroRequest
+    ): Call<RegistroResponse>
+
     @GET("api/propiedades")
     fun listarPropiedades(
         @Header("Authorization") token: String
