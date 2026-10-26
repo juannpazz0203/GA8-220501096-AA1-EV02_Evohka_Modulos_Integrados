@@ -2,6 +2,9 @@ package com.example.evohkaapp
 
 import android.app.Activity
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.Typeface
+import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.view.Gravity
 import android.widget.Button
@@ -27,45 +30,142 @@ class PropiedadesDisponiblesActivity : Activity() {
         cargarPropiedades()
     }
 
+    private fun dp(valor: Int): Int {
+        return (valor * resources.displayMetrics.density).toInt()
+    }
+
+    private fun fondoTarjeta(): GradientDrawable {
+        return GradientDrawable().apply {
+            shape = GradientDrawable.RECTANGLE
+            setColor(Color.WHITE)
+            cornerRadius = dp(16).toFloat()
+            setStroke(
+                dp(1),
+                Color.parseColor("#E8D9F0")
+            )
+        }
+    }
+
+    private fun fondoEtiqueta(): GradientDrawable {
+        return GradientDrawable().apply {
+            shape = GradientDrawable.RECTANGLE
+            setColor(Color.parseColor("#F3E4FC"))
+            cornerRadius = dp(20).toFloat()
+        }
+    }
+
+    private fun fondoBotonCerrar(): GradientDrawable {
+        return GradientDrawable().apply {
+            shape = GradientDrawable.RECTANGLE
+            setColor(Color.WHITE)
+            cornerRadius = dp(10).toFloat()
+            setStroke(
+                dp(1),
+                Color.parseColor("#CE74FF")
+            )
+        }
+    }
+
     private fun crearInterfaz() {
 
         val raiz = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
-            setPadding(40, 40, 40, 30)
-            setBackgroundColor(
-                android.graphics.Color.WHITE
+            setPadding(
+                dp(20),
+                dp(22),
+                dp(20),
+                dp(16)
             )
+
+            setBackgroundColor(Color.WHITE)
         }
 
         val titulo = TextView(this).apply {
             text = "Propiedades disponibles"
-            textSize = 22f
+            textSize = 20f
             gravity = Gravity.CENTER
-            setTextColor(
-                android.graphics.Color.parseColor("#202020")
-            )
+
+            setTextColor(Color.BLACK)
+
             setTypeface(
                 null,
-                android.graphics.Typeface.BOLD
+                Typeface.BOLD
+            )
+
+            setBackgroundResource(
+                R.drawable.bg_title_evohka
+            )
+
+            setPadding(
+                dp(14),
+                dp(7),
+                dp(14),
+                dp(7)
             )
         }
 
-        txtEstadoPropiedades = TextView(this).apply {
-            text = "Cargando propiedades..."
-            textSize = 14f
-            setTextColor(
-                android.graphics.Color.parseColor("#666666")
-            )
-            setPadding(0, 20, 0, 20)
-        }
+        val parametrosTitulo =
+            LinearLayout.LayoutParams(
+                dp(297),
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            ).apply {
+                gravity = Gravity.CENTER_HORIZONTAL
+            }
 
-        contenedorPropiedades = LinearLayout(this).apply {
-            orientation = LinearLayout.VERTICAL
-        }
+        raiz.addView(
+            titulo,
+            parametrosTitulo
+        )
 
-        val scrollView = ScrollView(this).apply {
-            addView(contenedorPropiedades)
-        }
+        txtEstadoPropiedades =
+            TextView(this).apply {
+
+                text =
+                    "Cargando propiedades..."
+
+                textSize = 13f
+
+                gravity = Gravity.CENTER
+
+                setTextColor(
+                    Color.parseColor("#828282")
+                )
+
+                setPadding(
+                    0,
+                    dp(14),
+                    0,
+                    dp(14)
+                )
+            }
+
+        raiz.addView(
+            txtEstadoPropiedades
+        )
+
+        contenedorPropiedades =
+            LinearLayout(this).apply {
+                orientation =
+                    LinearLayout.VERTICAL
+
+                setPadding(
+                    0,
+                    0,
+                    0,
+                    dp(10)
+                )
+            }
+
+        val scrollView =
+            ScrollView(this).apply {
+
+                isFillViewport = true
+                clipToPadding = false
+
+                addView(
+                    contenedorPropiedades
+                )
+            }
 
         val parametrosScroll =
             LinearLayout.LayoutParams(
@@ -75,23 +175,47 @@ class PropiedadesDisponiblesActivity : Activity() {
                 weight = 1f
             }
 
-        val btnCerrarSesion = Button(this).apply {
-
-            text = "Cerrar sesión"
-            isAllCaps = false
-
-            setOnClickListener {
-                cerrarSesion()
-            }
-        }
-
-        raiz.addView(titulo)
-        raiz.addView(txtEstadoPropiedades)
         raiz.addView(
             scrollView,
             parametrosScroll
         )
-        raiz.addView(btnCerrarSesion)
+
+        val btnCerrarSesion =
+            Button(this).apply {
+
+                text = "Cerrar sesión"
+                isAllCaps = false
+                textSize = 15f
+
+                setTextColor(
+                    Color.parseColor("#7B2FF7")
+                )
+
+                background =
+                    fondoBotonCerrar()
+
+                setOnClickListener {
+                    cerrarSesion()
+                }
+            }
+
+        val parametrosCerrar =
+            LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                dp(46)
+            ).apply {
+                setMargins(
+                    0,
+                    dp(6),
+                    0,
+                    0
+                )
+            }
+
+        raiz.addView(
+            btnCerrarSesion,
+            parametrosCerrar
+        )
 
         setContentView(raiz)
     }
@@ -130,20 +254,29 @@ class PropiedadesDisponiblesActivity : Activity() {
         RetrofitClient.apiService
             .listarPropiedades(token)
             .enqueue(
-                object : Callback<RespuestaPropiedades> {
+                object :
+                    Callback<RespuestaPropiedades> {
 
                     override fun onResponse(
-                        call: Call<RespuestaPropiedades>,
-                        response: Response<RespuestaPropiedades>
+                        call:
+                            Call<RespuestaPropiedades>,
+                        response:
+                            Response<RespuestaPropiedades>
                     ) {
 
-                        if (response.isSuccessful) {
+                        if (
+                            response.isSuccessful
+                        ) {
 
                             val propiedades =
-                                response.body()?.datos
+                                response
+                                    .body()
+                                    ?.datos
                                     ?: emptyList()
 
-                            mostrarPropiedades(propiedades)
+                            mostrarPropiedades(
+                                propiedades
+                            )
 
                         } else {
 
@@ -159,8 +292,10 @@ class PropiedadesDisponiblesActivity : Activity() {
                     }
 
                     override fun onFailure(
-                        call: Call<RespuestaPropiedades>,
-                        t: Throwable
+                        call:
+                            Call<RespuestaPropiedades>,
+                        t:
+                            Throwable
                     ) {
 
                         txtEstadoPropiedades.text =
@@ -180,36 +315,45 @@ class PropiedadesDisponiblesActivity : Activity() {
         propiedades: List<Propiedad>
     ) {
 
-        contenedorPropiedades.removeAllViews()
+        contenedorPropiedades
+            .removeAllViews()
 
         if (propiedades.isEmpty()) {
 
             txtEstadoPropiedades.text =
-                "No hay propiedades registradas"
+                "No hay propiedades disponibles"
 
             return
         }
 
         txtEstadoPropiedades.text =
-            "Propiedades encontradas: ${propiedades.size}"
+            "${propiedades.size} propiedades disponibles"
 
         val formatoMoneda =
             NumberFormat.getCurrencyInstance(
                 Locale("es", "CO")
             )
 
-        propiedades.forEach { propiedad ->
+        propiedades.forEach {
+                propiedad ->
 
             val tarjeta =
                 LinearLayout(this).apply {
+
                     orientation =
                         LinearLayout.VERTICAL
 
+                    background =
+                        fondoTarjeta()
+
+                    elevation =
+                        dp(3).toFloat()
+
                     setPadding(
-                        25,
-                        25,
-                        25,
-                        25
+                        dp(18),
+                        dp(16),
+                        dp(18),
+                        dp(16)
                     )
                 }
 
@@ -218,118 +362,318 @@ class PropiedadesDisponiblesActivity : Activity() {
                     LinearLayout.LayoutParams.MATCH_PARENT,
                     LinearLayout.LayoutParams.WRAP_CONTENT
                 ).apply {
+
                     setMargins(
                         0,
                         0,
                         0,
-                        30
+                        dp(14)
                     )
                 }
 
             tarjeta.layoutParams =
                 parametrosTarjeta
 
-            val canon =
-                formatoMoneda.format(
-                    propiedad.canon ?: 0
-                )
-
-            val informacion =
+            val tituloPropiedad =
                 TextView(this).apply {
 
-                    text = """
-                        ${propiedad.titulo ?: "Inmueble"}
+                    text =
+                        propiedad.titulo
+                            ?: "Inmueble"
 
-                        Tipo: ${propiedad.tipo_inmueble ?: "No definido"}
-                        Ciudad: ${propiedad.ciudad ?: "Sin ciudad"}
-                        Barrio: ${propiedad.barrio ?: "Sin barrio"}
-                        Dirección: ${propiedad.direccion ?: "Sin dirección"}
-                        Canon mensual: $canon
-                        Habitaciones: ${propiedad.habitaciones ?: 0}
-                        Baños: ${propiedad.banos ?: 0}
-                    """.trimIndent()
-
-                    textSize = 16f
+                    textSize = 18f
 
                     setTextColor(
-                        android.graphics.Color.parseColor(
-                            "#202020"
-                        )
+                        Color.parseColor("#202020")
+                    )
+
+                    setTypeface(
+                        null,
+                        Typeface.BOLD
                     )
                 }
+
+            tarjeta.addView(
+                tituloPropiedad
+            )
+
+            val ubicacion =
+                TextView(this).apply {
+
+                    val ciudad =
+                        propiedad.ciudad
+                            ?: "Sin ciudad"
+
+                    val barrio =
+                        propiedad.barrio
+                            ?: "Sin barrio"
+
+                    text =
+                        "$ciudad · $barrio"
+
+                    textSize = 14f
+
+                    setTextColor(
+                        Color.parseColor("#666666")
+                    )
+
+                    setPadding(
+                        0,
+                        dp(3),
+                        0,
+                        dp(8)
+                    )
+                }
+
+            tarjeta.addView(
+                ubicacion
+            )
+
+            val tipo =
+                TextView(this).apply {
+
+                    text =
+                        propiedad.tipo_inmueble
+                            ?: "Inmueble"
+
+                    textSize = 13f
+
+                    setTextColor(
+                        Color.parseColor("#7B2FF7")
+                    )
+
+                    background =
+                        fondoEtiqueta()
+
+                    setPadding(
+                        dp(10),
+                        dp(5),
+                        dp(10),
+                        dp(5)
+                    )
+                }
+
+            val parametrosTipo =
+                LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+                )
+
+            tarjeta.addView(
+                tipo,
+                parametrosTipo
+            )
+
+            val caracteristicas =
+                TextView(this).apply {
+
+                    text =
+                        "🛏 ${propiedad.habitaciones ?: 0} Hab   ·   🚿 ${propiedad.banos ?: 0} Baños"
+
+                    textSize = 14f
+
+                    setTextColor(
+                        Color.parseColor("#444444")
+                    )
+
+                    setPadding(
+                        0,
+                        dp(12),
+                        0,
+                        dp(4)
+                    )
+                }
+
+            tarjeta.addView(
+                caracteristicas
+            )
+
+            val direccion =
+                TextView(this).apply {
+
+                    text =
+                        propiedad.direccion
+                            ?: "Dirección no registrada"
+
+                    textSize = 13f
+
+                    setTextColor(
+                        Color.parseColor("#828282")
+                    )
+
+                    setPadding(
+                        0,
+                        0,
+                        0,
+                        dp(8)
+                    )
+                }
+
+            tarjeta.addView(
+                direccion
+            )
+
+            val canon =
+                formatoMoneda.format(
+                    propiedad.canon
+                        ?: 0.0
+                )
+
+            val precio =
+                TextView(this).apply {
+
+                    text =
+                        "$canon / mes"
+
+                    textSize = 18f
+
+                    setTextColor(
+                        Color.parseColor("#A63EE8")
+                    )
+
+                    setTypeface(
+                        null,
+                        Typeface.BOLD
+                    )
+                }
+
+            tarjeta.addView(
+                precio
+            )
 
             val btnSeleccionar =
                 Button(this).apply {
 
-                    text = "Ver detalle"
-                    isAllCaps = false
+                    text =
+                        "Ver detalle"
+
+                    isAllCaps =
+                        false
+
+                    textSize =
+                        15f
+
+                    setTextColor(
+                        Color.parseColor("#170E0E")
+                    )
+
+                    setTypeface(
+                        null,
+                        Typeface.BOLD
+                    )
+
+                    setBackgroundResource(
+                        R.drawable.bg_button_evohka
+                    )
+
+                    backgroundTintList =
+                        null
 
                     setOnClickListener {
 
-                        val intent = Intent(
-                            this@PropiedadesDisponiblesActivity,
-                            DetallePropiedadActivity::class.java
+                        abrirDetalle(
+                            propiedad
                         )
-
-                        intent.putExtra(
-                            "id_propiedad",
-                            propiedad.id_propiedad ?: 0
-                        )
-
-                        intent.putExtra(
-                            "titulo",
-                            propiedad.titulo ?: ""
-                        )
-
-                        intent.putExtra(
-                            "tipo_inmueble",
-                            propiedad.tipo_inmueble ?: ""
-                        )
-
-                        intent.putExtra(
-                            "direccion",
-                            propiedad.direccion ?: ""
-                        )
-
-                        intent.putExtra(
-                            "barrio",
-                            propiedad.barrio ?: ""
-                        )
-
-                        intent.putExtra(
-                            "ciudad",
-                            propiedad.ciudad ?: ""
-                        )
-
-                        intent.putExtra(
-                            "canon",
-                            propiedad.canon ?: 0.0
-                        )
-
-                        intent.putExtra(
-                            "habitaciones",
-                            propiedad.habitaciones ?: 0
-                        )
-
-                        intent.putExtra(
-                            "banos",
-                            propiedad.banos ?: 0
-                        )
-
-                        intent.putExtra(
-                            "id_propietario",
-                            propiedad.id_propietario ?: 0
-                        )
-
-                        startActivity(intent)
                     }
                 }
 
-            tarjeta.addView(informacion)
-            tarjeta.addView(btnSeleccionar)
+            val parametrosBoton =
+                LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    dp(44)
+                ).apply {
 
-            contenedorPropiedades.addView(tarjeta)
+                    setMargins(
+                        0,
+                        dp(14),
+                        0,
+                        0
+                    )
+                }
+
+            tarjeta.addView(
+                btnSeleccionar,
+                parametrosBoton
+            )
+
+            contenedorPropiedades
+                .addView(
+                    tarjeta
+                )
         }
+    }
+
+    private fun abrirDetalle(
+        propiedad: Propiedad
+    ) {
+
+        val intent =
+            Intent(
+                this,
+                DetallePropiedadActivity::class.java
+            )
+
+        intent.putExtra(
+            "id_propiedad",
+            propiedad.id_propiedad
+                ?: 0
+        )
+
+        intent.putExtra(
+            "titulo",
+            propiedad.titulo
+                ?: ""
+        )
+
+        intent.putExtra(
+            "tipo_inmueble",
+            propiedad.tipo_inmueble
+                ?: ""
+        )
+
+        intent.putExtra(
+            "direccion",
+            propiedad.direccion
+                ?: ""
+        )
+
+        intent.putExtra(
+            "barrio",
+            propiedad.barrio
+                ?: ""
+        )
+
+        intent.putExtra(
+            "ciudad",
+            propiedad.ciudad
+                ?: ""
+        )
+
+        intent.putExtra(
+            "canon",
+            propiedad.canon
+                ?: 0.0
+        )
+
+        intent.putExtra(
+            "habitaciones",
+            propiedad.habitaciones
+                ?: 0
+        )
+
+        intent.putExtra(
+            "banos",
+            propiedad.banos
+                ?: 0
+        )
+
+        intent.putExtra(
+            "id_propietario",
+            propiedad.id_propietario
+                ?: 0
+        )
+
+        startActivity(intent)
     }
 
     private fun cerrarSesion() {
@@ -344,10 +688,11 @@ class PropiedadesDisponiblesActivity : Activity() {
             .clear()
             .apply()
 
-        val intent = Intent(
-            this,
-            MainActivity::class.java
-        )
+        val intent =
+            Intent(
+                this,
+                MainActivity::class.java
+            )
 
         intent.flags =
             Intent.FLAG_ACTIVITY_NEW_TASK or

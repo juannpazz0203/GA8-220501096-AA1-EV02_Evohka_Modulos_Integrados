@@ -3,8 +3,11 @@ package com.example.evohkaapp
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.text.method.HideReturnsTransformationMethod
+import android.text.method.PasswordTransformationMethod
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageButton
 import android.widget.RadioButton
 import android.widget.RadioGroup
 import android.widget.TextView
@@ -20,11 +23,11 @@ class MainActivity : Activity() {
 
         setContentView(R.layout.activity_login)
 
-        val correo =
-            findViewById<EditText>(R.id.correo)
+        val correo = findViewById<EditText>(R.id.correo)
+        val password = findViewById<EditText>(R.id.password)
 
-        val password =
-            findViewById<EditText>(R.id.password)
+        val btnVerPassword =
+            findViewById<ImageButton>(R.id.btnVerPassword)
 
         val grupoTipoIngreso =
             findViewById<RadioGroup>(R.id.grupo_tipo_ingreso)
@@ -34,6 +37,40 @@ class MainActivity : Activity() {
 
         val txtRegistrarse =
             findViewById<TextView>(R.id.txtRegistrarse)
+
+        var passwordVisible = false
+
+        btnVerPassword.setOnClickListener {
+
+            passwordVisible = !passwordVisible
+
+            if (passwordVisible) {
+
+                password.transformationMethod =
+                    HideReturnsTransformationMethod.getInstance()
+
+                btnVerPassword.setImageResource(
+                    R.drawable.ic_visibility_off
+                )
+
+                btnVerPassword.contentDescription =
+                    "Ocultar contraseña"
+
+            } else {
+
+                password.transformationMethod =
+                    PasswordTransformationMethod.getInstance()
+
+                btnVerPassword.setImageResource(
+                    R.drawable.ic_visibility
+                )
+
+                btnVerPassword.contentDescription =
+                    "Mostrar contraseña"
+            }
+
+            password.setSelection(password.text.length)
+        }
 
         txtRegistrarse.setOnClickListener {
 
@@ -148,7 +185,9 @@ class MainActivity : Activity() {
                                     val mensajeRol =
                                         if (rolReal == "arrendatario") {
                                             "Este usuario está registrado como inquilino"
-                                        } else if (rolReal == "propietario") {
+                                        } else if (
+                                            rolReal == "propietario"
+                                        ) {
                                             "Este usuario está registrado como propietario"
                                         } else {
                                             "El rol de este usuario no está habilitado"
@@ -198,7 +237,9 @@ class MainActivity : Activity() {
                                     Toast.LENGTH_LONG
                                 ).show()
 
-                                if (rolReal == "propietario") {
+                                if (
+                                    rolReal == "propietario"
+                                ) {
 
                                     val intent = Intent(
                                         this@MainActivity,
