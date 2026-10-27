@@ -21,6 +21,9 @@
             android:name=".PropiedadesDisponiblesActivity"
             android:exported="false" />
         <activity
+            android:name=".EditarInmuebleActivity"
+            android:exported="false" />
+        <activity
             android:name=".PublicarInmuebleActivity"
             android:exported="false" />
         <activity

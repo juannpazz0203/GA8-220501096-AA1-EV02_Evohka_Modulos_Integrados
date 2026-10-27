@@ -21,6 +21,10 @@ class MainActivity : Activity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        if (redirigirSiHaySesion()) {
+            return
+        }
+
         setContentView(R.layout.activity_login)
 
         val correo = findViewById<EditText>(R.id.correo)
@@ -202,6 +206,20 @@ class MainActivity : Activity() {
                                     return
                                 }
 
+                                val token =
+                                    respuesta.token
+
+                                if (token.isNullOrBlank()) {
+
+                                    Toast.makeText(
+                                        this@MainActivity,
+                                        "No se pudo iniciar una sesión válida",
+                                        Toast.LENGTH_LONG
+                                    ).show()
+
+                                    return
+                                }
+
                                 val preferencias =
                                     getSharedPreferences(
                                         "EvohkaSesion",
@@ -211,7 +229,7 @@ class MainActivity : Activity() {
                                 preferencias.edit()
                                     .putString(
                                         "token",
-                                        respuesta.token
+                                        token
                                     )
                                     .putInt(
                                         "id_usuario",
@@ -237,26 +255,9 @@ class MainActivity : Activity() {
                                     Toast.LENGTH_LONG
                                 ).show()
 
-                                if (
-                                    rolReal == "propietario"
-                                ) {
-
-                                    val intent = Intent(
-                                        this@MainActivity,
-                                        InicioPropietarioActivity::class.java
-                                    )
-
-                                    startActivity(intent)
-
-                                } else {
-
-                                    val intent = Intent(
-                                        this@MainActivity,
-                                        PropiedadesDisponiblesActivity::class.java
-                                    )
-
-                                    startActivity(intent)
-                                }
+                                abrirPantallaPrincipal(
+                                    rolReal
+                                )
 
                             } else {
 
@@ -282,5 +283,79 @@ class MainActivity : Activity() {
                     }
                 )
         }
+    }
+
+    private fun redirigirSiHaySesion(): Boolean {
+
+        val preferencias =
+            getSharedPreferences(
+                "EvohkaSesion",
+                MODE_PRIVATE
+            )
+
+        val token =
+            preferencias.getString(
+                "token",
+                null
+            )
+
+        val idUsuario =
+            preferencias.getInt(
+                "id_usuario",
+                0
+            )
+
+        val rol =
+            preferencias.getString(
+                "rol",
+                null
+            )
+
+        if (
+            token.isNullOrBlank() ||
+            idUsuario <= 0 ||
+            rol.isNullOrBlank()
+        ) {
+            return false
+        }
+
+        return abrirPantallaPrincipal(
+            rol
+        )
+    }
+
+    private fun abrirPantallaPrincipal(
+        rol: String
+    ): Boolean {
+
+        val intent =
+            when (
+                rol.trim().lowercase()
+            ) {
+
+                "propietario" ->
+                    Intent(
+                        this,
+                        InicioPropietarioActivity::class.java
+                    )
+
+                "arrendatario" ->
+                    Intent(
+                        this,
+                        PropiedadesDisponiblesActivity::class.java
+                    )
+
+                else ->
+                    return false
+            }
+
+        intent.flags =
+            Intent.FLAG_ACTIVITY_NEW_TASK or
+                    Intent.FLAG_ACTIVITY_CLEAR_TASK
+
+        startActivity(intent)
+        finish()
+
+        return true
     }
 }
