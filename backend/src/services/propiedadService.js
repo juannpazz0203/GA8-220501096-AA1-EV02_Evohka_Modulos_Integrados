@@ -20,6 +20,57 @@ async function obtenerTodasLasPropiedades() {
   return filas;
 }
 
+async function obtenerPropiedadPorId(idPropiedad) {
+  const [filas] = await pool.execute(
+    `SELECT
+      id_propiedad,
+      titulo,
+      tipo_inmueble,
+      direccion,
+      barrio,
+      ciudad,
+      canon,
+      habitaciones,
+      banos,
+      id_propietario
+     FROM propiedades
+     WHERE id_propiedad = ?
+     LIMIT 1`,
+    [Number(idPropiedad)]
+  );
+
+  return filas[0] || null;
+}
+
+async function obtenerPropiedadDelPropietario(
+  idPropiedad,
+  idPropietario
+) {
+  const [filas] = await pool.execute(
+    `SELECT
+      id_propiedad,
+      titulo,
+      tipo_inmueble,
+      direccion,
+      barrio,
+      ciudad,
+      canon,
+      habitaciones,
+      banos,
+      id_propietario
+     FROM propiedades
+     WHERE id_propiedad = ?
+       AND id_propietario = ?
+     LIMIT 1`,
+    [
+      Number(idPropiedad),
+      Number(idPropietario)
+    ]
+  );
+
+  return filas[0] || null;
+}
+
 async function crearPropiedad(datosPropiedad) {
   const {
     titulo,
@@ -74,7 +125,76 @@ async function crearPropiedad(datosPropiedad) {
   };
 }
 
+async function actualizarPropiedad(
+  idPropiedad,
+  idPropietario,
+  datosPropiedad
+) {
+  const {
+    titulo,
+    tipo_inmueble,
+    direccion,
+    barrio,
+    ciudad,
+    canon,
+    habitaciones,
+    banos
+  } = datosPropiedad;
+
+  await pool.execute(
+    `UPDATE propiedades
+     SET
+       titulo = ?,
+       tipo_inmueble = ?,
+       direccion = ?,
+       barrio = ?,
+       ciudad = ?,
+       canon = ?,
+       habitaciones = ?,
+       banos = ?
+     WHERE id_propiedad = ?
+       AND id_propietario = ?`,
+    [
+      titulo.trim(),
+      tipo_inmueble.trim(),
+      direccion.trim(),
+      barrio.trim(),
+      ciudad.trim(),
+      Number(canon),
+      Number(habitaciones),
+      Number(banos),
+      Number(idPropiedad),
+      Number(idPropietario)
+    ]
+  );
+
+  return obtenerPropiedadDelPropietario(
+    idPropiedad,
+    idPropietario
+  );
+}
+
+async function eliminarPropiedad(
+  idPropiedad,
+  idPropietario
+) {
+  const [resultado] = await pool.execute(
+    `DELETE FROM propiedades
+     WHERE id_propiedad = ?
+       AND id_propietario = ?`,
+    [
+      Number(idPropiedad),
+      Number(idPropietario)
+    ]
+  );
+
+  return resultado.affectedRows > 0;
+}
+
 module.exports = {
   obtenerTodasLasPropiedades,
-  crearPropiedad
+  obtenerPropiedadPorId,
+  crearPropiedad,
+  actualizarPropiedad,
+  eliminarPropiedad
 };
