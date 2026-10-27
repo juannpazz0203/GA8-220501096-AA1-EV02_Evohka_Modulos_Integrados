@@ -1,10 +1,15 @@
 package com.example.evohkaapp
 
 import android.app.Activity
+import android.app.AlertDialog
 import android.os.Bundle
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
+import org.json.JSONObject
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import java.text.NumberFormat
 import java.util.Locale
 
@@ -91,7 +96,7 @@ class DetallePropiedadActivity : Activity() {
 
         val formatoMoneda =
             NumberFormat.getCurrencyInstance(
-                Locale("es", "CO")
+                Locale.forLanguageTag("es-CO")
             )
 
         txtTitulo.text =
@@ -123,12 +128,173 @@ class DetallePropiedadActivity : Activity() {
         }
 
         btnSolicitarArriendo.setOnClickListener {
+            confirmarSolicitud(
+                idPropiedad,
+                titulo,
+                btnSolicitarArriendo
+            )
+        }
+    }
 
+    private fun confirmarSolicitud(
+        idPropiedad: Int,
+        tituloPropiedad: String,
+        btnSolicitarArriendo: Button
+    ) {
+        if (idPropiedad <= 0) {
             Toast.makeText(
                 this,
-                "Solicitud de arriendo para propiedad #$idPropiedad pendiente de implementar",
+                "No se pudo identificar la propiedad",
                 Toast.LENGTH_LONG
             ).show()
+
+            return
+        }
+
+        val preferencias =
+            getSharedPreferences(
+                "EvohkaSesion",
+                MODE_PRIVATE
+            )
+
+        val rol =
+            preferencias.getString(
+                "rol",
+                null
+            )
+
+        if (rol != "arrendatario") {
+            Toast.makeText(
+                this,
+                "Solo los inquilinos pueden solicitar un arriendo",
+                Toast.LENGTH_LONG
+            ).show()
+
+            return
+        }
+
+        AlertDialog.Builder(this)
+            .setTitle("Solicitar arriendo")
+            .setMessage(
+                "¿Deseas enviar una solicitud para $tituloPropiedad?"
+            )
+            .setNegativeButton(
+                "Cancelar",
+                null
+            )
+            .setPositiveButton("Enviar solicitud") { _, _ ->
+                enviarSolicitud(
+                    idPropiedad,
+                    btnSolicitarArriendo
+                )
+            }
+            .show()
+    }
+
+    private fun enviarSolicitud(
+        idPropiedad: Int,
+        btnSolicitarArriendo: Button
+    ) {
+        val token =
+            getSharedPreferences(
+                "EvohkaSesion",
+                MODE_PRIVATE
+            ).getString(
+                "token",
+                null
+            )
+
+        if (token.isNullOrBlank()) {
+            Toast.makeText(
+                this,
+                "La sesión ha finalizado. Inicia sesión nuevamente.",
+                Toast.LENGTH_LONG
+            ).show()
+
+            return
+        }
+
+        btnSolicitarArriendo.isEnabled = false
+        btnSolicitarArriendo.text = "Enviando solicitud..."
+
+        RetrofitClient.apiService
+            .crearSolicitud(
+                token,
+                CrearSolicitudRequest(
+                    id_propiedad = idPropiedad
+                )
+            )
+            .enqueue(
+                object : Callback<RespuestaSolicitud> {
+
+                    override fun onResponse(
+                        call: Call<RespuestaSolicitud>,
+                        response: Response<RespuestaSolicitud>
+                    ) {
+                        if (response.isSuccessful) {
+                            btnSolicitarArriendo.text =
+                                "Solicitud enviada"
+
+                            Toast.makeText(
+                                this@DetallePropiedadActivity,
+                                response.body()?.mensaje
+                                    ?: "Solicitud registrada correctamente",
+                                Toast.LENGTH_LONG
+                            ).show()
+                        } else {
+                            btnSolicitarArriendo.isEnabled = true
+                            btnSolicitarArriendo.text =
+                                "Solicitar arriendo"
+
+                            Toast.makeText(
+                                this@DetallePropiedadActivity,
+                                obtenerMensajeError(
+                                    response,
+                                    "No se pudo registrar la solicitud"
+                                ),
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
+                    }
+
+                    override fun onFailure(
+                        call: Call<RespuestaSolicitud>,
+                        t: Throwable
+                    ) {
+                        btnSolicitarArriendo.isEnabled = true
+                        btnSolicitarArriendo.text =
+                            "Solicitar arriendo"
+
+                        Toast.makeText(
+                            this@DetallePropiedadActivity,
+                            "No se pudo conectar con el servidor",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
+                }
+            )
+    }
+
+    private fun obtenerMensajeError(
+        response: Response<*>,
+        mensajePredeterminado: String
+    ): String {
+        return try {
+            val contenido =
+                response.errorBody()
+                    ?.string()
+
+            if (contenido.isNullOrBlank()) {
+                mensajePredeterminado
+            } else {
+                JSONObject(contenido)
+                    .optString(
+                        "mensaje",
+                        mensajePredeterminado
+                    )
+            }
+        } catch (error: Exception) {
+            mensajePredeterminado
         }
     }
 }

@@ -18,6 +18,9 @@
             android:name=".DetallePropiedadActivity"
             android:exported="false" />
         <activity
+            android:name=".SolicitudesActivity"
+            android:exported="false" />
+        <activity
             android:name=".PropiedadesDisponiblesActivity"
             android:exported="false" />
         <activity
