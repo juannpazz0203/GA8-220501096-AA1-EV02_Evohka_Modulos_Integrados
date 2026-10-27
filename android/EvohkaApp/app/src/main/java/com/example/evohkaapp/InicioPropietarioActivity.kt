@@ -69,11 +69,12 @@ class InicioPropietarioActivity : Activity() {
 
         btnSolicitudes.setOnClickListener {
 
-            Toast.makeText(
+            val intent = Intent(
                 this,
-                "Módulo no incluido en esta evidencia",
-                Toast.LENGTH_SHORT
-            ).show()
+                SolicitudesActivity::class.java
+            )
+
+            startActivity(intent)
         }
 
         btnVisitas.setOnClickListener {

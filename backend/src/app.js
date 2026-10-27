@@ -1,6 +1,7 @@
 const express = require('express');
 const propiedadRoutes = require('./routes/propiedadRoutes');
 const authRoutes = require('./routes/authRoutes');
+const solicitudRoutes = require('./routes/solicitudRoutes');
 
 const app = express();
 
@@ -13,12 +14,14 @@ app.get('/', (req, res) => {
     mensaje: 'API de Evohka funcionando correctamente',
     evidencia: 'GA8-220501096-AA1-EV01',
     servicioPropiedades: '/api/propiedades',
-    servicioAutenticacion: '/api/auth/login'
+    servicioAutenticacion: '/api/auth/login',
+    servicioSolicitudes: '/api/solicitudes'
   });
 });
 
 // Registro de las rutas.
 app.use('/api/auth', authRoutes);
 app.use('/api/propiedades', propiedadRoutes);
+app.use('/api/solicitudes', solicitudRoutes);
 
 module.exports = app;
