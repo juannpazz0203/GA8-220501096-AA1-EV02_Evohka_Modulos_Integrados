@@ -110,4 +110,56 @@ interface ApiService {
         @Header("Authorization") token: String,
         @Path("id") idNotificacion: Int
     ): Call<RespuestaNotificacion>
+
+    @GET("api/fallas")
+    fun listarFallas(
+        @Header("Authorization") token: String
+    ): Call<RespuestaFallas>
+
+    @GET("api/fallas/propiedades")
+    fun listarPropiedadesParaFallas(
+        @Header("Authorization") token: String
+    ): Call<RespuestaPropiedadesFalla>
+
+    @POST("api/fallas")
+    fun crearFalla(
+        @Header("Authorization") token: String,
+        @Body falla: CrearFallaRequest
+    ): Call<RespuestaFalla>
+
+    @PATCH("api/fallas/{id}/estado")
+    fun actualizarEstadoFalla(
+        @Header("Authorization") token: String,
+        @Path("id") idFalla: Int,
+        @Body estado: ActualizarEstadoFallaRequest
+    ): Call<RespuestaFalla>
+
+    @GET("api/mensajes/conversaciones")
+    fun listarConversaciones(
+        @Header("Authorization") token: String
+    ): Call<RespuestaConversaciones>
+
+    @GET("api/mensajes")
+    fun listarMensajes(
+        @Header("Authorization") token: String,
+        @Query("propiedad") idPropiedad: Int,
+        @Query("usuario") idUsuario: Int
+    ): Call<RespuestaMensajes>
+
+    @POST("api/mensajes")
+    fun enviarMensaje(
+        @Header("Authorization") token: String,
+        @Body mensaje: EnviarMensajeRequest
+    ): Call<RespuestaMensaje>
+
+    @PATCH("api/mensajes/leidos")
+    fun marcarMensajesLeidos(
+        @Header("Authorization") token: String,
+        @Body datos: MarcarMensajesLeidosRequest
+    ): Call<RespuestaOperacionMensajes>
+
+    @GET("api/admin/resumen")
+    fun obtenerResumenAdministrador(
+        @Header("Authorization") token: String
+    ): Call<RespuestaAdmin>
 }

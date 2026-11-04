@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="24dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_title_evohka"
+            android:gravity="center"
+            android:padding="10dp"
+            android:text="Reportar falla"
+            android:textColor="#170E0E"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="22dp"
+            android:text="Inmueble con contrato activo"
+            android:textColor="#202020"
+            android:textStyle="bold" />
+
+        <Spinner
+            android:id="@+id/spinnerPropiedadFalla"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/bg_input_evohka"
+            android:paddingHorizontal="12dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="18dp"
+            android:text="Categoría"
+            android:textColor="#202020"
+            android:textStyle="bold" />
+
+        <Spinner
+            android:id="@+id/spinnerCategoriaFalla"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/bg_input_evohka"
+            android:paddingHorizontal="12dp" />
+
+        <EditText
+            android:id="@+id/editDescripcionFalla"
+            android:layout_width="match_parent"
+            android:layout_height="130dp"
+            android:layout_marginTop="18dp"
+            android:background="@drawable/bg_input_evohka"
+            android:gravity="top|start"
+            android:hint="Describe claramente la falla"
+            android:inputType="textCapSentences|textMultiLine"
+            android:maxLength="255"
+            android:padding="14dp" />
+
+        <TextView
+            android:id="@+id/txtEstadoReporteFalla"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:textColor="#666666" />
+
+        <Button
+            android:id="@+id/btnEnviarFalla"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/bg_button_evohka"
+            android:backgroundTint="@null"
+            android:text="Enviar reporte"
+            android:textAllCaps="false"
+            android:textColor="#170E0E"
+            android:textStyle="bold" />
+    </LinearLayout>
+</ScrollView>
