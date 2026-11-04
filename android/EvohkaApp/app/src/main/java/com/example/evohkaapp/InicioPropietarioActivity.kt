@@ -23,6 +23,18 @@ class InicioPropietarioActivity : Activity() {
         val btnSolicitudes =
             findViewById<Button>(R.id.btnSolicitudes)
 
+        val btnContratos =
+            findViewById<Button>(R.id.btnContratos)
+
+        val btnPagos =
+            findViewById<Button>(R.id.btnPagos)
+
+        val btnReporteIngresos =
+            findViewById<Button>(R.id.btnReporteIngresos)
+
+        val btnNotificaciones =
+            findViewById<Button>(R.id.btnNotificaciones)
+
         val btnVisitas =
             findViewById<Button>(R.id.btnVisitas)
 
@@ -77,6 +89,42 @@ class InicioPropietarioActivity : Activity() {
             startActivity(intent)
         }
 
+        btnContratos.setOnClickListener {
+            startActivity(
+                Intent(
+                    this,
+                    ContratosActivity::class.java
+                )
+            )
+        }
+
+        btnPagos.setOnClickListener {
+            startActivity(
+                Intent(
+                    this,
+                    PagosActivity::class.java
+                )
+            )
+        }
+
+        btnReporteIngresos.setOnClickListener {
+            startActivity(
+                Intent(
+                    this,
+                    ReporteIngresosActivity::class.java
+                )
+            )
+        }
+
+        btnNotificaciones.setOnClickListener {
+            startActivity(
+                Intent(
+                    this,
+                    NotificacionesActivity::class.java
+                )
+            )
+        }
+
         btnVisitas.setOnClickListener {
 
             Toast.makeText(
@@ -89,6 +137,11 @@ class InicioPropietarioActivity : Activity() {
         btnCerrarSesion.setOnClickListener {
             cerrarSesion()
         }
+
+        NavegacionEvohka.configurarPropietario(
+            this,
+            NavegacionEvohka.DestinoPropietario.INICIO
+        )
     }
 
     private fun cerrarSesion() {

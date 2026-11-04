@@ -18,6 +18,24 @@
             android:name=".DetallePropiedadActivity"
             android:exported="false" />
         <activity
+            android:name=".NotificacionesActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ReporteIngresosActivity"
+            android:exported="false" />
+        <activity
+            android:name=".RegistrarPagoActivity"
+            android:exported="false" />
+        <activity
+            android:name=".PagosActivity"
+            android:exported="false" />
+        <activity
+            android:name=".CrearContratoActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ContratosActivity"
+            android:exported="false" />
+        <activity
             android:name=".SolicitudesActivity"
             android:exported="false" />
         <activity

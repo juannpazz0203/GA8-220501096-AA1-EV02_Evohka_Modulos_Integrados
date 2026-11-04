@@ -2,6 +2,7 @@ package com.example.evohkaapp
 
 import android.app.Activity
 import android.app.AlertDialog
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
@@ -35,12 +36,10 @@ class SolicitudesActivity : Activity() {
         contenedorSolicitudes =
             findViewById(R.id.contenedorSolicitudes)
 
-        val btnVolver =
-            findViewById<Button>(R.id.btnVolverSolicitudes)
-
-        btnVolver.setOnClickListener {
-            finish()
-        }
+        NavegacionEvohka.configurarPropietario(
+            this,
+            NavegacionEvohka.DestinoPropietario.SOLICITUDES
+        )
     }
 
     override fun onResume() {
@@ -371,9 +370,76 @@ class SolicitudesActivity : Activity() {
                     )
                 }
             )
+        } else if (estadoNormalizado == "aprobada") {
+            val tieneContratoActivo =
+                (solicitud.id_contrato_activo ?: 0) > 0
+
+            val btnContrato = Button(this).apply {
+                text =
+                    if (tieneContratoActivo) {
+                        "Ver contrato activo"
+                    } else {
+                        "Crear contrato"
+                    }
+
+                isAllCaps = false
+                setTextColor(Color.parseColor("#170E0E"))
+                setTypeface(null, Typeface.BOLD)
+                setBackgroundResource(
+                    R.drawable.bg_button_evohka
+                )
+                backgroundTintList = null
+
+                setOnClickListener {
+                    if (tieneContratoActivo) {
+                        startActivity(
+                            Intent(
+                                this@SolicitudesActivity,
+                                ContratosActivity::class.java
+                            )
+                        )
+                    } else {
+                        abrirCreacionContrato(solicitud)
+                    }
+                }
+            }
+
+            tarjeta.addView(
+                btnContrato,
+                LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    dp(48)
+                ).apply {
+                    topMargin = dp(14)
+                }
+            )
         }
 
         contenedorSolicitudes.addView(tarjeta)
+    }
+
+    private fun abrirCreacionContrato(
+        solicitud: Solicitud
+    ) {
+        val intent = Intent(
+            this,
+            CrearContratoActivity::class.java
+        ).apply {
+            putExtra(
+                "id_solicitud",
+                solicitud.id_solicitud
+            )
+            putExtra(
+                "titulo_propiedad",
+                solicitud.titulo_propiedad ?: "Inmueble"
+            )
+            putExtra(
+                "canon_propiedad",
+                solicitud.canon_propiedad ?: 0.0
+            )
+        }
+
+        startActivity(intent)
     }
 
     private fun formatearFechaSolicitud(
