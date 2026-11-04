@@ -35,6 +35,10 @@ class InicioPropietarioActivity : Activity() {
         val btnNotificaciones =
             findViewById<Button>(R.id.btnNotificaciones)
 
+        val btnFallas = findViewById<Button>(R.id.btnFallas)
+        val btnConversaciones = findViewById<Button>(R.id.btnConversaciones)
+        val btnFaq = findViewById<Button>(R.id.btnFaq)
+
         val btnVisitas =
             findViewById<Button>(R.id.btnVisitas)
 
@@ -123,6 +127,18 @@ class InicioPropietarioActivity : Activity() {
                     NotificacionesActivity::class.java
                 )
             )
+        }
+
+        btnFallas.setOnClickListener {
+            startActivity(Intent(this, FallasActivity::class.java))
+        }
+
+        btnConversaciones.setOnClickListener {
+            startActivity(Intent(this, ConversacionesActivity::class.java))
+        }
+
+        btnFaq.setOnClickListener {
+            startActivity(Intent(this, FaqActivity::class.java))
         }
 
         btnVisitas.setOnClickListener {

@@ -115,7 +115,7 @@ class MainActivity : Activity() {
 
                 Toast.makeText(
                     this,
-                    "Seleccione si desea ingresar como inquilino o propietario",
+                    "Seleccione el tipo de ingreso",
                     Toast.LENGTH_SHORT
                 ).show()
 
@@ -176,12 +176,11 @@ class MainActivity : Activity() {
                                         .lowercase()
 
                                 val rolSeleccionado =
-                                    if (
-                                        tipoIngresoSeleccionado == "inquilino"
-                                    ) {
-                                        "arrendatario"
-                                    } else {
-                                        "propietario"
+                                    when (tipoIngresoSeleccionado) {
+                                        "inquilino" -> "arrendatario"
+                                        "propietario" -> "propietario"
+                                        "administrador" -> "administrador"
+                                        else -> ""
                                     }
 
                                 if (rolReal != rolSeleccionado) {
@@ -193,6 +192,10 @@ class MainActivity : Activity() {
                                             rolReal == "propietario"
                                         ) {
                                             "Este usuario está registrado como propietario"
+                                        } else if (
+                                            rolReal == "administrador"
+                                        ) {
+                                            "Este usuario está registrado como administrador"
                                         } else {
                                             "El rol de este usuario no está habilitado"
                                         }
@@ -343,6 +346,12 @@ class MainActivity : Activity() {
                     Intent(
                         this,
                         PropiedadesDisponiblesActivity::class.java
+                    )
+
+                "administrador" ->
+                    Intent(
+                        this,
+                        AdministradorActivity::class.java
                     )
 
                 else ->

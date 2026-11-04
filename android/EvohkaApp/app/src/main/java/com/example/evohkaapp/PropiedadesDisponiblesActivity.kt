@@ -180,6 +180,35 @@ class PropiedadesDisponiblesActivity : Activity() {
             parametrosScroll
         )
 
+        val accesos = LinearLayout(this).apply {
+            orientation = LinearLayout.HORIZONTAL
+        }
+
+        listOf(
+            "Fallas" to FallasActivity::class.java,
+            "Chat" to ConversacionesActivity::class.java,
+            "Ayuda" to FaqActivity::class.java
+        ).forEachIndexed { indice, acceso ->
+            accesos.addView(Button(this).apply {
+                text = acceso.first
+                isAllCaps = false
+                textSize = 13f
+                setTextColor(Color.parseColor("#7B2FF7"))
+                setBackgroundResource(R.drawable.bg_input_evohka)
+                backgroundTintList = null
+                setOnClickListener {
+                    startActivity(Intent(this@PropiedadesDisponiblesActivity, acceso.second))
+                }
+            }, LinearLayout.LayoutParams(0, dp(46), 1f).apply {
+                if (indice > 0) marginStart = dp(6)
+            })
+        }
+
+        raiz.addView(accesos, LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.MATCH_PARENT,
+            LinearLayout.LayoutParams.WRAP_CONTENT
+        ).apply { bottomMargin = dp(8) })
+
         val btnCerrarSesion =
             Button(this).apply {
 

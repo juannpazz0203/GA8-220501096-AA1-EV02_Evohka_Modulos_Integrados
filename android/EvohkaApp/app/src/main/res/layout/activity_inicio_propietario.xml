@@ -152,6 +152,42 @@
                 android:textStyle="bold" />
 
             <Button
+                android:id="@+id/btnFallas"
+                android:layout_width="match_parent"
+                android:layout_height="55dp"
+                android:layout_marginTop="15dp"
+                android:backgroundTint="#E0E0E0"
+                android:text="Fallas reportadas"
+                android:textAllCaps="false"
+                android:textColor="#202020"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <Button
+                android:id="@+id/btnConversaciones"
+                android:layout_width="match_parent"
+                android:layout_height="55dp"
+                android:layout_marginTop="15dp"
+                android:backgroundTint="#E0E0E0"
+                android:text="Conversaciones"
+                android:textAllCaps="false"
+                android:textColor="#202020"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <Button
+                android:id="@+id/btnFaq"
+                android:layout_width="match_parent"
+                android:layout_height="55dp"
+                android:layout_marginTop="15dp"
+                android:backgroundTint="#E0E0E0"
+                android:text="Ayuda y preguntas frecuentes"
+                android:textAllCaps="false"
+                android:textColor="#202020"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <Button
                 android:id="@+id/btnVisitas"
                 android:layout_width="match_parent"
                 android:layout_height="55dp"

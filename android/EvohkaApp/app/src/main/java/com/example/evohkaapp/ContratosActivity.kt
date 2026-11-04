@@ -264,6 +264,12 @@ class ContratosActivity : Activity() {
         }
         agregarBoton(tarjeta, btnPagos)
 
+        val btnChat = botonSecundario("Abrir conversación")
+        btnChat.setOnClickListener {
+            abrirChat(contrato, rol)
+        }
+        agregarBoton(tarjeta, btnChat)
+
         if (estado == "activo") {
             val btnRegistrar = botonSecundario("Registrar pago")
             btnRegistrar.setOnClickListener {
@@ -410,6 +416,32 @@ class ContratosActivity : Activity() {
         }
 
         startActivity(intent)
+    }
+
+    private fun abrirChat(
+        contrato: Contrato,
+        rol: String
+    ) {
+        val idOtroUsuario = if (rol == "propietario") {
+            contrato.id_arrendatario
+        } else {
+            contrato.id_propietario
+        }
+        val nombre = if (rol == "propietario") {
+            listOfNotNull(
+                contrato.nombre_arrendatario,
+                contrato.apellido_arrendatario
+            ).joinToString(" ").ifBlank { "Arrendatario" }
+        } else {
+            "Propietario"
+        }
+
+        startActivity(Intent(this, ChatActivity::class.java).apply {
+            putExtra("id_propiedad", contrato.id_propiedad)
+            putExtra("id_otro_usuario", idOtroUsuario)
+            putExtra("titulo_propiedad", contrato.titulo_propiedad ?: "Inmueble")
+            putExtra("nombre_otro_usuario", nombre)
+        })
     }
 
     private fun confirmarCambio(

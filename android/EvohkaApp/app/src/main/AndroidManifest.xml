@@ -15,6 +15,24 @@
         android:theme="@style/Theme.EvohkaApp"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".FaqActivity"
+            android:exported="false" />
+        <activity
+            android:name=".AdministradorActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ChatActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ConversacionesActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ReportarFallaActivity"
+            android:exported="false" />
+        <activity
+            android:name=".FallasActivity"
+            android:exported="false" />
+        <activity
             android:name=".DetallePropiedadActivity"
             android:exported="false" />
         <activity

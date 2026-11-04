@@ -6,6 +6,9 @@ const contratoRoutes = require('./routes/contratoRoutes');
 const pagoRoutes = require('./routes/pagoRoutes');
 const reporteRoutes = require('./routes/reporteRoutes');
 const notificacionRoutes = require('./routes/notificacionRoutes');
+const fallaRoutes = require('./routes/fallaRoutes');
+const mensajeRoutes = require('./routes/mensajeRoutes');
+const adminRoutes = require('./routes/adminRoutes');
 
 const app = express();
 
@@ -23,7 +26,10 @@ app.get('/', (req, res) => {
     servicioContratos: '/api/contratos',
     servicioPagos: '/api/pagos',
     servicioReportes: '/api/reportes/ingresos',
-    servicioNotificaciones: '/api/notificaciones'
+    servicioNotificaciones: '/api/notificaciones',
+    servicioFallas: '/api/fallas',
+    servicioMensajes: '/api/mensajes',
+    servicioAdministracion: '/api/admin/resumen'
   });
 });
 
@@ -35,5 +41,8 @@ app.use('/api/contratos', contratoRoutes);
 app.use('/api/pagos', pagoRoutes);
 app.use('/api/reportes', reporteRoutes);
 app.use('/api/notificaciones', notificacionRoutes);
+app.use('/api/fallas', fallaRoutes);
+app.use('/api/mensajes', mensajeRoutes);
+app.use('/api/admin', adminRoutes);
 
 module.exports = app;
