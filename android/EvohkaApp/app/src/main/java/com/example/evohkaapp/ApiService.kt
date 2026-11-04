@@ -9,6 +9,7 @@ import retrofit2.http.PATCH
 import retrofit2.http.Path
 import retrofit2.http.POST
 import retrofit2.http.PUT
+import retrofit2.http.Query
 
 interface ApiService {
 
@@ -63,4 +64,50 @@ interface ApiService {
         @Path("id") idSolicitud: Int,
         @Body estado: ActualizarEstadoSolicitudRequest
     ): Call<RespuestaSolicitud>
+
+    @GET("api/contratos")
+    fun listarContratos(
+        @Header("Authorization") token: String
+    ): Call<RespuestaContratos>
+
+    @POST("api/contratos")
+    fun crearContrato(
+        @Header("Authorization") token: String,
+        @Body contrato: CrearContratoRequest
+    ): Call<RespuestaContrato>
+
+    @PATCH("api/contratos/{id}/estado")
+    fun actualizarEstadoContrato(
+        @Header("Authorization") token: String,
+        @Path("id") idContrato: Int,
+        @Body estado: ActualizarEstadoContratoRequest
+    ): Call<RespuestaContrato>
+
+    @GET("api/pagos")
+    fun listarPagos(
+        @Header("Authorization") token: String,
+        @Query("contrato") idContrato: Int? = null
+    ): Call<RespuestaPagos>
+
+    @POST("api/pagos")
+    fun registrarPago(
+        @Header("Authorization") token: String,
+        @Body pago: CrearPagoRequest
+    ): Call<RespuestaPago>
+
+    @GET("api/reportes/ingresos")
+    fun obtenerReporteIngresos(
+        @Header("Authorization") token: String
+    ): Call<RespuestaReporteIngresos>
+
+    @GET("api/notificaciones")
+    fun listarNotificaciones(
+        @Header("Authorization") token: String
+    ): Call<RespuestaNotificaciones>
+
+    @PATCH("api/notificaciones/{id}/leida")
+    fun marcarNotificacionLeida(
+        @Header("Authorization") token: String,
+        @Path("id") idNotificacion: Int
+    ): Call<RespuestaNotificacion>
 }

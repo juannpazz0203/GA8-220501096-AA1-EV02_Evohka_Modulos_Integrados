@@ -217,7 +217,18 @@ class PropiedadesDisponiblesActivity : Activity() {
             parametrosCerrar
         )
 
+        layoutInflater.inflate(
+            R.layout.view_navegacion_arrendatario,
+            raiz,
+            true
+        )
+
         setContentView(raiz)
+
+        NavegacionEvohka.configurarArrendatario(
+            this,
+            NavegacionEvohka.DestinoArrendatario.INICIO
+        )
     }
 
     private fun cargarPropiedades() {

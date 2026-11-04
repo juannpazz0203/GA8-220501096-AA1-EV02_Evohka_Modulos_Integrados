@@ -9,7 +9,16 @@ async function obtenerSolicitudPorId(idSolicitud) {
       u.apellido AS apellido_solicitante,
       s.id_propiedad,
       p.titulo AS titulo_propiedad,
+      p.canon AS canon_propiedad,
       p.id_propietario,
+      (
+        SELECT c.id_contrato
+        FROM contratos AS c
+        WHERE c.id_solicitud = s.id_solicitud
+          AND LOWER(c.estado) = 'activo'
+        ORDER BY c.id_contrato DESC
+        LIMIT 1
+      ) AS id_contrato_activo,
       s.fecha_solicitud,
       s.estado,
       s.observaciones
@@ -82,7 +91,16 @@ async function listarSolicitudesRecibidas(
       u.apellido AS apellido_solicitante,
       s.id_propiedad,
       p.titulo AS titulo_propiedad,
+      p.canon AS canon_propiedad,
       p.id_propietario,
+      (
+        SELECT c.id_contrato
+        FROM contratos AS c
+        WHERE c.id_solicitud = s.id_solicitud
+          AND LOWER(c.estado) = 'activo'
+        ORDER BY c.id_contrato DESC
+        LIMIT 1
+      ) AS id_contrato_activo,
       s.fecha_solicitud,
       s.estado,
       s.observaciones

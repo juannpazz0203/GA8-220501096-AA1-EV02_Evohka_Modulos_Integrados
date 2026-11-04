@@ -7,6 +7,8 @@ data class Solicitud(
     val apellido_solicitante: String?,
     val id_propiedad: Int,
     val titulo_propiedad: String?,
+    val canon_propiedad: Double?,
+    val id_contrato_activo: Int?,
     val fecha_solicitud: String?,
     val estado: String?,
     val observaciones: String?

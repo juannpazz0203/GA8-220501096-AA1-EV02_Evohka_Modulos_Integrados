@@ -34,15 +34,8 @@ class MisInmueblesActivity : Activity() {
         contenedorInmuebles =
             findViewById(R.id.contenedorInmuebles)
 
-        val btnVolverInicio =
-            findViewById<Button>(R.id.btnVolverInicio)
-
         val btnPublicarNuevo =
             findViewById<Button>(R.id.btnPublicarNuevo)
-
-        btnVolverInicio.setOnClickListener {
-            finish()
-        }
 
         btnPublicarNuevo.setOnClickListener {
             val intent = Intent(
@@ -52,6 +45,11 @@ class MisInmueblesActivity : Activity() {
 
             startActivity(intent)
         }
+
+        NavegacionEvohka.configurarPropietario(
+            this,
+            NavegacionEvohka.DestinoPropietario.INMUEBLES
+        )
     }
 
     override fun onResume() {

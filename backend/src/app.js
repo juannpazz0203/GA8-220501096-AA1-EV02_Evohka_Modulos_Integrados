@@ -2,6 +2,10 @@ const express = require('express');
 const propiedadRoutes = require('./routes/propiedadRoutes');
 const authRoutes = require('./routes/authRoutes');
 const solicitudRoutes = require('./routes/solicitudRoutes');
+const contratoRoutes = require('./routes/contratoRoutes');
+const pagoRoutes = require('./routes/pagoRoutes');
+const reporteRoutes = require('./routes/reporteRoutes');
+const notificacionRoutes = require('./routes/notificacionRoutes');
 
 const app = express();
 
@@ -15,7 +19,11 @@ app.get('/', (req, res) => {
     evidencia: 'GA8-220501096-AA1-EV01',
     servicioPropiedades: '/api/propiedades',
     servicioAutenticacion: '/api/auth/login',
-    servicioSolicitudes: '/api/solicitudes'
+    servicioSolicitudes: '/api/solicitudes',
+    servicioContratos: '/api/contratos',
+    servicioPagos: '/api/pagos',
+    servicioReportes: '/api/reportes/ingresos',
+    servicioNotificaciones: '/api/notificaciones'
   });
 });
 
@@ -23,5 +31,9 @@ app.get('/', (req, res) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/propiedades', propiedadRoutes);
 app.use('/api/solicitudes', solicitudRoutes);
+app.use('/api/contratos', contratoRoutes);
+app.use('/api/pagos', pagoRoutes);
+app.use('/api/reportes', reporteRoutes);
+app.use('/api/notificaciones', notificacionRoutes);
 
 module.exports = app;

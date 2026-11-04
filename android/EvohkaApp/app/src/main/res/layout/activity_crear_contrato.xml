@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingStart="24dp"
+        android:paddingTop="24dp"
+        android:paddingEnd="24dp"
+        android:paddingBottom="24dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_title_evohka"
+            android:gravity="center"
+            android:padding="10dp"
+            android:text="Crear contrato"
+            android:textColor="#170E0E"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/txtContratoSolicitud"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="18dp"
+            android:text="Solicitud aprobada"
+            android:textColor="#333333"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/etFechaInicioContrato"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/bg_input_evohka"
+            android:clickable="true"
+            android:focusable="false"
+            android:hint="Fecha de inicio"
+            android:paddingHorizontal="14dp"
+            android:textColor="#202020"
+            android:textColorHint="#777777" />
+
+        <EditText
+            android:id="@+id/etFechaFinContrato"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/bg_input_evohka"
+            android:clickable="true"
+            android:focusable="false"
+            android:hint="Fecha de finalización"
+            android:paddingHorizontal="14dp"
+            android:textColor="#202020"
+            android:textColorHint="#777777" />
+
+        <EditText
+            android:id="@+id/etValorMensualContrato"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/bg_input_evohka"
+            android:hint="Valor mensual"
+            android:inputType="numberDecimal"
+            android:paddingHorizontal="14dp"
+            android:textColor="#202020"
+            android:textColorHint="#777777" />
+
+        <EditText
+            android:id="@+id/etDepositoContrato"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/bg_input_evohka"
+            android:hint="Depósito (opcional)"
+            android:inputType="numberDecimal"
+            android:paddingHorizontal="14dp"
+            android:textColor="#202020"
+            android:textColorHint="#777777" />
+
+        <EditText
+            android:id="@+id/etDescripcionContrato"
+            android:layout_width="match_parent"
+            android:layout_height="96dp"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/bg_input_evohka"
+            android:gravity="top|start"
+            android:hint="Descripción (máximo 55 caracteres)"
+            android:inputType="textCapSentences|textMultiLine"
+            android:maxLength="55"
+            android:padding="14dp"
+            android:textColor="#202020"
+            android:textColorHint="#777777" />
+
+        <Button
+            android:id="@+id/btnCrearContrato"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/bg_button_evohka"
+            android:backgroundTint="@null"
+            android:text="Crear contrato"
+            android:textAllCaps="false"
+            android:textColor="#170E0E"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/btnCancelarContrato"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/bg_input_evohka"
+            android:backgroundTint="@null"
+            android:text="Cancelar"
+            android:textAllCaps="false"
+            android:textColor="#202020" />
+
+    </LinearLayout>
+</ScrollView>
