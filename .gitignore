@@ -13,3 +13,6 @@ android/EvohkaApp/app/build/
 # Archivos del sistema
 .DS_Store
 Thumbs.db
+
+# Referencias visuales locales de Figma
+docs/figma-referencia/
