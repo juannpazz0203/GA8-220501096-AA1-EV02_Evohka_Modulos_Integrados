@@ -15,7 +15,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class ContratosActivity : Activity() {
+class ContratosActivity : EvohkaActivity() {
 
     private lateinit var txtEstado: TextView
     private lateinit var contenedor: LinearLayout
@@ -246,8 +246,7 @@ class ContratosActivity : Activity() {
             },
             dp(10)
         ).apply {
-            setBackgroundResource(R.drawable.bg_input_evohka)
-            setPadding(dp(12), dp(8), dp(12), dp(8))
+            EvohkaUi.aplicarEstado(this, estado)
         }
 
         tarjeta.addView(
@@ -368,7 +367,7 @@ class ContratosActivity : Activity() {
             text = texto
             isAllCaps = false
             setTextColor(Color.parseColor("#7B2FF7"))
-            setBackgroundResource(R.drawable.bg_input_evohka)
+            setBackgroundResource(R.drawable.bg_button_secondary_evohka)
             backgroundTintList = null
         }
     }

@@ -18,7 +18,7 @@ import retrofit2.Response
 import java.text.NumberFormat
 import java.util.Locale
 
-class MisInmueblesActivity : Activity() {
+class MisInmueblesActivity : EvohkaActivity() {
 
     private lateinit var txtEstadoCarga: TextView
     private lateinit var contenedorInmuebles: LinearLayout

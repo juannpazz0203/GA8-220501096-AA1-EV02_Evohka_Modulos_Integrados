@@ -5,9 +5,8 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.TextView
-import android.widget.Toast
 
-class InicioPropietarioActivity : Activity() {
+class InicioPropietarioActivity : EvohkaActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,9 +37,6 @@ class InicioPropietarioActivity : Activity() {
         val btnFallas = findViewById<Button>(R.id.btnFallas)
         val btnConversaciones = findViewById<Button>(R.id.btnConversaciones)
         val btnFaq = findViewById<Button>(R.id.btnFaq)
-
-        val btnVisitas =
-            findViewById<Button>(R.id.btnVisitas)
 
         val btnPublicarInmueble =
             findViewById<Button>(R.id.btnPublicarInmueble)
@@ -139,15 +135,6 @@ class InicioPropietarioActivity : Activity() {
 
         btnFaq.setOnClickListener {
             startActivity(Intent(this, FaqActivity::class.java))
-        }
-
-        btnVisitas.setOnClickListener {
-
-            Toast.makeText(
-                this,
-                "Módulo no incluido en esta evidencia",
-                Toast.LENGTH_SHORT
-            ).show()
         }
 
         btnCerrarSesion.setOnClickListener {

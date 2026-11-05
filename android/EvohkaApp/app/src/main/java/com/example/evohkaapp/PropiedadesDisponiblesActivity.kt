@@ -18,7 +18,7 @@ import retrofit2.Response
 import java.text.NumberFormat
 import java.util.Locale
 
-class PropiedadesDisponiblesActivity : Activity() {
+class PropiedadesDisponiblesActivity : EvohkaActivity() {
 
     private lateinit var txtEstadoPropiedades: TextView
     private lateinit var contenedorPropiedades: LinearLayout
@@ -37,8 +37,8 @@ class PropiedadesDisponiblesActivity : Activity() {
     private fun fondoTarjeta(): GradientDrawable {
         return GradientDrawable().apply {
             shape = GradientDrawable.RECTANGLE
-            setColor(Color.WHITE)
-            cornerRadius = dp(16).toFloat()
+            setColor(Color.parseColor("#FCFAFD"))
+            cornerRadius = dp(18).toFloat()
             setStroke(
                 dp(1),
                 Color.parseColor("#E8D9F0")
@@ -57,28 +57,45 @@ class PropiedadesDisponiblesActivity : Activity() {
     private fun fondoBotonCerrar(): GradientDrawable {
         return GradientDrawable().apply {
             shape = GradientDrawable.RECTANGLE
-            setColor(Color.WHITE)
-            cornerRadius = dp(10).toFloat()
+            setColor(Color.parseColor("#FFF5F5"))
+            cornerRadius = dp(16).toFloat()
             setStroke(
                 dp(1),
-                Color.parseColor("#CE74FF")
+                Color.parseColor("#C62828")
             )
         }
     }
 
     private fun crearInterfaz() {
 
+        val margenHorizontal = resources.getDimensionPixelSize(
+            R.dimen.evohka_screen_padding
+        )
+
         val raiz = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
-            setPadding(
-                dp(20),
-                dp(22),
-                dp(20),
-                dp(16)
-            )
-
             setBackgroundColor(Color.WHITE)
         }
+
+        val contenido = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            setPadding(
+                margenHorizontal,
+                dp(16),
+                margenHorizontal,
+                dp(12)
+            )
+        }
+
+        raiz.addView(
+            contenido,
+            LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                0
+            ).apply {
+                weight = 1f
+            }
+        )
 
         val titulo = TextView(this).apply {
             text = "Propiedades disponibles"
@@ -106,13 +123,13 @@ class PropiedadesDisponiblesActivity : Activity() {
 
         val parametrosTitulo =
             LinearLayout.LayoutParams(
-                dp(297),
+                LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
             ).apply {
                 gravity = Gravity.CENTER_HORIZONTAL
             }
 
-        raiz.addView(
+        contenido.addView(
             titulo,
             parametrosTitulo
         )
@@ -139,7 +156,7 @@ class PropiedadesDisponiblesActivity : Activity() {
                 )
             }
 
-        raiz.addView(
+        contenido.addView(
             txtEstadoPropiedades
         )
 
@@ -175,10 +192,18 @@ class PropiedadesDisponiblesActivity : Activity() {
                 weight = 1f
             }
 
-        raiz.addView(
+        contenido.addView(
             scrollView,
             parametrosScroll
         )
+
+        contenido.addView(TextView(this).apply {
+            text = "Accesos rápidos"
+            textSize = 16f
+            setTextColor(Color.parseColor("#211A24"))
+            setTypeface(null, Typeface.BOLD)
+            setPadding(0, dp(8), 0, dp(10))
+        })
 
         val accesos = LinearLayout(this).apply {
             orientation = LinearLayout.HORIZONTAL
@@ -193,8 +218,8 @@ class PropiedadesDisponiblesActivity : Activity() {
                 text = acceso.first
                 isAllCaps = false
                 textSize = 13f
-                setTextColor(Color.parseColor("#7B2FF7"))
-                setBackgroundResource(R.drawable.bg_input_evohka)
+                setTextColor(Color.parseColor("#211A24"))
+                setBackgroundResource(R.drawable.bg_button_secondary_evohka)
                 backgroundTintList = null
                 setOnClickListener {
                     startActivity(Intent(this@PropiedadesDisponiblesActivity, acceso.second))
@@ -204,7 +229,7 @@ class PropiedadesDisponiblesActivity : Activity() {
             })
         }
 
-        raiz.addView(accesos, LinearLayout.LayoutParams(
+        contenido.addView(accesos, LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.MATCH_PARENT,
             LinearLayout.LayoutParams.WRAP_CONTENT
         ).apply { bottomMargin = dp(8) })
@@ -217,7 +242,7 @@ class PropiedadesDisponiblesActivity : Activity() {
                 textSize = 15f
 
                 setTextColor(
-                    Color.parseColor("#7B2FF7")
+                    Color.parseColor("#C62828")
                 )
 
                 background =
@@ -241,7 +266,7 @@ class PropiedadesDisponiblesActivity : Activity() {
                 )
             }
 
-        raiz.addView(
+        contenido.addView(
             btnCerrarSesion,
             parametrosCerrar
         )
@@ -371,7 +396,7 @@ class PropiedadesDisponiblesActivity : Activity() {
 
         val formatoMoneda =
             NumberFormat.getCurrencyInstance(
-                Locale("es", "CO")
+                Locale.forLanguageTag("es-CO")
             )
 
         propiedades.forEach {

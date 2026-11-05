@@ -6,7 +6,7 @@ import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
 
-class FaqActivity : Activity() {
+class FaqActivity : EvohkaActivity() {
 
     private lateinit var webView: WebView
 

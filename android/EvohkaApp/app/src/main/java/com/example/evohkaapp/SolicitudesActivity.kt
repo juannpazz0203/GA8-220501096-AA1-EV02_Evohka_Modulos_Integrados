@@ -19,7 +19,7 @@ import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-class SolicitudesActivity : Activity() {
+class SolicitudesActivity : EvohkaActivity() {
 
     private lateinit var txtEstadoSolicitudes: TextView
     private lateinit var contenedorSolicitudes: LinearLayout
@@ -275,24 +275,14 @@ class SolicitudesActivity : Activity() {
 
                 textSize = 15f
 
-                setTextColor(
-                    colorEstado(estadoNormalizado)
-                )
-
                 setTypeface(
                     null,
                     Typeface.BOLD
                 )
 
-                setBackgroundResource(
-                    R.drawable.bg_input_evohka
-                )
-
-                setPadding(
-                    dp(12),
-                    dp(8),
-                    dp(12),
-                    dp(8)
+                EvohkaUi.aplicarEstado(
+                    this,
+                    estadoNormalizado
                 )
             }
 

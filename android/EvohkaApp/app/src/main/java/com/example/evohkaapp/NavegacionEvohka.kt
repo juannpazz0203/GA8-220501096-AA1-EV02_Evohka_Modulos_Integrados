@@ -3,6 +3,7 @@ package com.example.evohkaapp
 import android.app.Activity
 import android.content.Intent
 import android.graphics.Color
+import android.graphics.Typeface
 import android.widget.FrameLayout
 import android.widget.TextView
 
@@ -158,6 +159,25 @@ object NavegacionEvohka {
                 )
             )
 
+            vista.setTypeface(
+                null,
+                if (activa) Typeface.BOLD else Typeface.NORMAL
+            )
+            vista.setBackgroundResource(
+                if (activa) {
+                    R.drawable.bg_nav_item_active
+                } else {
+                    android.R.color.transparent
+                }
+            )
+            vista.alpha = if (activa) 1f else 0.72f
+            vista.setPadding(
+                dp(vista, 4),
+                dp(vista, 3),
+                dp(vista, 4),
+                dp(vista, 3)
+            )
+
             vista.isSelected = activa
             vista.setOnClickListener {
                 if (!activa) {
@@ -181,4 +201,9 @@ object NavegacionEvohka {
         val destino: T,
         val activityDestino: Class<out Activity>
     )
+
+    private fun dp(vista: TextView, valor: Int): Int {
+        return (valor * vista.resources.displayMetrics.density)
+            .toInt()
+    }
 }

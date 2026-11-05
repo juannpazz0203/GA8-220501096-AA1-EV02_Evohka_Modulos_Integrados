@@ -9,7 +9,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="24dp">
+        android:paddingStart="@dimen/evohka_screen_padding"
+        android:paddingTop="24dp"
+        android:paddingEnd="@dimen/evohka_screen_padding"
+        android:paddingBottom="24dp">
 
         <TextView
             android:layout_width="match_parent"

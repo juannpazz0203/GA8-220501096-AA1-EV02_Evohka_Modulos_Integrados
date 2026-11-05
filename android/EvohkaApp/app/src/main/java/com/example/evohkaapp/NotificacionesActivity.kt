@@ -14,7 +14,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import java.io.IOException
 
-class NotificacionesActivity : Activity() {
+class NotificacionesActivity : EvohkaActivity() {
 
     private lateinit var txtEstado: TextView
     private lateinit var contenedor: LinearLayout
@@ -124,7 +124,7 @@ class NotificacionesActivity : Activity() {
                     if (notificacion.leida) {
                         R.drawable.bg_card_evohka
                     } else {
-                        R.drawable.bg_input_evohka
+                        R.drawable.bg_notification_unread_evohka
                     }
                 )
                 elevation = dp(2).toFloat()

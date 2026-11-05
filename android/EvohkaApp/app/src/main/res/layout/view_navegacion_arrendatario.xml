@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="64dp"
+    android:layout_height="72dp"
     android:background="#FFFFFF"
     android:elevation="8dp"
     android:gravity="center"
     android:orientation="horizontal"
-    android:paddingTop="4dp">
+    android:paddingStart="8dp"
+    android:paddingTop="6dp"
+    android:paddingEnd="8dp"
+    android:paddingBottom="4dp">
 
     <TextView
         android:id="@+id/navArrendatarioInicio"
@@ -17,9 +20,10 @@
         android:contentDescription="Propiedades disponibles"
         android:focusable="true"
         android:gravity="center"
-        android:text="⌂"
+        android:lineSpacingExtra="2dp"
+        android:text="⌂&#10;Inicio"
         android:textColor="#888888"
-        android:textSize="26sp" />
+        android:textSize="12sp" />
 
     <TextView
         android:id="@+id/navArrendatarioContratos"
@@ -30,9 +34,10 @@
         android:contentDescription="Contratos"
         android:focusable="true"
         android:gravity="center"
-        android:text="□"
+        android:lineSpacingExtra="2dp"
+        android:text="□&#10;Contratos"
         android:textColor="#888888"
-        android:textSize="24sp" />
+        android:textSize="12sp" />
 
     <TextView
         android:id="@+id/navArrendatarioPagos"
@@ -43,10 +48,10 @@
         android:contentDescription="Pagos"
         android:focusable="true"
         android:gravity="center"
-        android:text="$"
+        android:lineSpacingExtra="2dp"
+        android:text="$&#10;Pagos"
         android:textColor="#888888"
-        android:textSize="23sp"
-        android:textStyle="bold" />
+        android:textSize="12sp" />
 
     <TextView
         android:id="@+id/navArrendatarioNotificaciones"
@@ -57,8 +62,9 @@
         android:contentDescription="Notificaciones"
         android:focusable="true"
         android:gravity="center"
-        android:text="♙"
+        android:lineSpacingExtra="2dp"
+        android:text="●&#10;Alertas"
         android:textColor="#888888"
-        android:textSize="25sp" />
+        android:textSize="12sp" />
 
 </LinearLayout>

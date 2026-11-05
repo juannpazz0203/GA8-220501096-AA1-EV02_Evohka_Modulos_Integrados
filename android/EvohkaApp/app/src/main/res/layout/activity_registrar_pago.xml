@@ -9,9 +9,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:paddingStart="24dp"
+        android:paddingStart="@dimen/evohka_screen_padding"
         android:paddingTop="24dp"
-        android:paddingEnd="24dp"
+        android:paddingEnd="@dimen/evohka_screen_padding"
         android:paddingBottom="24dp">
 
         <TextView
@@ -104,7 +104,7 @@
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_marginTop="10dp"
-            android:background="@drawable/bg_input_evohka"
+            android:background="@drawable/bg_button_secondary_evohka"
             android:backgroundTint="@null"
             android:text="Cancelar"
             android:textAllCaps="false"

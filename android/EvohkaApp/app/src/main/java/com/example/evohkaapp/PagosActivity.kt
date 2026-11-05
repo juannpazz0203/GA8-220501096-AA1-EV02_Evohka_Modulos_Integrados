@@ -15,7 +15,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class PagosActivity : Activity() {
+class PagosActivity : EvohkaActivity() {
 
     private lateinit var txtEstado: TextView
     private lateinit var contenedor: LinearLayout
@@ -196,9 +196,16 @@ class PagosActivity : Activity() {
                     "Contrato #${pago.id_contrato} · ${pago.estado ?: "Sin estado"}",
                     13f,
                     true,
-                    "#2E7D32",
-                    dp(6)
-                )
+                    "#2E7D32"
+                ).apply {
+                    EvohkaUi.aplicarEstado(this, pago.estado)
+                },
+                LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+                ).apply {
+                    topMargin = dp(8)
+                }
             )
 
             if (!pago.observaciones.isNullOrBlank()) {

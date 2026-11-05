@@ -14,7 +14,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class ChatActivity : Activity() {
+class ChatActivity : EvohkaActivity() {
 
     private lateinit var contenedor: LinearLayout
     private lateinit var scroll: ScrollView
@@ -29,6 +29,7 @@ class ChatActivity : Activity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_chat)
+        aplicarInsetsSistema(incluirTeclado = true)
 
         idPropiedad = intent.getIntExtra("id_propiedad", 0)
         idOtroUsuario = intent.getIntExtra("id_otro_usuario", 0)
@@ -47,6 +48,18 @@ class ChatActivity : Activity() {
                 (intent.getStringExtra("titulo_propiedad") ?: "Inmueble")
 
         btnEnviar.setOnClickListener { enviar() }
+        editMensaje.setOnFocusChangeListener { _, tieneFoco ->
+            if (tieneFoco) {
+                desplazarAlFinal()
+            }
+        }
+        findViewById<LinearLayout>(
+            R.id.zonaComposicionChat
+        ).addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _ ->
+            if (editMensaje.hasFocus()) {
+                desplazarAlFinal()
+            }
+        }
         cargarMensajes()
     }
 
@@ -87,17 +100,44 @@ class ChatActivity : Activity() {
         txtEstado.text = if (mensajes.isEmpty()) "Aún no hay mensajes" else ""
         mensajes.forEach { mensaje ->
             val propio = mensaje.id_remitente == idUsuario
-            val burbuja = TextView(this).apply {
-                val remitente = if (propio) "Tú" else nombreOtroUsuario
-                text = "$remitente\n${mensaje.contenido}\n${FormatoEvohka.fechaHora(mensaje.fecha_envio)}"
-                textSize = 14f
-                setTextColor(Color.parseColor("#202020"))
+            val anchoMaximo = minOf(
+                (resources.displayMetrics.widthPixels * 0.78f).toInt(),
+                dp(520)
+            )
+            val burbuja = LinearLayout(this).apply {
+                orientation = LinearLayout.VERTICAL
                 setPadding(dp(14), dp(10), dp(14), dp(10))
                 setBackgroundResource(
-                    if (propio) R.drawable.bg_title_evohka else R.drawable.bg_input_evohka
+                    if (propio) {
+                        R.drawable.bg_bubble_own_evohka
+                    } else {
+                        R.drawable.bg_bubble_received_evohka
+                    }
                 )
-                if (propio) setTypeface(null, Typeface.BOLD)
             }
+
+            burbuja.addView(TextView(this).apply {
+                text = if (propio) "Tú" else nombreOtroUsuario
+                textSize = 12f
+                setTextColor(Color.parseColor("#7B2FF7"))
+                setTypeface(null, Typeface.BOLD)
+                maxWidth = anchoMaximo
+            })
+            burbuja.addView(TextView(this).apply {
+                text = mensaje.contenido
+                textSize = 15f
+                setTextColor(Color.parseColor("#211A24"))
+                setPadding(0, dp(4), 0, dp(4))
+                maxWidth = anchoMaximo
+            })
+            burbuja.addView(TextView(this).apply {
+                text = FormatoEvohka.fechaHora(mensaje.fecha_envio)
+                textSize = 11f
+                gravity = Gravity.END
+                setTextColor(Color.parseColor("#6E6672"))
+                maxWidth = anchoMaximo
+            })
+
             contenedor.addView(burbuja, LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
@@ -108,7 +148,7 @@ class ChatActivity : Activity() {
                 marginEnd = if (propio) 0 else dp(45)
             })
         }
-        scroll.post { scroll.fullScroll(ScrollView.FOCUS_DOWN) }
+        desplazarAlFinal()
     }
 
     private fun enviar() {
@@ -152,6 +192,12 @@ class ChatActivity : Activity() {
 
             override fun onFailure(call: Call<RespuestaOperacionMensajes>, t: Throwable) = Unit
         })
+    }
+
+    private fun desplazarAlFinal() {
+        scroll.post {
+            scroll.fullScroll(ScrollView.FOCUS_DOWN)
+        }
     }
 
     private fun dp(valor: Int) = (valor * resources.displayMetrics.density).toInt()

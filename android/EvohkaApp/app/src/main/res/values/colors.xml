@@ -7,4 +7,16 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="evohka_primary">#CE74FF</color>
+    <color name="evohka_primary_dark">#7B2FF7</color>
+    <color name="evohka_primary_soft">#F4E3FD</color>
+    <color name="evohka_surface">#FFFFFF</color>
+    <color name="evohka_surface_soft">#F8F6F9</color>
+    <color name="evohka_input">#F5F5F5</color>
+    <color name="evohka_text">#211A24</color>
+    <color name="evohka_text_secondary">#6E6672</color>
+    <color name="evohka_border">#E8DFF0</color>
+    <color name="evohka_success">#2E7D32</color>
+    <color name="evohka_warning">#A46000</color>
+    <color name="evohka_danger">#C62828</color>
 </resources>

@@ -13,7 +13,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class ReporteIngresosActivity : Activity() {
+class ReporteIngresosActivity : EvohkaActivity() {
 
     private lateinit var txtTotal: TextView
     private lateinit var txtCantidad: TextView

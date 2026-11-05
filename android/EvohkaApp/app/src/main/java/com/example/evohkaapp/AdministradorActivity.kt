@@ -5,6 +5,7 @@ import android.content.Intent
 import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
+import android.view.Gravity
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -12,7 +13,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class AdministradorActivity : Activity() {
+class AdministradorActivity : EvohkaActivity() {
 
     private lateinit var contenedor: LinearLayout
     private lateinit var txtEstado: TextView
@@ -72,17 +73,16 @@ class AdministradorActivity : Activity() {
         contenedor.removeAllViews()
         txtEstado.text = "Vista de solo lectura · últimos 50 registros por sección"
         val t = datos.totales
-        seccion(
-            "Resumen",
+        resumen(
             listOf(
-                "Usuarios: ${t.usuarios}",
-                "Propiedades: ${t.propiedades}",
-                "Solicitudes: ${t.solicitudes}",
-                "Contratos: ${t.contratos}",
-                "Pagos: ${t.pagos}",
-                "Fallas: ${t.fallas}",
-                "Mensajes: ${t.mensajes}",
-                "Notificaciones: ${t.notificaciones}"
+                "Usuarios" to t.usuarios,
+                "Propiedades" to t.propiedades,
+                "Solicitudes" to t.solicitudes,
+                "Contratos" to t.contratos,
+                "Pagos" to t.pagos,
+                "Fallas" to t.fallas,
+                "Mensajes" to t.mensajes,
+                "Notificaciones" to t.notificaciones
             )
         )
         seccion("Usuarios", datos.usuarios.map {
@@ -102,6 +102,53 @@ class AdministradorActivity : Activity() {
         })
     }
 
+    private fun resumen(metricas: List<Pair<String, Int>>) {
+        contenedor.addView(TextView(this).apply {
+            text = "Resumen general"
+            textSize = 19f
+            setTextColor(Color.parseColor("#211A24"))
+            setTypeface(null, Typeface.BOLD)
+            setPadding(0, 0, 0, dp(10))
+        })
+
+        metricas.chunked(2).forEach { pareja ->
+            val fila = LinearLayout(this).apply {
+                orientation = LinearLayout.HORIZONTAL
+            }
+
+            pareja.forEachIndexed { indice, metrica ->
+                fila.addView(
+                    TextView(this).apply {
+                        text = "${metrica.second}\n${metrica.first}"
+                        gravity = Gravity.CENTER
+                        textSize = 15f
+                        setTextColor(Color.parseColor("#211A24"))
+                        setTypeface(null, Typeface.BOLD)
+                        setBackgroundResource(R.drawable.bg_nav_item_active)
+                        setPadding(dp(10), dp(16), dp(10), dp(16))
+                    },
+                    LinearLayout.LayoutParams(
+                        0,
+                        LinearLayout.LayoutParams.WRAP_CONTENT,
+                        1f
+                    ).apply {
+                        if (indice > 0) marginStart = dp(10)
+                    }
+                )
+            }
+
+            contenedor.addView(
+                fila,
+                LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+                ).apply {
+                    bottomMargin = dp(10)
+                }
+            )
+        }
+    }
+
     private fun seccion(titulo: String, filas: List<String>) {
         val bloque = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
@@ -117,7 +164,17 @@ class AdministradorActivity : Activity() {
         if (filas.isEmpty()) {
             bloque.addView(fila("Sin registros"))
         } else {
-            filas.forEach { bloque.addView(fila(it)) }
+            filas.forEach { valor ->
+                bloque.addView(
+                    fila(valor),
+                    LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT
+                    ).apply {
+                        topMargin = dp(8)
+                    }
+                )
+            }
         }
         contenedor.addView(bloque, LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.MATCH_PARENT,
@@ -129,7 +186,8 @@ class AdministradorActivity : Activity() {
         text = valor
         textSize = 13f
         setTextColor(Color.parseColor("#303030"))
-        setPadding(0, dp(8), 0, dp(4))
+        setBackgroundResource(R.drawable.bg_button_secondary_evohka)
+        setPadding(dp(12), dp(10), dp(12), dp(10))
     }
 
     private fun dp(valor: Int) = (valor * resources.displayMetrics.density).toInt()

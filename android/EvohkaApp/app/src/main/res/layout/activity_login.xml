@@ -1,214 +1,219 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF"
-    android:paddingStart="22dp"
-    android:paddingEnd="22dp">
+    android:background="@color/evohka_surface"
+    android:clipToPadding="false"
+    android:fillViewport="true">
 
-    <ImageView
-        android:id="@+id/logo"
-        android:layout_width="161dp"
-        android:layout_height="167dp"
-        android:layout_marginTop="36dp"
-        android:contentDescription="Logo EVOHKA"
-        android:scaleType="centerInside"
-        android:src="@drawable/evohka_logo"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/titulo"
-        android:layout_width="211dp"
-        android:layout_height="44dp"
-        android:background="@drawable/bg_title_evohka"
-        android:gravity="center"
-        android:text="Iniciar Sesión"
-        android:textColor="#000000"
-        android:textSize="23sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/logo" />
-
-    <TextView
-        android:id="@+id/subtitulo"
-        android:layout_width="300dp"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:gravity="center"
-        android:text="Introduce tu correo electrónico y contraseña para ingresar"
-        android:textColor="#000000"
-        android:textSize="16sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/titulo" />
+        android:minHeight="640dp"
+        android:paddingStart="@dimen/evohka_screen_padding"
+        android:paddingTop="18dp"
+        android:paddingEnd="@dimen/evohka_screen_padding"
+        android:paddingBottom="24dp">
 
-    <EditText
-        android:id="@+id/correo"
-        android:layout_width="319dp"
-        android:layout_height="44dp"
-        android:layout_marginTop="20dp"
-        android:background="@drawable/bg_input_evohka"
-        android:hint="Correo electrónico"
-        android:inputType="textEmailAddress"
-        android:paddingStart="12dp"
-        android:paddingEnd="12dp"
-        android:singleLine="true"
-        android:textColor="#000000"
-        android:textColorHint="#828282"
-        android:textSize="16sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/subtitulo" />
+        <ImageView
+            android:id="@+id/logo"
+            android:layout_width="132dp"
+            android:layout_height="108dp"
+            android:contentDescription="Logo EVOHKA"
+            android:scaleType="centerInside"
+            android:src="@drawable/evohka_logo"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    <FrameLayout
-        android:id="@+id/contenedorPassword"
-        android:layout_width="319dp"
-        android:layout_height="44dp"
-        android:layout_marginTop="10dp"
-        android:background="@drawable/bg_input_evohka"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/correo">
+        <TextView
+            android:id="@+id/titulo"
+            android:layout_width="0dp"
+            android:layout_height="44dp"
+            android:background="@drawable/bg_title_evohka"
+            android:gravity="center"
+            android:text="Iniciar sesión"
+            android:textColor="@color/evohka_text"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/logo" />
+
+        <TextView
+            android:id="@+id/subtitulo"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            android:gravity="center"
+            android:text="Introduce tu correo electrónico y contraseña para ingresar"
+            android:textColor="@color/evohka_text_secondary"
+            android:textSize="15sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/titulo" />
 
         <EditText
-            android:id="@+id/password"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@android:color/transparent"
-            android:hint="Contraseña"
-            android:inputType="textPassword"
-            android:paddingStart="12dp"
-            android:paddingEnd="48dp"
+            android:id="@+id/correo"
+            android:layout_width="0dp"
+            android:layout_height="52dp"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/bg_input_evohka"
+            android:hint="Correo electrónico"
+            android:inputType="textEmailAddress"
+            android:paddingHorizontal="16dp"
             android:singleLine="true"
-            android:textColor="#000000"
-            android:textColorHint="#828282"
-            android:textSize="16sp" />
+            android:textColor="@color/evohka_text"
+            android:textColorHint="#8A838D"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/subtitulo" />
 
-        <ImageButton
-            android:id="@+id/btnVerPassword"
-            android:layout_width="44dp"
-            android:layout_height="44dp"
-            android:layout_gravity="end|center_vertical"
-            android:background="@android:color/transparent"
-            android:contentDescription="Mostrar contraseña"
-            android:padding="10dp"
-            android:src="@drawable/ic_visibility"
-            android:tint="#828282" />
+        <FrameLayout
+            android:id="@+id/contenedorPassword"
+            android:layout_width="0dp"
+            android:layout_height="52dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/bg_input_evohka"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/correo">
 
-    </FrameLayout>
+            <EditText
+                android:id="@+id/password"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@android:color/transparent"
+                android:hint="Contraseña"
+                android:inputType="textPassword"
+                android:paddingStart="16dp"
+                android:paddingEnd="52dp"
+                android:singleLine="true"
+                android:textColor="@color/evohka_text"
+                android:textColorHint="#8A838D"
+                android:textSize="16sp" />
 
-    <TextView
-        android:id="@+id/txtTipoIngreso"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:text="¿Cómo deseas ingresar?"
-        android:textColor="#000000"
-        android:textSize="17sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/contenedorPassword" />
+            <ImageButton
+                android:id="@+id/btnVerPassword"
+                android:layout_width="48dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="end|center_vertical"
+                android:background="@android:color/transparent"
+                android:contentDescription="Mostrar contraseña"
+                android:padding="12dp"
+                android:src="@drawable/ic_visibility"
+                android:tint="#777078" />
+        </FrameLayout>
 
-    <RadioGroup
-        android:id="@+id/grupo_tipo_ingreso"
-        android:layout_width="280dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="6dp"
-        android:orientation="vertical"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/txtTipoIngreso">
+        <TextView
+            android:id="@+id/txtTipoIngreso"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="¿Cómo deseas ingresar?"
+            android:textColor="@color/evohka_text"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/contenedorPassword" />
 
-        <RadioButton
-            android:id="@+id/radio_inquilino"
+        <RadioGroup
+            android:id="@+id/grupo_tipo_ingreso"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/txtTipoIngreso">
+
+            <RadioButton
+                android:id="@+id/radio_inquilino"
+                android:layout_width="match_parent"
+                android:layout_height="44dp"
+                android:buttonTint="@color/evohka_primary"
+                android:gravity="center_vertical"
+                android:text="Inquilino"
+                android:textColor="@color/evohka_text_secondary"
+                android:textSize="14sp" />
+
+            <RadioButton
+                android:id="@+id/radio_propietario"
+                android:layout_width="match_parent"
+                android:layout_height="44dp"
+                android:buttonTint="@color/evohka_primary"
+                android:gravity="center_vertical"
+                android:text="Propietario"
+                android:textColor="@color/evohka_text_secondary"
+                android:textSize="14sp" />
+
+            <RadioButton
+                android:id="@+id/radio_administrador"
+                android:layout_width="match_parent"
+                android:layout_height="44dp"
+                android:buttonTint="@color/evohka_primary"
+                android:gravity="center_vertical"
+                android:text="Administrador"
+                android:textColor="@color/evohka_text_secondary"
+                android:textSize="14sp" />
+        </RadioGroup>
+
+        <Button
+            android:id="@+id/btnContinuar"
+            android:layout_width="0dp"
+            android:layout_height="52dp"
+            android:layout_marginTop="14dp"
+            android:background="@drawable/bg_button_evohka"
+            android:backgroundTint="@null"
+            android:text="Continuar"
+            android:textAllCaps="false"
+            android:textColor="@color/evohka_text"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/grupo_tipo_ingreso" />
+
+        <TextView
+            android:id="@+id/txtRegistrarse"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:gravity="center"
+            android:text="Registrarse"
+            android:textColor="#315FD6"
+            android:textSize="15sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/btnContinuar" />
+
+        <TextView
+            android:id="@+id/txtRecuperar"
             android:layout_width="wrap_content"
             android:layout_height="40dp"
-            android:buttonTint="#CE74FF"
-            android:text="Inquilino"
-            android:textColor="#828282"
-            android:textSize="17sp"
-            android:textStyle="bold" />
+            android:gravity="center"
+            android:text="¿Olvidó su contraseña?"
+            android:textColor="#315FD6"
+            android:textSize="15sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/txtRegistrarse" />
 
-        <RadioButton
-            android:id="@+id/radio_propietario"
-            android:layout_width="wrap_content"
-            android:layout_height="40dp"
-            android:buttonTint="#CE74FF"
-            android:text="Propietario"
-            android:textColor="#828282"
-            android:textSize="17sp"
-            android:textStyle="bold" />
-
-        <RadioButton
-            android:id="@+id/radio_administrador"
-            android:layout_width="wrap_content"
-            android:layout_height="40dp"
-            android:buttonTint="#CE74FF"
-            android:text="Administrador"
-            android:textColor="#828282"
-            android:textSize="17sp"
-            android:textStyle="bold" />
-
-    </RadioGroup>
-
-    <Button
-        android:id="@+id/btnContinuar"
-        android:layout_width="316dp"
-        android:layout_height="44dp"
-        android:layout_marginTop="12dp"
-        android:background="@drawable/bg_button_evohka"
-        android:backgroundTint="@null"
-        android:text="Continuar"
-        android:textAllCaps="false"
-        android:textColor="#170E0E"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/grupo_tipo_ingreso" />
-
-    <TextView
-        android:id="@+id/txtRegistrarse"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:padding="4dp"
-        android:text="Registrarse"
-        android:textColor="#2C5FF9"
-        android:textSize="16sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/btnContinuar" />
-
-    <TextView
-        android:id="@+id/txtRecuperar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="4dp"
-        android:text="¿Olvidó su contraseña?"
-        android:textColor="#125AEA"
-        android:textSize="16sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/txtRegistrarse" />
-
-    <TextView
-        android:id="@+id/txtTerminos"
-        android:layout_width="330dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="14dp"
-        android:gravity="center"
-        android:text="Al hacer clic en continuar, aceptas nuestros Términos de Servicio y nuestra Política de Privacidad"
-        android:textColor="#828282"
-        android:textSize="11sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <TextView
+            android:id="@+id/txtTerminos"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="18dp"
+            android:gravity="center"
+            android:text="Al continuar, aceptas nuestros Términos de Servicio y la Política de Privacidad"
+            android:textColor="#8A838D"
+            android:textSize="11sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/txtRecuperar" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>
