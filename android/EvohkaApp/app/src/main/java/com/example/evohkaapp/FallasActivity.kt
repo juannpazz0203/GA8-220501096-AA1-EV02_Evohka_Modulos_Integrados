@@ -14,7 +14,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class FallasActivity : Activity() {
+class FallasActivity : EvohkaActivity() {
 
     private lateinit var contenedor: LinearLayout
     private lateinit var txtEstado: TextView
@@ -97,9 +97,21 @@ class FallasActivity : Activity() {
                 tarjeta.addView(texto("Reportado por: $nombre", 13f, false))
             }
             val estado = falla.estado.lowercase()
-            tarjeta.addView(texto("Estado: ${estado.replace('_', ' ')}", 14f, true).apply {
-                setTextColor(Color.parseColor(if (estado == "resuelta") "#2E7D32" else "#7B2FF7"))
-            })
+            tarjeta.addView(
+                texto(
+                    "Estado: ${estado.replace('_', ' ')}",
+                    14f,
+                    true
+                ).apply {
+                    EvohkaUi.aplicarEstado(this, estado)
+                },
+                LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+                ).apply {
+                    topMargin = dp(8)
+                }
+            )
 
             if (rol == "propietario" && estado != "resuelta") {
                 val siguiente = if (estado == "pendiente") "en_proceso" else "resuelta"

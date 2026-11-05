@@ -13,7 +13,7 @@ import retrofit2.Response
 import java.text.NumberFormat
 import java.util.Locale
 
-class DetallePropiedadActivity : Activity() {
+class DetallePropiedadActivity : EvohkaActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

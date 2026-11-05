@@ -1,7 +1,7 @@
 :root { color-scheme: light; font-family: Arial, sans-serif; color: #211729; background: #fff; }
 * { box-sizing: border-box; }
 body { margin: 0; background: #fff; }
-main { max-width: 760px; margin: auto; padding: 20px 20px 40px; }
+main { width: 100%; box-sizing: border-box; margin: 0; padding: 20px 20px 40px; }
 h1 { margin: 4px 0 8px; color: #6d24a0; font-size: 1.65rem; }
 .intro { color: #5f5864; line-height: 1.45; }
 label { display: block; margin: 24px 0 8px; font-weight: 700; }

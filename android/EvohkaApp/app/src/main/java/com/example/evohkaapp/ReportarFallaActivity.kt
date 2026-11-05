@@ -12,7 +12,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class ReportarFallaActivity : Activity() {
+class ReportarFallaActivity : EvohkaActivity() {
 
     private lateinit var spinnerPropiedad: Spinner
     private lateinit var spinnerCategoria: Spinner

@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="64dp"
+    android:layout_height="72dp"
     android:background="#FFFFFF"
     android:elevation="8dp"
     android:gravity="center"
     android:orientation="horizontal"
-    android:paddingTop="4dp">
+    android:paddingStart="6dp"
+    android:paddingTop="6dp"
+    android:paddingEnd="6dp"
+    android:paddingBottom="4dp">
 
     <TextView
         android:id="@+id/navPropietarioInicio"
@@ -17,9 +20,10 @@
         android:contentDescription="Inicio"
         android:focusable="true"
         android:gravity="center"
-        android:text="⌂"
+        android:lineSpacingExtra="2dp"
+        android:text="⌂&#10;Inicio"
         android:textColor="#888888"
-        android:textSize="26sp" />
+        android:textSize="12sp" />
 
     <TextView
         android:id="@+id/navPropietarioInmuebles"
@@ -30,9 +34,10 @@
         android:contentDescription="Mis inmuebles"
         android:focusable="true"
         android:gravity="center"
-        android:text="⌕"
+        android:lineSpacingExtra="2dp"
+        android:text="⌕&#10;Inmuebles"
         android:textColor="#888888"
-        android:textSize="26sp" />
+        android:textSize="12sp" />
 
     <TextView
         android:id="@+id/navPropietarioSolicitudes"
@@ -43,9 +48,10 @@
         android:contentDescription="Solicitudes"
         android:focusable="true"
         android:gravity="center"
-        android:text="☷"
+        android:lineSpacingExtra="2dp"
+        android:text="☷&#10;Solicitudes"
         android:textColor="#888888"
-        android:textSize="25sp" />
+        android:textSize="11sp" />
 
     <TextView
         android:id="@+id/navPropietarioContratos"
@@ -56,9 +62,10 @@
         android:contentDescription="Contratos"
         android:focusable="true"
         android:gravity="center"
-        android:text="□"
+        android:lineSpacingExtra="2dp"
+        android:text="□&#10;Contratos"
         android:textColor="#888888"
-        android:textSize="24sp" />
+        android:textSize="12sp" />
 
     <TextView
         android:id="@+id/navPropietarioNotificaciones"
@@ -69,8 +76,9 @@
         android:contentDescription="Notificaciones"
         android:focusable="true"
         android:gravity="center"
-        android:text="♙"
+        android:lineSpacingExtra="2dp"
+        android:text="●&#10;Alertas"
         android:textColor="#888888"
-        android:textSize="25sp" />
+        android:textSize="12sp" />
 
 </LinearLayout>

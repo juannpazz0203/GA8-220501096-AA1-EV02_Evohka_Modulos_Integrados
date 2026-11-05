@@ -2,9 +2,12 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF"
+    android:background="@color/evohka_surface"
     android:orientation="vertical"
-    android:padding="20dp">
+    android:paddingStart="@dimen/evohka_screen_padding"
+    android:paddingTop="20dp"
+    android:paddingEnd="@dimen/evohka_screen_padding"
+    android:paddingBottom="20dp">
 
     <TextView
         android:layout_width="match_parent"
@@ -16,6 +19,14 @@
         android:textColor="#170E0E"
         android:textSize="20sp"
         android:textStyle="bold" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="Consulta segura del estado general de EVOHKA"
+        android:textColor="@color/evohka_text_secondary"
+        android:textSize="14sp" />
 
     <TextView
         android:id="@+id/txtEstadoAdmin"
@@ -60,7 +71,10 @@
             android:layout_height="48dp"
             android:layout_marginStart="8dp"
             android:layout_weight="1"
+            android:background="@drawable/bg_button_outline_danger_evohka"
+            android:backgroundTint="@null"
             android:text="Cerrar sesión"
-            android:textAllCaps="false" />
+            android:textAllCaps="false"
+            android:textColor="@color/evohka_danger" />
     </LinearLayout>
 </LinearLayout>

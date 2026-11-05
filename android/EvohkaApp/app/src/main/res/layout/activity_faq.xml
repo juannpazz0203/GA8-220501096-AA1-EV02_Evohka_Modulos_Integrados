@@ -8,7 +8,10 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
+        android:layout_marginStart="@dimen/evohka_screen_padding"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="@dimen/evohka_screen_padding"
+        android:layout_marginBottom="12dp"
         android:background="@drawable/bg_title_evohka"
         android:gravity="center"
         android:padding="10dp"

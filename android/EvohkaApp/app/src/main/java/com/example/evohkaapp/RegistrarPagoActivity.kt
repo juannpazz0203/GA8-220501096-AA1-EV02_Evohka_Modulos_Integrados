@@ -14,7 +14,7 @@ import retrofit2.Response
 import java.util.Calendar
 import java.util.Locale
 
-class RegistrarPagoActivity : Activity() {
+class RegistrarPagoActivity : EvohkaActivity() {
 
     private var fechaPagoIso = ""
 

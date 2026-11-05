@@ -2,14 +2,17 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF"
+    android:background="@color/evohka_surface"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:paddingStart="@dimen/evohka_screen_padding"
+    android:paddingTop="16dp"
+    android:paddingEnd="@dimen/evohka_screen_padding"
+    android:paddingBottom="8dp">
 
     <TextView
         android:id="@+id/txtTituloChat"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="44dp"
         android:background="@drawable/bg_title_evohka"
         android:gravity="center"
         android:padding="10dp"
@@ -32,6 +35,7 @@
         android:layout_height="0dp"
         android:layout_marginTop="8dp"
         android:layout_weight="1"
+        android:clipToPadding="false"
         android:fillViewport="true">
 
         <LinearLayout
@@ -43,15 +47,20 @@
     </ScrollView>
 
     <LinearLayout
+        android:id="@+id/zonaComposicionChat"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/bg_card_evohka"
+        android:elevation="4dp"
         android:gravity="center_vertical"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:padding="6dp">
 
         <EditText
             android:id="@+id/editMensaje"
             android:layout_width="0dp"
-            android:layout_height="52dp"
+            android:layout_height="48dp"
             android:layout_weight="1"
             android:background="@drawable/bg_input_evohka"
             android:hint="Escribe un mensaje"
@@ -61,8 +70,8 @@
 
         <Button
             android:id="@+id/btnEnviarMensaje"
-            android:layout_width="100dp"
-            android:layout_height="52dp"
+            android:layout_width="92dp"
+            android:layout_height="48dp"
             android:layout_marginStart="8dp"
             android:background="@drawable/bg_button_evohka"
             android:backgroundTint="@null"

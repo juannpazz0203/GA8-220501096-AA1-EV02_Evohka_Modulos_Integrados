@@ -11,7 +11,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class ConversacionesActivity : Activity() {
+class ConversacionesActivity : EvohkaActivity() {
 
     private lateinit var txtEstado: TextView
     private lateinit var contenedor: LinearLayout

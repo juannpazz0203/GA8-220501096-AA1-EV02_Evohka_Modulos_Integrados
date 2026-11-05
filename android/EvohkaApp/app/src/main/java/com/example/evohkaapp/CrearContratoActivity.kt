@@ -14,7 +14,7 @@ import retrofit2.Response
 import java.util.Calendar
 import java.util.Locale
 
-class CrearContratoActivity : Activity() {
+class CrearContratoActivity : EvohkaActivity() {
 
     private var fechaInicioIso = ""
     private var fechaFinIso = ""
