@@ -1,4 +1,5 @@
 const notificacionService = require('../services/notificacionService');
+const vencimientoService = require('../services/vencimientoService');
 
 function obtenerId(valor) {
   const id = Number(valor);
@@ -10,6 +11,10 @@ function obtenerId(valor) {
 
 async function listarNotificaciones(req, res) {
   try {
+    await vencimientoService.revisarVencimientosUsuario(
+      req.usuario.id_usuario
+    );
+
     const notificaciones =
       await notificacionService.listarNotificaciones(
         req.usuario.id_usuario

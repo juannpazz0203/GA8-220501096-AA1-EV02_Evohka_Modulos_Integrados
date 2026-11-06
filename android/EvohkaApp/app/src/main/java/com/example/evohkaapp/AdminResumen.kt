@@ -5,6 +5,34 @@ data class RespuestaAdmin(
     val datos: AdminResumen?
 )
 
+data class RespuestaUsuariosAdmin(
+    val mensaje: String,
+    val total: Int,
+    val datos: List<AdminUsuario>
+)
+
+data class RespuestaUsuarioAdmin(
+    val mensaje: String,
+    val datos: AdminUsuario?
+)
+
+data class CrearUsuarioAdminRequest(
+    val nombre: String,
+    val apellido: String,
+    val correo: String,
+    val contrasena: String,
+    val telefono: String?,
+    val rol: String
+)
+
+data class ActualizarUsuarioAdminRequest(
+    val nombre: String,
+    val apellido: String,
+    val correo: String,
+    val telefono: String?,
+    val rol: String
+)
+
 data class AdminResumen(
     val totales: AdminTotales,
     val usuarios: List<AdminUsuario>,

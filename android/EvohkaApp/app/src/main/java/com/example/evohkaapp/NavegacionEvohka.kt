@@ -4,8 +4,15 @@ import android.app.Activity
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.Typeface
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.style.ForegroundColorSpan
+import android.text.style.StyleSpan
 import android.widget.FrameLayout
 import android.widget.TextView
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 object NavegacionEvohka {
 
@@ -155,14 +162,18 @@ object NavegacionEvohka {
 
             vista.setTextColor(
                 Color.parseColor(
-                    if (activa) "#CE74FF" else "#888888"
+                    if (activa) "#CE74FF" else "#5F5862"
                 )
             )
 
-            vista.setTypeface(
-                null,
-                if (activa) Typeface.BOLD else Typeface.NORMAL
-            )
+            vista.typeface = if (activa) {
+                Typeface.DEFAULT_BOLD
+            } else {
+                Typeface.create(
+                    "sans-serif-medium",
+                    Typeface.NORMAL
+                )
+            }
             vista.setBackgroundResource(
                 if (activa) {
                     R.drawable.bg_nav_item_active
@@ -170,7 +181,7 @@ object NavegacionEvohka {
                     android.R.color.transparent
                 }
             )
-            vista.alpha = if (activa) 1f else 0.72f
+            vista.alpha = if (activa) 1f else 0.95f
             vista.setPadding(
                 dp(vista, 4),
                 dp(vista, 3),
@@ -193,6 +204,97 @@ object NavegacionEvohka {
                     activity.startActivity(intent)
                 }
             }
+        }
+    }
+
+    fun actualizarIndicadorNotificaciones(activity: Activity) {
+        val vista = vistaNotificaciones(activity) ?: return
+
+        if (activity is NotificacionesActivity) {
+            return
+        }
+
+        val token = activity.getSharedPreferences(
+            "EvohkaSesion",
+            Activity.MODE_PRIVATE
+        ).getString("token", null)
+
+        if (token.isNullOrBlank()) {
+            mostrarIndicador(vista, 0)
+            return
+        }
+
+        RetrofitClient.apiService.listarNotificaciones(token).enqueue(
+            object : Callback<RespuestaNotificaciones> {
+                override fun onResponse(
+                    call: Call<RespuestaNotificaciones>,
+                    response: Response<RespuestaNotificaciones>
+                ) {
+                    if (response.isSuccessful) {
+                        mostrarIndicador(
+                            vista,
+                            response.body()?.no_leidas ?: 0
+                        )
+                    }
+                }
+
+                override fun onFailure(
+                    call: Call<RespuestaNotificaciones>,
+                    t: Throwable
+                ) = Unit
+            }
+        )
+    }
+
+    fun mostrarIndicadorNotificaciones(
+        activity: Activity,
+        noLeidas: Int
+    ) {
+        vistaNotificaciones(activity)?.let {
+            mostrarIndicador(it, noLeidas)
+        }
+    }
+
+    private fun vistaNotificaciones(activity: Activity): TextView? {
+        return activity.findViewById<TextView>(
+            R.id.navPropietarioNotificaciones
+        ) ?: activity.findViewById(
+            R.id.navArrendatarioNotificaciones
+        )
+    }
+
+    private fun mostrarIndicador(
+        vista: TextView,
+        cantidad: Int
+    ) {
+        val pendientes = cantidad.coerceAtLeast(0)
+        val primeraLinea = if (pendientes > 0) {
+            "● ${if (pendientes > 99) "99+" else pendientes}"
+        } else {
+            "○"
+        }
+        val contenido = SpannableString("$primeraLinea\nAlertas")
+
+        if (pendientes > 0) {
+            contenido.setSpan(
+                ForegroundColorSpan(Color.parseColor("#C62828")),
+                0,
+                primeraLinea.length,
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+            contenido.setSpan(
+                StyleSpan(Typeface.BOLD),
+                0,
+                primeraLinea.length,
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+        }
+
+        vista.text = contenido
+        vista.contentDescription = if (pendientes > 0) {
+            "Alertas, $pendientes sin leer"
+        } else {
+            "Alertas, ninguna sin leer"
         }
     }
 
