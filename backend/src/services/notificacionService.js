@@ -1,4 +1,5 @@
 const { pool } = require('../config/db');
+const crypto = require('node:crypto');
 
 function normalizarNotificacion(fila) {
   if (!fila) {
@@ -33,6 +34,55 @@ async function crearNotificacion(
       mensaje
     ]
   );
+}
+
+async function crearNotificacionSiNoExiste(
+  ejecutor,
+  idUsuario,
+  titulo,
+  mensaje
+) {
+  const huella = crypto
+    .createHash('sha256')
+    .update(`${Number(idUsuario)}|${titulo}|${mensaje}`)
+    .digest('hex');
+  const nombreBloqueo = `evohka:${huella.slice(0, 55)}`;
+
+  const [bloqueos] = await ejecutor.execute(
+    'SELECT GET_LOCK(?, 5) AS adquirido',
+    [nombreBloqueo]
+  );
+
+  if (Number(bloqueos[0]?.adquirido) !== 1) {
+    throw new Error('No fue posible bloquear la creación del recordatorio');
+  }
+
+  try {
+    const [existentes] = await ejecutor.execute(
+      `SELECT id_notificacion
+       FROM notificaciones
+       WHERE id_usuario = ?
+         AND titulo = ?
+         AND mensaje = ?
+       LIMIT 1`,
+      [Number(idUsuario), titulo, mensaje]
+    );
+
+    if (existentes.length > 0) return false;
+
+    await crearNotificacion(
+      ejecutor,
+      idUsuario,
+      titulo,
+      mensaje
+    );
+    return true;
+  } finally {
+    await ejecutor.execute(
+      'SELECT RELEASE_LOCK(?) AS liberado',
+      [nombreBloqueo]
+    );
+  }
 }
 
 async function listarNotificaciones(idUsuario) {
@@ -97,6 +147,7 @@ async function marcarComoLeida(
 
 module.exports = {
   crearNotificacion,
+  crearNotificacionSiNoExiste,
   listarNotificaciones,
   marcarComoLeida
 };

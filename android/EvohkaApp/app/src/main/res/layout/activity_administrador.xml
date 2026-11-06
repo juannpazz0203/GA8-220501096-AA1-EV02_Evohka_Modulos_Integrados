@@ -24,7 +24,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:text="Consulta segura del estado general de EVOHKA"
+        android:text="Gestiona usuarios y consulta el estado general de EVOHKA"
         android:textColor="@color/evohka_text_secondary"
         android:textSize="14sp" />
 

@@ -38,6 +38,11 @@ open class EvohkaActivity : Activity() {
         aplicarInsetsSistema()
     }
 
+    override fun onResume() {
+        super.onResume()
+        NavegacionEvohka.actualizarIndicadorNotificaciones(this)
+    }
+
     protected fun aplicarInsetsSistema(
         incluirTeclado: Boolean = false
     ) {

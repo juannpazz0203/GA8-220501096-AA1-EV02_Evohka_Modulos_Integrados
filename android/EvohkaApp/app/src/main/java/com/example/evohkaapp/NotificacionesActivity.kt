@@ -1,6 +1,7 @@
 package com.example.evohkaapp
 
 import android.app.Activity
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
@@ -13,11 +14,15 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.io.IOException
+import java.util.Locale
 
 class NotificacionesActivity : EvohkaActivity() {
 
     private lateinit var txtEstado: TextView
     private lateinit var contenedor: LinearLayout
+    private var notificacionesActuales: List<Notificacion> = emptyList()
+    private var noLeidasActuales = 0
+    private val notificacionesEnActualizacion = mutableSetOf<Int>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -72,7 +77,7 @@ class NotificacionesActivity : EvohkaActivity() {
                             if (cuerpo == null) {
                                 mostrarErrorProcesamiento()
                             } else {
-                                mostrarNotificaciones(
+                                actualizarEstadoNotificaciones(
                                     cuerpo.datos,
                                     cuerpo.no_leidas
                                 )
@@ -158,7 +163,7 @@ class NotificacionesActivity : EvohkaActivity() {
 
             tarjeta.addView(
                 texto(
-                    FormatoEvohka.fechaHora(
+                    FormatoEvohka.fechaHoraLocal(
                         notificacion.fecha
                     ),
                     13f,
@@ -168,35 +173,163 @@ class NotificacionesActivity : EvohkaActivity() {
                 )
             )
 
+            val destino = destinoPara(notificacion)
+
+            if (destino != null) {
+                tarjeta.addView(
+                    botonAccion(
+                        "Ver",
+                        true
+                    ) {
+                        if (notificacion.leida) {
+                            abrirModulo(destino)
+                        } else {
+                            marcarLeida(
+                                notificacion.id_notificacion
+                            ) {
+                                abrirModulo(destino)
+                            }
+                        }
+                    },
+                    parametrosBoton()
+                )
+            }
+
             if (!notificacion.leida) {
-                val btnLeida = Button(this).apply {
-                    text = "Marcar como leída"
-                    isAllCaps = false
-                    setTextColor(Color.parseColor("#170E0E"))
-                    setTypeface(null, Typeface.BOLD)
-                    setBackgroundResource(
-                        R.drawable.bg_button_evohka
-                    )
-                    backgroundTintList = null
-                    setOnClickListener {
+                tarjeta.addView(
+                    botonAccion(
+                        "Marcar como leída",
+                        destino == null
+                    ) {
                         marcarLeida(
                             notificacion.id_notificacion
                         )
-                    }
-                }
-
-                tarjeta.addView(
-                    btnLeida,
-                    LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.MATCH_PARENT,
-                        dp(46)
-                    ).apply {
-                        topMargin = dp(10)
-                    }
+                    },
+                    parametrosBoton()
                 )
             }
 
             contenedor.addView(tarjeta)
+        }
+    }
+
+    private fun actualizarEstadoNotificaciones(
+        notificaciones: List<Notificacion>,
+        noLeidas: Int
+    ) {
+        notificacionesActuales = notificaciones
+        noLeidasActuales = noLeidas.coerceAtLeast(0)
+        mostrarNotificaciones(
+            notificacionesActuales,
+            noLeidasActuales
+        )
+        NavegacionEvohka.mostrarIndicadorNotificaciones(
+            this,
+            noLeidasActuales
+        )
+    }
+
+    private fun actualizarNotificacionLeida(
+        idNotificacion: Int
+    ) {
+        val estabaPendiente = notificacionesActuales.any {
+            it.id_notificacion == idNotificacion && !it.leida
+        }
+
+        if (!estabaPendiente) return
+
+        notificacionesActuales = notificacionesActuales.map {
+            if (it.id_notificacion == idNotificacion) {
+                it.copy(leida = true)
+            } else {
+                it
+            }
+        }
+        noLeidasActuales = (noLeidasActuales - 1).coerceAtLeast(0)
+
+        mostrarNotificaciones(
+            notificacionesActuales,
+            noLeidasActuales
+        )
+        NavegacionEvohka.mostrarIndicadorNotificaciones(
+            this,
+            noLeidasActuales
+        )
+    }
+
+    private fun destinoPara(
+        notificacion: Notificacion
+    ): Class<out Activity>? {
+        return when (
+            notificacion.titulo
+                ?.trim()
+                ?.lowercase(Locale.ROOT)
+        ) {
+            "nuevo mensaje" ->
+                ConversacionesActivity::class.java
+
+            "nuevo contrato",
+            "contrato actualizado",
+            "tu contrato vence en 7 días",
+            "tu contrato vence hoy" ->
+                ContratosActivity::class.java
+
+            "pago registrado",
+            "tu pago vence en 3 días",
+            "tu pago vence hoy" ->
+                PagosActivity::class.java
+
+            "nueva falla reportada",
+            "falla creada",
+            "falla actualizada",
+            "estado de falla actualizado",
+            "cambio de estado de falla" ->
+                FallasActivity::class.java
+
+            else -> null
+        }
+    }
+
+    private fun abrirModulo(
+        destino: Class<out Activity>
+    ) {
+        startActivity(
+            Intent(this, destino).apply {
+                flags =
+                    Intent.FLAG_ACTIVITY_CLEAR_TOP or
+                        Intent.FLAG_ACTIVITY_SINGLE_TOP
+            }
+        )
+    }
+
+    private fun botonAccion(
+        etiqueta: String,
+        principal: Boolean,
+        alPulsar: () -> Unit
+    ): Button {
+        return Button(this).apply {
+            text = etiqueta
+            isAllCaps = false
+            setTextColor(Color.parseColor("#170E0E"))
+            setTypeface(null, Typeface.BOLD)
+            setBackgroundResource(
+                if (principal) {
+                    R.drawable.bg_button_evohka
+                } else {
+                    R.drawable.bg_button_secondary_evohka
+                }
+            )
+            backgroundTintList = null
+            setOnClickListener { alPulsar() }
+        }
+    }
+
+    private fun parametrosBoton(): LinearLayout.LayoutParams {
+        return LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.MATCH_PARENT,
+            dp(46)
+        ).apply {
+            topMargin = dp(10)
         }
     }
 
@@ -222,13 +355,26 @@ class NotificacionesActivity : EvohkaActivity() {
         }
     }
 
-    private fun marcarLeida(idNotificacion: Int) {
+    private fun marcarLeida(
+        idNotificacion: Int,
+        alConfirmar: (() -> Unit)? = null
+    ) {
+        if (!notificacionesEnActualizacion.add(idNotificacion)) {
+            return
+        }
+
         val token = getSharedPreferences(
             "EvohkaSesion",
             MODE_PRIVATE
         ).getString("token", null)
 
         if (token.isNullOrBlank()) {
+            notificacionesEnActualizacion.remove(idNotificacion)
+            Toast.makeText(
+                this,
+                "La sesión no es válida",
+                Toast.LENGTH_LONG
+            ).show()
             return
         }
 
@@ -243,17 +389,22 @@ class NotificacionesActivity : EvohkaActivity() {
                         call: Call<RespuestaNotificacion>,
                         response: Response<RespuestaNotificacion>
                     ) {
-                        if (response.isSuccessful) {
-                            cargarNotificaciones()
-                        } else {
-                            txtEstado.text =
-                                "Error del servidor (${response.code()})"
+                        notificacionesEnActualizacion.remove(idNotificacion)
 
+                        val confirmada = response.body()?.datos
+                        if (
+                            response.isSuccessful &&
+                            confirmada?.id_notificacion == idNotificacion &&
+                            confirmada.leida
+                        ) {
+                            actualizarNotificacionLeida(idNotificacion)
+                            alConfirmar?.invoke()
+                        } else {
                             Toast.makeText(
                                 this@NotificacionesActivity,
                                 mensajeError(
                                     response,
-                                    "No se pudo actualizar la notificación"
+                                    "No se pudo confirmar la lectura de la notificación"
                                 ),
                                 Toast.LENGTH_LONG
                             ).show()
@@ -264,6 +415,7 @@ class NotificacionesActivity : EvohkaActivity() {
                         call: Call<RespuestaNotificacion>,
                         t: Throwable
                     ) {
+                        notificacionesEnActualizacion.remove(idNotificacion)
                         mostrarFallo(t)
                     }
                 }

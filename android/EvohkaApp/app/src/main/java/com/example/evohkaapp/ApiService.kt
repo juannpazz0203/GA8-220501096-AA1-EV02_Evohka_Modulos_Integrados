@@ -162,4 +162,28 @@ interface ApiService {
     fun obtenerResumenAdministrador(
         @Header("Authorization") token: String
     ): Call<RespuestaAdmin>
+
+    @GET("api/admin/usuarios")
+    fun listarUsuariosAdministrador(
+        @Header("Authorization") token: String
+    ): Call<RespuestaUsuariosAdmin>
+
+    @POST("api/admin/usuarios")
+    fun crearUsuarioAdministrador(
+        @Header("Authorization") token: String,
+        @Body usuario: CrearUsuarioAdminRequest
+    ): Call<RespuestaUsuarioAdmin>
+
+    @PUT("api/admin/usuarios/{id}")
+    fun actualizarUsuarioAdministrador(
+        @Header("Authorization") token: String,
+        @Path("id") idUsuario: Int,
+        @Body usuario: ActualizarUsuarioAdminRequest
+    ): Call<RespuestaUsuarioAdmin>
+
+    @DELETE("api/admin/usuarios/{id}")
+    fun eliminarUsuarioAdministrador(
+        @Header("Authorization") token: String,
+        @Path("id") idUsuario: Int
+    ): Call<RespuestaUsuarioAdmin>
 }
