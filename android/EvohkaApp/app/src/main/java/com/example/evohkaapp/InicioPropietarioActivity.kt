@@ -149,15 +149,8 @@ class InicioPropietarioActivity : EvohkaActivity() {
 
     private fun cerrarSesion() {
 
-        val preferencias =
-            getSharedPreferences(
-                "EvohkaSesion",
-                MODE_PRIVATE
-            )
-
-        preferencias.edit()
-            .clear()
-            .apply()
+        SesionSegura.cerrarSesion()
+        NavegacionSesionInvalida.reiniciar()
 
         val intent = Intent(
             this,

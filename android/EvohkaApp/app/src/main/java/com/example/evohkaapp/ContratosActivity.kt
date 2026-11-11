@@ -52,10 +52,7 @@ class ContratosActivity : EvohkaActivity() {
             MODE_PRIVATE
         )
 
-        val token = preferencias.getString(
-            "token",
-            null
-        )
+        val token = SesionSegura.obtenerToken()
 
         val rol = preferencias.getString(
             "rol",
@@ -476,10 +473,7 @@ class ContratosActivity : EvohkaActivity() {
         idContrato: Int,
         estado: String
     ) {
-        val token = getSharedPreferences(
-            "EvohkaSesion",
-            MODE_PRIVATE
-        ).getString("token", null)
+        val token = SesionSegura.obtenerToken()
 
         if (token.isNullOrBlank()) {
             Toast.makeText(

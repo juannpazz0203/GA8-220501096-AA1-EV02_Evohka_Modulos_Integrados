@@ -1,4 +1,6 @@
 const { pool } = require('../config/db');
+const contrasenaService = require('./contrasenaService');
+const sesionService = require('./sesionService');
 
 const SELECCION_USUARIO = `SELECT
   id_usuario,
@@ -54,18 +56,23 @@ async function crearUsuario(datos) {
     return { error: 'correo_duplicado' };
   }
 
+  const hash = await contrasenaService.crearHash(datos.contrasena);
+  const parametros = [
+    datos.nombre.trim(),
+    datos.apellido.trim(),
+    correo,
+    hash,
+    datos.telefono,
+    datos.rol,
+    contrasenaService.ALGORITMO_BCRYPT
+  ];
+
   const [resultado] = await pool.execute(
     `INSERT INTO usuarios
-      (nombre, apellido, correo, contrasena, telefono, rol, fecha_registro)
-     VALUES (?, ?, ?, ?, ?, ?, CURDATE())`,
-    [
-      datos.nombre.trim(),
-      datos.apellido.trim(),
-      correo,
-      datos.contrasena,
-      datos.telefono,
-      datos.rol
-    ]
+      (nombre, apellido, correo, contrasena, telefono, rol, fecha_registro,
+       contrasena_algoritmo)
+     VALUES (?, ?, ?, ?, ?, ?, CURDATE(), ?)`,
+    parametros
   );
 
   return {
@@ -122,6 +129,9 @@ async function actualizarUsuario(idUsuario, idAdministrador, datos) {
       return { error: 'correo_duplicado' };
     }
 
+    const cambioRol =
+      String(usuario.rol).toLowerCase() !== datos.rol;
+
     await conexion.execute(
       `UPDATE usuarios
        SET nombre = ?, apellido = ?, correo = ?, telefono = ?, rol = ?
@@ -135,6 +145,20 @@ async function actualizarUsuario(idUsuario, idAdministrador, datos) {
         Number(idUsuario)
       ]
     );
+
+    if (cambioRol) {
+      const revocacion = await sesionService.revocarSesionesUsuario(
+        idUsuario,
+        conexion
+      );
+      if (revocacion.activada && !revocacion.actualizada) {
+        const error = new Error(
+          'No fue posible revocar las sesiones tras cambiar el rol'
+        );
+        error.code = 'REVOCACION_SESION_FALLIDA';
+        throw error;
+      }
+    }
 
     const actualizado = await obtenerUsuarioPorId(idUsuario, conexion);
     await conexion.commit();

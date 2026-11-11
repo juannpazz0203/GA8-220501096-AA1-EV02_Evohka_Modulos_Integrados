@@ -214,10 +214,7 @@ object NavegacionEvohka {
             return
         }
 
-        val token = activity.getSharedPreferences(
-            "EvohkaSesion",
-            Activity.MODE_PRIVATE
-        ).getString("token", null)
+        val token = SesionSegura.obtenerToken()
 
         if (token.isNullOrBlank()) {
             mostrarIndicador(vista, 0)

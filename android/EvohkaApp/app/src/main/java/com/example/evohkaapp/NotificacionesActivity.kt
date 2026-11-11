@@ -51,10 +51,7 @@ class NotificacionesActivity : EvohkaActivity() {
     }
 
     private fun cargarNotificaciones() {
-        val token = getSharedPreferences(
-            "EvohkaSesion",
-            MODE_PRIVATE
-        ).getString("token", null)
+        val token = SesionSegura.obtenerToken()
 
         if (token.isNullOrBlank()) {
             txtEstado.text = "Sesión no válida"
@@ -363,10 +360,7 @@ class NotificacionesActivity : EvohkaActivity() {
             return
         }
 
-        val token = getSharedPreferences(
-            "EvohkaSesion",
-            MODE_PRIVATE
-        ).getString("token", null)
+        val token = SesionSegura.obtenerToken()
 
         if (token.isNullOrBlank()) {
             notificacionesEnActualizacion.remove(idNotificacion)

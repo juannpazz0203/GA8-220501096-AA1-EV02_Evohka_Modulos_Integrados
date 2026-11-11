@@ -1,5 +1,6 @@
-const jwt = require('jsonwebtoken');
 const authService = require('../services/authService');
+const contrasenaService = require('../services/contrasenaService');
+const jwtService = require('../services/jwtService');
 
 const login = async (req, res) => {
     try {
@@ -24,22 +25,16 @@ const login = async (req, res) => {
             });
         }
 
-        const token = jwt.sign(
-            {
-                id_usuario: usuario.id_usuario,
-                correo: usuario.correo,
-                rol: usuario.rol
-            },
-            process.env.JWT_SECRET,
-            {
-                expiresIn: '2h'
-            }
-        );
+        const token = jwtService.crearToken(usuario);
+        const {
+            sesion_version: sesionVersion,
+            ...usuarioPublico
+        } = usuario;
 
         return res.status(200).json({
             ok: true,
             mensaje: 'Autenticacion exitosa',
-            usuario,
+            usuario: usuarioPublico,
             token: `Bearer ${token}`
         });
     } catch (error) {
@@ -50,6 +45,19 @@ const login = async (req, res) => {
             mensaje: 'Error interno del servidor'
         });
     }
+};
+
+const sesion = async (req, res) => {
+    const {
+        sesion_version: sesionVersion,
+        ...usuario
+    } = req.usuario;
+
+    return res.status(200).json({
+        ok: true,
+        mensaje: 'Sesión válida',
+        usuario
+    });
 };
 
 const registro = async (req, res) => {
@@ -99,11 +107,13 @@ const registro = async (req, res) => {
             });
         }
 
-        if (contrasena.length < 6) {
+        const validacionContrasena =
+            contrasenaService.validarNuevaContrasena(contrasena);
+
+        if (!validacionContrasena.valida) {
             return res.status(400).json({
                 ok: false,
-                mensaje:
-                    'La contrasena debe tener minimo 6 caracteres'
+                mensaje: validacionContrasena.mensaje
             });
         }
 
@@ -150,5 +160,6 @@ const registro = async (req, res) => {
 
 module.exports = {
     login,
-    registro
+    registro,
+    sesion
 };

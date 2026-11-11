@@ -134,17 +134,7 @@ class PublicarInmuebleActivity : EvohkaActivity() {
                 return@setOnClickListener
             }
 
-            val preferencias =
-                getSharedPreferences(
-                    "EvohkaSesion",
-                    MODE_PRIVATE
-                )
-
-            val token =
-                preferencias.getString(
-                    "token",
-                    null
-                )
+            val token = SesionSegura.obtenerToken()
 
             if (token.isNullOrBlank()) {
                 Toast.makeText(

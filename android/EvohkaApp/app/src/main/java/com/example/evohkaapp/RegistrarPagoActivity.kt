@@ -148,10 +148,7 @@ class RegistrarPagoActivity : EvohkaActivity() {
             return
         }
 
-        val token = getSharedPreferences(
-            "EvohkaSesion",
-            MODE_PRIVATE
-        ).getString("token", null)
+        val token = SesionSegura.obtenerToken()
 
         if (token.isNullOrBlank()) {
             Toast.makeText(

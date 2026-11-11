@@ -48,7 +48,7 @@ class ReporteIngresosActivity : EvohkaActivity() {
             MODE_PRIVATE
         )
 
-        val token = preferencias.getString("token", null)
+        val token = SesionSegura.obtenerToken()
         val rol = preferencias.getString("rol", null)
 
         if (token.isNullOrBlank() || rol != "propietario") {

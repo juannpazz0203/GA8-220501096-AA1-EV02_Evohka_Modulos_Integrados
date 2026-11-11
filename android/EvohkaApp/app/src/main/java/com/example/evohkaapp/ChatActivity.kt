@@ -63,8 +63,7 @@ class ChatActivity : EvohkaActivity() {
         cargarMensajes()
     }
 
-    private fun token() = getSharedPreferences("EvohkaSesion", MODE_PRIVATE)
-        .getString("token", null)
+    private fun token() = SesionSegura.obtenerToken()
 
     private fun cargarMensajes() {
         val sesion = token()

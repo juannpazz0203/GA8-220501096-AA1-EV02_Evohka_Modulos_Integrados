@@ -71,11 +71,7 @@ class MisInmueblesActivity : EvohkaActivity() {
                 MODE_PRIVATE
             )
 
-        val token =
-            preferencias.getString(
-                "token",
-                null
-            )
+        val token = SesionSegura.obtenerToken()
 
         val idUsuario =
             preferencias.getInt(
@@ -544,14 +540,7 @@ class MisInmueblesActivity : EvohkaActivity() {
     private fun eliminarPropiedad(
         idPropiedad: Int
     ) {
-        val token =
-            getSharedPreferences(
-                "EvohkaSesion",
-                MODE_PRIVATE
-            ).getString(
-                "token",
-                null
-            )
+        val token = SesionSegura.obtenerToken()
 
         if (token.isNullOrBlank()) {
             Toast.makeText(

@@ -44,8 +44,7 @@ class FallasActivity : EvohkaActivity() {
     }
 
     private fun cargarFallas() {
-        val token = getSharedPreferences("EvohkaSesion", MODE_PRIVATE)
-            .getString("token", null)
+        val token = SesionSegura.obtenerToken()
         if (token.isNullOrBlank()) {
             txtEstado.text = "Sesión no válida"
             return
@@ -135,8 +134,7 @@ class FallasActivity : EvohkaActivity() {
     }
 
     private fun actualizarEstado(idFalla: Int, estado: String) {
-        val token = getSharedPreferences("EvohkaSesion", MODE_PRIVATE)
-            .getString("token", null) ?: return
+        val token = SesionSegura.obtenerToken() ?: return
         RetrofitClient.apiService.actualizarEstadoFalla(
             token,
             idFalla,

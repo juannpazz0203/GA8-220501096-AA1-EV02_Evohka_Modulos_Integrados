@@ -41,8 +41,7 @@ class ReportarFallaActivity : EvohkaActivity() {
         cargarPropiedades()
     }
 
-    private fun token() = getSharedPreferences("EvohkaSesion", MODE_PRIVATE)
-        .getString("token", null)
+    private fun token() = SesionSegura.obtenerToken()
 
     private fun cargarPropiedades() {
         val sesion = token()
