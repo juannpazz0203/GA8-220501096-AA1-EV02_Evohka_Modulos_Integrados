@@ -9,12 +9,41 @@ if (evohkaPropertiesFile.exists()) {
     }
 }
 
-val evohkaBaseUrl = evohkaProperties.getProperty(
-    "EVOHKA_BASE_URL",
-    "http://10.0.2.2:3000/"
-).let { url ->
-    if (url.endsWith("/")) url else "$url/"
+fun normalizarBaseUrl(url: String): String {
+    return url.let { valor ->
+        if (valor.endsWith("/")) valor else "$valor/"
+    }
 }
+
+val evohkaEmulatorBaseUrl = normalizarBaseUrl(
+    evohkaProperties.getProperty(
+        "EVOHKA_EMULATOR_BASE_URL",
+        "http://10.0.2.2:3000/"
+    )
+)
+
+val evohkaPhysicalBaseUrl = normalizarBaseUrl(
+    evohkaProperties.getProperty(
+        "EVOHKA_PHYSICAL_BASE_URL",
+        "http://192.168.40.43:3000/"
+    )
+)
+
+fun valorBuildConfig(valor: String): String {
+    return valor
+        .replace("\\", "\\\\")
+        .replace("\"", "\\\"")
+        .let { "\"$it\"" }
+}
+
+/*
+ * La IP física es provisional. Puede sobreescribirse localmente mediante
+ * EVOHKA_PHYSICAL_BASE_URL sin cambiar el código ni versionar la dirección.
+ */
+val evohkaUrls = mapOf(
+    "EVOHKA_EMULATOR_BASE_URL" to evohkaEmulatorBaseUrl,
+    "EVOHKA_PHYSICAL_BASE_URL" to evohkaPhysicalBaseUrl
+)
 
 plugins {
     alias(libs.plugins.android.application)
@@ -40,11 +69,13 @@ android {
         testInstrumentationRunner =
             "androidx.test.runner.AndroidJUnitRunner"
 
-        buildConfigField(
-            "String",
-            "EVOHKA_BASE_URL",
-            "\"$evohkaBaseUrl\""
-        )
+        evohkaUrls.forEach { (nombre, url) ->
+            buildConfigField(
+                "String",
+                nombre,
+                valorBuildConfig(url)
+            )
+        }
     }
 
     buildTypes {

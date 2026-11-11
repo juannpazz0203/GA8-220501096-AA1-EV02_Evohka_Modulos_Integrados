@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clipToPadding="false"
+    android:fillViewport="true"
+    android:saveEnabled="false">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="640dp"
+        android:paddingStart="@dimen/evohka_screen_padding"
+        android:paddingTop="12dp"
+        android:paddingEnd="@dimen/evohka_screen_padding"
+        android:paddingBottom="28dp">
+
+        <ImageButton
+            android:id="@+id/btnVolverRecuperacion"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@android:color/transparent"
+            android:contentDescription="Volver al inicio de sesión"
+            android:padding="12dp"
+            android:src="@drawable/ic_arrow_back_evohka"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/logoRecuperacion"
+            android:layout_width="150dp"
+            android:layout_height="132dp"
+            android:contentDescription="Logo EVOHKA"
+            android:scaleType="centerInside"
+            android:src="@drawable/evohka_logo"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tituloRecuperacion"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            android:gravity="center"
+            android:text="Recuperar contraseña"
+            android:textColor="@color/evohka_text"
+            android:textSize="26sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/logoRecuperacion" />
+
+        <TextView
+            android:id="@+id/subtituloRecuperacion"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:gravity="center"
+            android:text="Por favor ingresa tu correo electrónico"
+            android:textColor="@color/evohka_text"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tituloRecuperacion"
+            app:layout_constraintWidth_max="420dp" />
+
+        <EditText
+            android:id="@+id/etCorreoRecuperacion"
+            android:layout_width="0dp"
+            android:layout_height="52dp"
+            android:layout_marginTop="26dp"
+            android:background="@drawable/bg_input_evohka"
+            android:hint="Correo electrónico"
+            android:autofillHints="emailAddress"
+            android:inputType="textEmailAddress"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:saveEnabled="false"
+            android:singleLine="true"
+            android:textColor="@color/evohka_text"
+            android:textColorHint="#828282"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/subtituloRecuperacion"
+            app:layout_constraintWidth_max="420dp" />
+
+        <TextView
+            android:id="@+id/etiquetaConfirmarCorreo"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:paddingEnd="4dp"
+            android:paddingStart="4dp"
+            android:text="Confirma tu correo electrónico"
+            android:textColor="@color/evohka_text_secondary"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="@id/etCorreoRecuperacion"
+            app:layout_constraintStart_toStartOf="@id/etCorreoRecuperacion"
+            app:layout_constraintTop_toBottomOf="@id/etCorreoRecuperacion" />
+
+        <EditText
+            android:id="@+id/etConfirmarCorreoRecuperacion"
+            android:layout_width="0dp"
+            android:layout_height="52dp"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/bg_input_evohka"
+            android:hint="Correo electrónico"
+            android:importantForAutofill="no"
+            android:inputType="textEmailAddress"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:saveEnabled="false"
+            android:singleLine="true"
+            android:textColor="@color/evohka_text"
+            android:textColorHint="#828282"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="@id/etCorreoRecuperacion"
+            app:layout_constraintStart_toStartOf="@id/etCorreoRecuperacion"
+            app:layout_constraintTop_toBottomOf="@id/etiquetaConfirmarCorreo" />
+
+        <Button
+            android:id="@+id/btnSolicitarCodigo"
+            android:layout_width="0dp"
+            android:layout_height="52dp"
+            android:layout_marginTop="26dp"
+            android:background="@drawable/bg_button_evohka"
+            android:backgroundTint="@null"
+            android:text="Continuar"
+            android:textAllCaps="false"
+            android:textColor="@color/evohka_text"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="@id/etCorreoRecuperacion"
+            app:layout_constraintStart_toStartOf="@id/etCorreoRecuperacion"
+            app:layout_constraintTop_toBottomOf="@id/etConfirmarCorreoRecuperacion" />
+
+        <TextView
+            android:id="@+id/txtPrivacidadRecuperacion"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="18dp"
+            android:gravity="center"
+            android:text="Por seguridad, la respuesta será la misma exista o no una cuenta asociada."
+            android:textColor="@color/evohka_text_secondary"
+            android:textSize="13sp"
+            app:layout_constraintEnd_toEndOf="@id/etCorreoRecuperacion"
+            app:layout_constraintStart_toStartOf="@id/etCorreoRecuperacion"
+            app:layout_constraintTop_toBottomOf="@id/btnSolicitarCodigo" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

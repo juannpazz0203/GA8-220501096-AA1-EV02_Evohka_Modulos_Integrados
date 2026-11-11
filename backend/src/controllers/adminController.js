@@ -1,4 +1,5 @@
 const adminService = require('../services/adminService');
+const contrasenaService = require('../services/contrasenaService');
 
 const ROLES_PERMITIDOS = new Set([
   'arrendatario',
@@ -58,8 +59,10 @@ function validarUsuario(datos = {}, incluirContrasena = false) {
   };
   if (incluirContrasena) {
     const contrasena = typeof datos.contrasena === 'string' ? datos.contrasena : '';
-    if (contrasena.length < 6 || contrasena.length > 255) {
-      return { error: 'La contraseña debe tener entre 6 y 255 caracteres' };
+    const validacionContrasena =
+      contrasenaService.validarNuevaContrasena(contrasena);
+    if (!validacionContrasena.valida) {
+      return { error: validacionContrasena.mensaje };
     }
     normalizado.contrasena = contrasena;
   }

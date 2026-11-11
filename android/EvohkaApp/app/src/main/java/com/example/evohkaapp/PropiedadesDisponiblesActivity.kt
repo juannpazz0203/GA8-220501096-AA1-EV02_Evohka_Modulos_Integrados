@@ -287,17 +287,7 @@ class PropiedadesDisponiblesActivity : EvohkaActivity() {
 
     private fun cargarPropiedades() {
 
-        val preferencias =
-            getSharedPreferences(
-                "EvohkaSesion",
-                MODE_PRIVATE
-            )
-
-        val token =
-            preferencias.getString(
-                "token",
-                null
-            )
+        val token = SesionSegura.obtenerToken()
 
         if (token.isNullOrBlank()) {
 
@@ -743,15 +733,8 @@ class PropiedadesDisponiblesActivity : EvohkaActivity() {
 
     private fun cerrarSesion() {
 
-        val preferencias =
-            getSharedPreferences(
-                "EvohkaSesion",
-                MODE_PRIVATE
-            )
-
-        preferencias.edit()
-            .clear()
-            .apply()
+        SesionSegura.cerrarSesion()
+        NavegacionSesionInvalida.reiniciar()
 
         val intent =
             Intent(

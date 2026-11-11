@@ -18,10 +18,25 @@ interface ApiService {
         @Body datos: LoginRequest
     ): Call<LoginResponse>
 
+    @GET("api/auth/sesion")
+    fun validarSesion(
+        @Header("Authorization") token: String
+    ): Call<RespuestaSesion>
+
     @POST("api/auth/registro")
     fun registrarUsuario(
         @Body datos: RegistroRequest
     ): Call<RegistroResponse>
+
+    @POST("api/auth/recuperacion/solicitar")
+    fun solicitarRecuperacionContrasena(
+        @Body datos: SolicitarRecuperacionRequest
+    ): Call<RespuestaRecuperacion>
+
+    @POST("api/auth/recuperacion/restablecer")
+    fun restablecerContrasena(
+        @Body datos: RestablecerContrasenaRequest
+    ): Call<RespuestaRecuperacion>
 
     @GET("api/propiedades")
     fun listarPropiedades(

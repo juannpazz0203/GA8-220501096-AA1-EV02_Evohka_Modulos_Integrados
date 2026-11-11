@@ -34,7 +34,8 @@ class AdministradorActivity : EvohkaActivity() {
             startActivity(Intent(this, FaqActivity::class.java))
         }
         findViewById<Button>(R.id.btnCerrarSesionAdmin).setOnClickListener {
-            getSharedPreferences("EvohkaSesion", MODE_PRIVATE).edit().clear().apply()
+            SesionSegura.cerrarSesion()
+            NavegacionSesionInvalida.reiniciar()
             startActivity(Intent(this, MainActivity::class.java).apply {
                 flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             })
@@ -44,8 +45,7 @@ class AdministradorActivity : EvohkaActivity() {
     }
 
     private fun token(): String? {
-        return getSharedPreferences("EvohkaSesion", MODE_PRIVATE)
-            .getString("token", null)
+        return SesionSegura.obtenerToken()
     }
 
     private fun cargarResumen() {

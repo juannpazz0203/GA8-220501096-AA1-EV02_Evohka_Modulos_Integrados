@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clipToPadding="false"
+    android:fillViewport="true"
+    android:saveEnabled="false">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="640dp"
+        android:paddingStart="@dimen/evohka_screen_padding"
+        android:paddingTop="12dp"
+        android:paddingEnd="@dimen/evohka_screen_padding"
+        android:paddingBottom="28dp">
+
+        <ImageButton
+            android:id="@+id/btnVolverRestablecimiento"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@android:color/transparent"
+            android:contentDescription="Volver a solicitar el código"
+            android:padding="12dp"
+            android:src="@drawable/ic_arrow_back_evohka"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/logoRestablecimiento"
+            android:layout_width="132dp"
+            android:layout_height="108dp"
+            android:contentDescription="Logo EVOHKA"
+            android:scaleType="centerInside"
+            android:src="@drawable/evohka_logo"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tituloRestablecimiento"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:gravity="center"
+            android:text="Crear nueva contraseña"
+            android:textColor="@color/evohka_text"
+            android:textSize="25sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/logoRestablecimiento" />
+
+        <TextView
+            android:id="@+id/mensajeEnvioNeutral"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:gravity="center"
+            android:text="Si el correo está registrado, recibirás un código de recuperación."
+            android:textColor="#315FD6"
+            android:textSize="15sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tituloRestablecimiento"
+            app:layout_constraintWidth_max="420dp" />
+
+        <EditText
+            android:id="@+id/etCodigoRecuperacion"
+            android:layout_width="0dp"
+            android:layout_height="52dp"
+            android:layout_marginTop="24dp"
+            android:background="@drawable/bg_input_evohka"
+            android:digits="0123456789"
+            android:hint="Código de 8 dígitos"
+            android:importantForAutofill="no"
+            android:inputType="number"
+            android:maxLength="8"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:saveEnabled="false"
+            android:singleLine="true"
+            android:textColor="@color/evohka_text"
+            android:textColorHint="#828282"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/mensajeEnvioNeutral"
+            app:layout_constraintWidth_max="420dp" />
+
+        <FrameLayout
+            android:id="@+id/contenedorNuevaContrasena"
+            android:layout_width="0dp"
+            android:layout_height="52dp"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/bg_input_evohka"
+            app:layout_constraintEnd_toEndOf="@id/etCodigoRecuperacion"
+            app:layout_constraintStart_toStartOf="@id/etCodigoRecuperacion"
+            app:layout_constraintTop_toBottomOf="@id/etCodigoRecuperacion">
+
+            <EditText
+                android:id="@+id/etNuevaContrasena"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@android:color/transparent"
+                android:hint="Nueva contraseña"
+                android:importantForAutofill="no"
+                android:inputType="textPassword"
+                android:paddingStart="16dp"
+                android:paddingEnd="52dp"
+                android:saveEnabled="false"
+                android:singleLine="true"
+                android:textColor="@color/evohka_text"
+                android:textColorHint="#828282"
+                android:textSize="16sp" />
+
+            <ImageButton
+                android:id="@+id/btnVerNuevaContrasena"
+                android:layout_width="48dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="end|center_vertical"
+                android:background="@android:color/transparent"
+                android:contentDescription="Mostrar nueva contraseña"
+                android:padding="12dp"
+                android:src="@drawable/ic_visibility"
+                app:tint="#777078" />
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/contenedorConfirmarNuevaContrasena"
+            android:layout_width="0dp"
+            android:layout_height="52dp"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/bg_input_evohka"
+            app:layout_constraintEnd_toEndOf="@id/etCodigoRecuperacion"
+            app:layout_constraintStart_toStartOf="@id/etCodigoRecuperacion"
+            app:layout_constraintTop_toBottomOf="@id/contenedorNuevaContrasena">
+
+            <EditText
+                android:id="@+id/etConfirmarNuevaContrasena"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@android:color/transparent"
+                android:hint="Confirmar contraseña"
+                android:importantForAutofill="no"
+                android:inputType="textPassword"
+                android:paddingStart="16dp"
+                android:paddingEnd="52dp"
+                android:saveEnabled="false"
+                android:singleLine="true"
+                android:textColor="@color/evohka_text"
+                android:textColorHint="#828282"
+                android:textSize="16sp" />
+
+            <ImageButton
+                android:id="@+id/btnVerConfirmarNuevaContrasena"
+                android:layout_width="48dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="end|center_vertical"
+                android:background="@android:color/transparent"
+                android:contentDescription="Mostrar confirmación de contraseña"
+                android:padding="12dp"
+                android:src="@drawable/ic_visibility"
+                app:tint="#777078" />
+        </FrameLayout>
+
+        <TextView
+            android:id="@+id/ayudaNuevaContrasena"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:paddingEnd="4dp"
+            android:paddingStart="4dp"
+            android:text="Mínimo 6 caracteres"
+            android:textColor="@color/evohka_text_secondary"
+            android:textSize="13sp"
+            app:layout_constraintEnd_toEndOf="@id/etCodigoRecuperacion"
+            app:layout_constraintStart_toStartOf="@id/etCodigoRecuperacion"
+            app:layout_constraintTop_toBottomOf="@id/contenedorConfirmarNuevaContrasena" />
+
+        <Button
+            android:id="@+id/btnRestablecerContrasena"
+            android:layout_width="0dp"
+            android:layout_height="52dp"
+            android:layout_marginTop="22dp"
+            android:background="@drawable/bg_button_evohka"
+            android:backgroundTint="@null"
+            android:text="Restablecer contraseña"
+            android:textAllCaps="false"
+            android:textColor="@color/evohka_text"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="@id/etCodigoRecuperacion"
+            app:layout_constraintStart_toStartOf="@id/etCodigoRecuperacion"
+            app:layout_constraintTop_toBottomOf="@id/ayudaNuevaContrasena" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>
