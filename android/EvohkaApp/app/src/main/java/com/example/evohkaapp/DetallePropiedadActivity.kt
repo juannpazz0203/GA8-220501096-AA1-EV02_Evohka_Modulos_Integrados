@@ -4,6 +4,7 @@ import android.app.Activity
 import android.app.AlertDialog
 import android.os.Bundle
 import android.widget.Button
+import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import org.json.JSONObject
@@ -46,6 +47,12 @@ class DetallePropiedadActivity : EvohkaActivity() {
 
         val btnSolicitarArriendo =
             findViewById<Button>(R.id.btn_solicitar_arriendo)
+
+        val txtEstadoGaleria =
+            findViewById<TextView>(R.id.txt_estado_galeria_detalle)
+
+        val contenedorGaleria =
+            findViewById<LinearLayout>(R.id.contenedor_galeria_detalle)
 
         val btnVolver =
             findViewById<Button>(R.id.btn_volver_detalle)
@@ -123,6 +130,12 @@ class DetallePropiedadActivity : EvohkaActivity() {
         txtBanos.text =
             "Baños: $banos"
 
+        cargarGaleria(
+            idPropiedad,
+            txtEstadoGaleria,
+            contenedorGaleria
+        )
+
         btnVolver.setOnClickListener {
             finish()
         }
@@ -134,6 +147,62 @@ class DetallePropiedadActivity : EvohkaActivity() {
                 btnSolicitarArriendo
             )
         }
+    }
+
+    private fun cargarGaleria(
+        idPropiedad: Int,
+        txtEstado: TextView,
+        contenedor: LinearLayout
+    ) {
+        if (idPropiedad <= 0) {
+            txtEstado.text = "No hay fotografías disponibles"
+            FotografiasUi.mostrarGaleria(this, contenedor, emptyList())
+            return
+        }
+
+        val token = SesionSegura.obtenerToken()
+        if (token.isNullOrBlank()) {
+            txtEstado.text = "No fue posible consultar las fotografías"
+            FotografiasUi.mostrarGaleria(this, contenedor, emptyList())
+            return
+        }
+
+        RetrofitClient.apiService
+            .listarFotografiasPropiedad(token, idPropiedad)
+            .enqueue(object : Callback<RespuestaFotosPropiedad> {
+                override fun onResponse(
+                    call: Call<RespuestaFotosPropiedad>,
+                    response: Response<RespuestaFotosPropiedad>
+                ) {
+                    val fotografias = if (response.isSuccessful) {
+                        response.body()?.datos.orEmpty()
+                    } else {
+                        emptyList()
+                    }
+                    txtEstado.text = if (fotografias.isEmpty()) {
+                        "Este inmueble todavía no tiene fotografías"
+                    } else {
+                        "${fotografias.size} fotografía(s) · Desliza para ver más"
+                    }
+                    FotografiasUi.mostrarGaleria(
+                        this@DetallePropiedadActivity,
+                        contenedor,
+                        fotografias
+                    )
+                }
+
+                override fun onFailure(
+                    call: Call<RespuestaFotosPropiedad>,
+                    t: Throwable
+                ) {
+                    txtEstado.text = "No fue posible cargar las fotografías"
+                    FotografiasUi.mostrarGaleria(
+                        this@DetallePropiedadActivity,
+                        contenedor,
+                        emptyList()
+                    )
+                }
+            })
     }
 
     private fun confirmarSolicitud(

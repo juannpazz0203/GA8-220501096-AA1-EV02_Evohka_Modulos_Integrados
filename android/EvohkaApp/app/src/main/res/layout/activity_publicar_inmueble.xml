@@ -121,6 +121,53 @@
             android:paddingStart="14dp"
             android:paddingEnd="14dp" />
 
+        <TextView
+            android:id="@+id/txt_contador_fotos_publicar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:text="Fotografías (0/10)"
+            android:textColor="@color/evohka_text"
+            android:textSize="17sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:text="JPG, PNG o WebP. Máximo 15 MB por imagen."
+            android:textColor="@color/evohka_text_secondary"
+            android:textSize="13sp" />
+
+        <Button
+            android:id="@+id/btn_anadir_fotos_publicar"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/bg_button_secondary_evohka"
+            android:backgroundTint="@null"
+            android:text="Añadir fotografías"
+            android:textAllCaps="false"
+            android:textColor="@color/evohka_text"
+            android:textStyle="bold" />
+
+        <HorizontalScrollView
+            android:id="@+id/scroll_fotos_publicar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:clipToPadding="false"
+            android:fillViewport="false"
+            android:scrollbars="none">
+
+            <LinearLayout
+                android:id="@+id/contenedor_fotos_publicar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" />
+
+        </HorizontalScrollView>
+
         <Button
             android:id="@+id/btn_guardar_inmueble"
             android:layout_width="match_parent"

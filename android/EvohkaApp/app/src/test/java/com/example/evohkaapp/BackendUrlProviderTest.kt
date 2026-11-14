@@ -3,6 +3,7 @@ package com.example.evohkaapp
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
+import org.junit.Assert.assertThrows
 import org.junit.Test
 
 class BackendUrlProviderTest {
@@ -49,6 +50,27 @@ class BackendUrlProviderTest {
                 "http://192.168.40.43:3000/"
             )
         )
+    }
+
+    @Test
+    fun resuelveRutaRelativaDeFotografiaSinFijarIp() {
+        assertEquals(
+            "http://192.168.40.43:3000/api/propiedades/7/fotos/3/archivo",
+            BackendUrlProvider.resolverRutaHttp(
+                "http://192.168.40.43:3000/",
+                "/api/propiedades/7/fotos/3/archivo"
+            )
+        )
+    }
+
+    @Test
+    fun rechazaUrlAbsolutaDevueltaComoRutaDeFotografia() {
+        assertThrows(IllegalArgumentException::class.java) {
+            BackendUrlProvider.resolverRutaHttp(
+                "http://10.0.2.2:3000/",
+                "https://otro-servidor.example/foto.webp"
+            )
+        }
     }
 
     private fun identidad(

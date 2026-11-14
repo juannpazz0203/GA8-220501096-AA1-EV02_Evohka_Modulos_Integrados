@@ -220,6 +220,12 @@ internal class RepositorioSesionSegura(
     }
 
     @Synchronized
+    fun obtenerIdUsuario(): Int =
+        runCatching {
+            almacenLegado.entero(CLAVE_ID_USUARIO, 0)
+        }.getOrDefault(0)
+
+    @Synchronized
     fun cerrarSesion() {
         limpiarInternamente()
     }
@@ -374,6 +380,9 @@ object SesionSegura {
     fun actualizarIdentidad(usuario: Usuario) {
         obtenerRepositorio().actualizarIdentidad(usuario)
     }
+
+    fun obtenerIdUsuario(): Int =
+        obtenerRepositorio().obtenerIdUsuario()
 
     fun cerrarSesion() {
         validadaEnEsteProceso.set(false)
