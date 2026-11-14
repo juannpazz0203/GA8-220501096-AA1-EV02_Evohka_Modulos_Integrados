@@ -1,85 +1,68 @@
-# GA8-220501096-AA1-EV01 – Módulo de autenticación
+# Backend de EVOHKA
 
-## Descripción
+API REST de EVOHKA desarrollada con Node.js, Express y MySQL. Expone los
+módulos de autenticación, propiedades, fotografías, solicitudes, contratos,
+pagos, reportes, notificaciones, fallas, mensajes y administración.
 
-Este proyecto implementa un módulo de autenticación para el sistema Evohka utilizando Node.js, Express, MySQL y JWT.
+La guía integral de instalación se encuentra en el [README principal](../README.md).
 
-Permite:
+## Requisitos
 
-- Inicio de sesión.
-- Validación de credenciales.
-- Generación de Token JWT.
-- Protección de rutas mediante middleware.
+- Node.js 20.9 o posterior.
+- MySQL con el esquema base y las migraciones 002, 003 y 004 aplicadas.
+- Un archivo `.env` privado creado a partir de `.env.example`.
 
-## Tecnologías
+## Instalación y ejecución
 
-- Node.js
-- Express
-- MySQL
-- JSON Web Token
-- Postman
-
-## Instalación
-
-1. Ejecutar:
-
-```bash
-npm install
-```
-
-2. Configurar el archivo `.env`.
-
-3. Iniciar MySQL (Laragon o XAMPP).
-
-4. Verificar que la base configurada ya incluya el esquema RNF03, especialmente
-   `usuarios.contrasena_algoritmo`.
-
-5. Iniciar normalmente el backend:
-
-```bash
+```powershell
+npm ci
+npm test
 npm start
 ```
 
-No se requiere `EVOHKA_COLUMNA_CONTRASENA_ALGORITMO_ACTIVA`. El backend valida
-el esquema RNF03 antes de abrir el puerto y detiene el arranque con un error
-claro si la columna obligatoria falta o es incompatible.
+El servidor valida antes de escuchar el puerto:
 
-Para desarrollo con reinicio automático puede utilizarse `npm run dev`.
+- conexión a MySQL;
+- configuración y longitud mínima de `JWT_SECRET`;
+- columna `usuarios.contrasena_algoritmo`;
+- `usuarios.sesion_version` y `recuperaciones_contrasena` cuando las sesiones
+  versionadas están activas.
 
-## Usuario de prueba
+La aplicación debe iniciarse con `EVOHKA_SESIONES_VERSIONADAS_ACTIVAS=true`
+después de aplicar la migración 003. La recuperación permanece desactivada
+hasta configurar SMTP, pepper y `EVOHKA_RECUPERACION_ACTIVA=true`.
 
-Correo:
+## Crear una cuenta de prueba propia
 
+Este repositorio no distribuye correos ni contraseñas de prueba. Se puede crear
+una cuenta ficticia mediante Android o con `POST /api/auth/registro`:
+
+```json
+{
+  "nombre": "<NOMBRE_FICTICIO>",
+  "apellido": "<APELLIDO_FICTICIO>",
+  "correo": "<CORREO_RESERVADO_PARA_PRUEBAS>",
+  "contrasena": "<CONTRASENA_PRIVADA_DE_PRUEBA>",
+  "telefono": "<TELEFONO_FICTICIO_OPCIONAL>",
+  "rol": "arrendatario"
+}
 ```
-juan@gmail.com
-```
 
-Contraseña:
+Son obligatorios `nombre`, `apellido`, `correo`, `contrasena` y `rol`. El rol
+público admite `arrendatario`, `inquilino` —normalizado a `arrendatario`— o
+`propietario`; no permite crear administradores. No reutilice contraseñas
+personales y elimine las cuentas temporales al finalizar.
 
-```
-123456
-```
+## Recuperación RNF03
 
-## Pruebas realizadas
+Endpoints:
 
-- Login correcto.
-- Validación de campos obligatorios.
-- Credenciales incorrectas.
-- Ruta protegida sin token.
-- Ruta protegida con token válido.
-- Ruta protegida con token inválido.
-
-## Recuperación de contraseña RNF03
-
-El backend expone los siguientes endpoints, sin modificar el contrato de
-login, registro o sesión:
-
-- `POST /api/auth/recuperacion/solicitar`, con `correo`.
-- `POST /api/auth/recuperacion/restablecer`, con `correo`, `codigo` y
+- `POST /api/auth/recuperacion/solicitar` con `correo`.
+- `POST /api/auth/recuperacion/restablecer` con `correo`, `codigo` y
   `nueva_contrasena`.
+- `GET /api/auth/sesion` para validar la sesión e identidad actuales.
 
-La recuperación está desactivada de forma predeterminada. Para habilitarla,
-el proceso del backend debe recibir de un almacén privado las variables:
+Variables privadas requeridas al habilitar recuperación:
 
 - `EVOHKA_RECUPERACION_ACTIVA`
 - `EVOHKA_RECUPERACION_PEPPER`
@@ -90,20 +73,31 @@ el proceso del backend debe recibir de un almacén privado las variables:
 - `EVOHKA_SMTP_PASSWORD_APLICACION`
 - `EVOHKA_SMTP_REMITENTE`
 
-También deben permanecer activas las sesiones versionadas mediante
-`EVOHKA_SESIONES_VERSIONADAS_ACTIVAS`. No se deben versionar los valores ni
-escribirlos en documentación, comandos compartidos o registros.
+No registre códigos, contraseñas, JWT, hashes, peppers ni respuestas completas
+del transporte SMTP. Para Gmail utilice una contraseña de aplicación, nunca la
+contraseña principal.
 
-Antes del único envío real controlado:
+## Fotografías
 
-1. Confirmar que la migración SQL 003 está aplicada y que la suite completa
-   termina correctamente.
-2. Inyectar las variables privadas únicamente en el proceso que se utilizará
-   para la validación. Para Gmail se utiliza su servidor SMTP y una contraseña
-   de aplicación, nunca la contraseña normal de la cuenta.
-3. Iniciar una sola instancia del backend y realizar una única solicitud con
-   una cuenta de prueba controlada existente.
-4. Confirmar que llega un solo correo, que el código permite un único
-   restablecimiento y que la sesión anterior queda revocada.
-5. Retirar las variables temporales al terminar. No registrar el código, la
-   contraseña, el pepper ni la respuesta del transporte SMTP.
+Los originales multipart se validan, se convierten con Sharp a WebP y se
+guardan en `storage/propiedades/{id_propiedad}/`. MySQL conserva únicamente la
+ruta relativa y los metadatos. `storage/` está ignorado por Git y requiere un
+respaldo propio coordinado con el dump de MySQL.
+
+## Pruebas
+
+```powershell
+npm test
+```
+
+Las pruebas utilizan dobles o repositorios simulados; no deben apuntar a la
+base real. El último resultado consolidado informado fue 73 pruebas aprobadas.
+
+## Seguridad operativa
+
+- No versionar `.env`, secretos SMTP, respaldos ni fotografías.
+- No guardar autorizaciones de migración en `.env`.
+- No ejecutar migraciones sobre una base no verificada.
+- No usar `npm audit fix --force`.
+- Para producción, usar HTTPS, almacenamiento persistente, un gestor de
+  secretos, respaldos comprobados y revisión controlada de dependencias.
