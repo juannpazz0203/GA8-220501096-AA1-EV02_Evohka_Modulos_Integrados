@@ -18,6 +18,21 @@ import retrofit2.Response
 import java.text.NumberFormat
 import java.util.Locale
 
+internal enum class AccionAccesoMisInmuebles {
+    CARGAR,
+    RECUPERAR_IDENTIDAD,
+    RESTAURAR_SESION
+}
+
+internal object PoliticaAccesoMisInmuebles {
+    fun decidir(token: String?, idUsuario: Int): AccionAccesoMisInmuebles =
+        when {
+            token.isNullOrBlank() -> AccionAccesoMisInmuebles.RESTAURAR_SESION
+            idUsuario <= 0 -> AccionAccesoMisInmuebles.RECUPERAR_IDENTIDAD
+            else -> AccionAccesoMisInmuebles.CARGAR
+        }
+}
+
 class MisInmueblesActivity : EvohkaActivity() {
 
     private lateinit var txtEstadoCarga: TextView
@@ -64,36 +79,110 @@ class MisInmueblesActivity : EvohkaActivity() {
     }
 
     private fun cargarInmuebles() {
-
-        val preferencias =
-            getSharedPreferences(
-                "EvohkaSesion",
-                MODE_PRIVATE
-            )
-
         val token = SesionSegura.obtenerToken()
-
-        val idUsuario =
-            preferencias.getInt(
-                "id_usuario",
-                0
-            )
+        val idUsuario = SesionSegura.obtenerIdUsuario()
 
         contenedorInmuebles.removeAllViews()
 
-        if (token.isNullOrBlank() || idUsuario <= 0) {
-
-            txtEstadoCarga.text =
-                "Sesión no válida"
-
-            Toast.makeText(
-                this,
-                "Debe iniciar sesión nuevamente",
-                Toast.LENGTH_LONG
-            ).show()
-
-            return
+        when (PoliticaAccesoMisInmuebles.decidir(token, idUsuario)) {
+            AccionAccesoMisInmuebles.RESTAURAR_SESION -> {
+                txtEstadoCarga.text = "Validando sesión..."
+                startActivity(
+                    Intent(this, MainActivity::class.java).apply {
+                        flags = Intent.FLAG_ACTIVITY_NEW_TASK or
+                            Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    }
+                )
+            }
+            AccionAccesoMisInmuebles.RECUPERAR_IDENTIDAD -> {
+                validarIdentidadActual(checkNotNull(token))
+            }
+            AccionAccesoMisInmuebles.CARGAR -> {
+                consultarInmuebles(checkNotNull(token), idUsuario)
+            }
         }
+    }
+
+    private fun validarIdentidadActual(token: String) {
+        txtEstadoCarga.text = "Validando sesión..."
+
+        RetrofitClient.apiService.validarSesion(token).enqueue(
+            object : Callback<RespuestaSesion> {
+                override fun onResponse(
+                    call: Call<RespuestaSesion>,
+                    response: Response<RespuestaSesion>
+                ) {
+                    val usuario = response.body()?.usuario
+                    if (
+                        response.isSuccessful &&
+                        response.body()?.ok == true &&
+                        usuario != null &&
+                        usuario.id_usuario > 0
+                    ) {
+                        try {
+                            SesionSegura.actualizarIdentidad(usuario)
+                        } catch (_: Exception) {
+                            txtEstadoCarga.text =
+                                "No se pudo actualizar la sesión local"
+                            Toast.makeText(
+                                this@MisInmueblesActivity,
+                                "No se pudo actualizar la sesión local",
+                                Toast.LENGTH_LONG
+                            ).show()
+                            return
+                        }
+
+                        if (usuario.rol.trim().lowercase() != "propietario") {
+                            startActivity(
+                                Intent(
+                                    this@MisInmueblesActivity,
+                                    MainActivity::class.java
+                                ).apply {
+                                    flags = Intent.FLAG_ACTIVITY_NEW_TASK or
+                                        Intent.FLAG_ACTIVITY_CLEAR_TASK
+                                }
+                            )
+                            return
+                        }
+
+                        consultarInmuebles(token, usuario.id_usuario)
+                        return
+                    }
+
+                    if (response.code() == 401) {
+                        NavegacionSesionInvalida.notificar()
+                        return
+                    }
+
+                    txtEstadoCarga.text = "No se pudo validar la sesión"
+                    val mensaje = if (response.code() == 403) {
+                        "El servidor no permitió validar la sesión. No se cerró automáticamente."
+                    } else {
+                        "No fue posible validar la sesión en este momento"
+                    }
+                    Toast.makeText(
+                        this@MisInmueblesActivity,
+                        mensaje,
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+
+                override fun onFailure(
+                    call: Call<RespuestaSesion>,
+                    t: Throwable
+                ) {
+                    txtEstadoCarga.text = "Error de conexión"
+                    Toast.makeText(
+                        this@MisInmueblesActivity,
+                        "No se pudo validar la sesión. Intenta nuevamente.",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            }
+        )
+    }
+
+    private fun consultarInmuebles(token: String, idUsuario: Int) {
 
         txtEstadoCarga.text =
             "Consultando inmuebles..."
@@ -120,7 +209,8 @@ class MisInmueblesActivity : EvohkaActivity() {
                                 }
 
                             mostrarPropiedades(
-                                misPropiedades
+                                misPropiedades,
+                                token
                             )
 
                         } else {
@@ -158,7 +248,8 @@ class MisInmueblesActivity : EvohkaActivity() {
     }
 
     private fun mostrarPropiedades(
-        propiedades: List<Propiedad>
+        propiedades: List<Propiedad>,
+        token: String
     ) {
 
         contenedorInmuebles.removeAllViews()
@@ -216,6 +307,18 @@ class MisInmueblesActivity : EvohkaActivity() {
 
             tarjeta.layoutParams =
                 parametrosTarjeta
+
+            val portada = FotografiasUi.imagenPortada(this)
+            tarjeta.addView(portada)
+            propiedad.id_propiedad
+                ?.takeIf { it > 0 }
+                ?.let {
+                    FotografiasUi.cargarPortada(
+                        portada,
+                        it,
+                        token
+                    )
+                }
 
             val titulo =
                 TextView(this).apply {

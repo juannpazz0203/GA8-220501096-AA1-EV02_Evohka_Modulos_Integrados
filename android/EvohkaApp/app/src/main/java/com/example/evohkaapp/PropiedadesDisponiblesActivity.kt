@@ -330,7 +330,8 @@ class PropiedadesDisponiblesActivity : EvohkaActivity() {
                                     ?: emptyList()
 
                             mostrarPropiedades(
-                                propiedades
+                                propiedades,
+                                token
                             )
 
                         } else {
@@ -367,7 +368,8 @@ class PropiedadesDisponiblesActivity : EvohkaActivity() {
     }
 
     private fun mostrarPropiedades(
-        propiedades: List<Propiedad>
+        propiedades: List<Propiedad>,
+        token: String
     ) {
 
         contenedorPropiedades
@@ -428,6 +430,18 @@ class PropiedadesDisponiblesActivity : EvohkaActivity() {
 
             tarjeta.layoutParams =
                 parametrosTarjeta
+
+            val portada = FotografiasUi.imagenPortada(this)
+            tarjeta.addView(portada)
+            propiedad.id_propiedad
+                ?.takeIf { it > 0 }
+                ?.let {
+                    FotografiasUi.cargarPortada(
+                        portada,
+                        it,
+                        token
+                    )
+                }
 
             val tituloPropiedad =
                 TextView(this).apply {

@@ -1,4 +1,5 @@
 const propiedadService = require('../services/propiedadService');
+const fotoPropiedadService = require('../services/fotoPropiedadService');
 
 function esPropietarioAutenticado(req) {
   return req.usuario?.rol === 'propietario';
@@ -212,6 +213,9 @@ async function actualizarPropiedad(req, res) {
 }
 
 async function eliminarPropiedad(req, res) {
+  let movimientoArchivos = null;
+  let propiedadEliminada = false;
+
   try {
     if (!esPropietarioAutenticado(req)) {
       return res.status(403).json({
@@ -245,16 +249,36 @@ async function eliminarPropiedad(req, res) {
       });
     }
 
-    const propiedadEliminada =
+    movimientoArchivos =
+      await fotoPropiedadService.prepararEliminacionPropiedad(
+        idPropiedad
+      );
+
+    propiedadEliminada =
       await propiedadService.eliminarPropiedad(
         idPropiedad,
         req.usuario.id_usuario
       );
 
     if (!propiedadEliminada) {
+      await fotoPropiedadService.cancelarEliminacionPropiedad(
+        movimientoArchivos
+      );
+      movimientoArchivos = null;
       return res.status(404).json({
         mensaje: 'La propiedad ya no está disponible'
       });
+    }
+
+    try {
+      await fotoPropiedadService.confirmarEliminacionPropiedad(
+        movimientoArchivos
+      );
+    } catch (error) {
+      console.error(
+        'No fue posible limpiar las fotografías de la propiedad:',
+        { codigo: error.code || 'ERROR_LIMPIEZA_DIRECTORIO' }
+      );
     }
 
     return res.status(200).json({
@@ -262,6 +286,19 @@ async function eliminarPropiedad(req, res) {
       datos: propiedadExistente
     });
   } catch (error) {
+    if (!propiedadEliminada && movimientoArchivos?.existia) {
+      try {
+        await fotoPropiedadService.cancelarEliminacionPropiedad(
+          movimientoArchivos
+        );
+      } catch (restauracionError) {
+        console.error('No fue posible restaurar las fotografías:', {
+          codigo:
+            restauracionError.code || 'ERROR_RESTAURACION_DIRECTORIO'
+        });
+      }
+    }
+
     if (
       error.code === 'ER_ROW_IS_REFERENCED_2' ||
       error.errno === 1451

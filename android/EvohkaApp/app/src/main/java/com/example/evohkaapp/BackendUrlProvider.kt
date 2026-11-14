@@ -1,6 +1,7 @@
 package com.example.evohkaapp
 
 import android.os.Build
+import java.net.URI
 
 internal data class IdentidadDispositivoAndroid(
     val fingerprint: String,
@@ -30,6 +31,26 @@ internal object BackendUrlProvider {
             urlEmulador = BuildConfig.EVOHKA_EMULATOR_BASE_URL,
             urlDispositivoFisico = BuildConfig.EVOHKA_PHYSICAL_BASE_URL
         )
+    }
+
+    fun resolverRutaHttp(rutaRelativa: String): String =
+        resolverRutaHttp(obtenerBaseUrl(), rutaRelativa)
+
+    internal fun resolverRutaHttp(
+        baseUrl: String,
+        rutaRelativa: String
+    ): String {
+        require(rutaRelativa.isNotBlank()) {
+            "La ruta de la fotografía es obligatoria"
+        }
+        require(!rutaRelativa.startsWith("http://") &&
+            !rutaRelativa.startsWith("https://")) {
+            "El backend debe devolver una ruta HTTP relativa"
+        }
+
+        val base = URI(baseUrl)
+        val ruta = rutaRelativa.removePrefix("/")
+        return base.resolve(ruta).toString()
     }
 
     internal fun seleccionarBaseUrl(

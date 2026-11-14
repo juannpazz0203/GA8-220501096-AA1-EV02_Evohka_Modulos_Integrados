@@ -5,11 +5,14 @@ import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Header
+import retrofit2.http.Multipart
+import retrofit2.http.Part
 import retrofit2.http.PATCH
 import retrofit2.http.Path
 import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Query
+import okhttp3.MultipartBody
 
 interface ApiService {
 
@@ -61,6 +64,34 @@ interface ApiService {
         @Header("Authorization") token: String,
         @Path("id") idPropiedad: Int
     ): Call<RespuestaPropiedad>
+
+    @GET("api/propiedades/{id}/fotos")
+    fun listarFotografiasPropiedad(
+        @Header("Authorization") token: String,
+        @Path("id") idPropiedad: Int
+    ): Call<RespuestaFotosPropiedad>
+
+    @Multipart
+    @POST("api/propiedades/{id}/fotos")
+    fun subirFotografiasPropiedad(
+        @Header("Authorization") token: String,
+        @Path("id") idPropiedad: Int,
+        @Part fotografias: List<MultipartBody.Part>
+    ): Call<RespuestaFotosPropiedad>
+
+    @DELETE("api/propiedades/{id}/fotos/{idFoto}")
+    fun eliminarFotografiaPropiedad(
+        @Header("Authorization") token: String,
+        @Path("id") idPropiedad: Int,
+        @Path("idFoto") idFoto: Int
+    ): Call<RespuestaFotoPropiedad>
+
+    @PUT("api/propiedades/{id}/fotos/orden")
+    fun reordenarFotografiasPropiedad(
+        @Header("Authorization") token: String,
+        @Path("id") idPropiedad: Int,
+        @Body orden: ReordenarFotosRequest
+    ): Call<RespuestaFotosPropiedad>
 
     @POST("api/solicitudes")
     fun crearSolicitud(

@@ -27,6 +27,7 @@ class SesionSeguraTest {
         assertNull(legado.texto("token"))
         assertFalse(seguro.todosLosTextos().values.any { it.contains(token) })
         assertEquals(token, repositorio.obtenerToken())
+        assertEquals(7, repositorio.obtenerIdUsuario())
         assertEquals(7, legado.entero("id_usuario", 0))
         assertEquals("arrendatario", legado.texto("rol"))
     }
