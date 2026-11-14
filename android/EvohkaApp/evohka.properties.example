@@ -1,0 +1,12 @@
+# Copie este archivo como evohka.properties y edite únicamente la copia local.
+# Las URL deben incluir el esquema, el puerto y la barra final.
+
+# El emulador Android estándar alcanza al computador anfitrión mediante 10.0.2.2.
+EVOHKA_EMULATOR_BASE_URL=http://10.0.2.2:3000/
+
+# Sustituya x.x por la IPv4 actual del computador en la red local.
+EVOHKA_PHYSICAL_BASE_URL=http://192.168.x.x:3000/
+
+# Para un despliegue real, configure ambas propiedades con el dominio HTTPS:
+# EVOHKA_EMULATOR_BASE_URL=https://api.ejemplo.com/
+# EVOHKA_PHYSICAL_BASE_URL=https://api.ejemplo.com/

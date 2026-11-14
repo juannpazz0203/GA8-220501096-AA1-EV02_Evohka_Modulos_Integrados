@@ -22,8 +22,9 @@ Este archivo aplica a todo el repositorio. Su propósito es conservar el context
 
 - `android/EvohkaApp/`: aplicación Android. El código principal está en `app/src/main/java/com/example/evohkaapp/` y las vistas y recursos en `app/src/main/res/`.
 - `backend/`: API de Node.js/Express. La entrada es `index.js`; las rutas, controladores, servicios, middleware y configuración están organizados en `src/`.
-- `database/gestion_arriendos.sql`: esquema MySQL del proyecto.
-- `README.md`: descripción general de la integración Android → Retrofit → API → MySQL → JWT.
+- `database/gestion_arriendos.sql`: esquema base MySQL. El estado final se obtiene respetando el orden y las guardas de `database/migrations/`.
+- `database/README.md`: procedimiento de migración, verificación y respaldo conjunto de MySQL y fotografías.
+- `README.md`: guía principal de arquitectura, instalación, configuración, pruebas y limitaciones.
 
 ## Base de datos
 
@@ -31,6 +32,8 @@ Este archivo aplica a todo el repositorio. Su propósito es conservar el context
 - La tabla oficial de propiedades es `propiedades`.
 - No crear, recuperar ni volver a utilizar `propiedades_servicio`.
 - No inventar tablas, relaciones o columnas. Comprobar primero el esquema vigente y el código que lo consume.
+- El esquema final incluye `recuperaciones_contrasena` y `propiedad_fotos`, creadas por las migraciones versionadas 003 y 004.
+- Las fotografías se almacenan como archivos bajo `backend/storage/propiedades`; MySQL conserva rutas relativas y metadatos.
 
 La estructura oficial actual de `propiedades` es:
 
@@ -67,24 +70,24 @@ La estructura oficial actual de `propiedades` es:
 
 Mantener permanentemente la numeración **RF01–RF12**; no renumerar, reutilizar ni intercambiar estos identificadores.
 
-- **RF01:** registro y gestión de propiedades. El registro de propiedades ya funciona. Próxima ampliación: editar y eliminar propiedades propias.
-- **RF02:** contratos.
-- **RF03:** pagos.
-- **RF04:** reportes.
-- **RF05:** fallas.
-- **RF06:** notificaciones.
-- **RF07:** registro, autenticación y sesión. Ya funcionan el registro de inquilino/arrendatario y propietario, el inicio de sesión, JWT y el cierre de sesión.
-- **RF08:** consulta y detalle de propiedades. Ya funciona.
-- **RF09:** solicitud de arriendo. Pendiente de completar.
-- **RF10:** comunicación. Pendiente.
-- **RF11:** administración. Pendiente.
-- **RF12:** FAQ/chatbot. Existe de forma separada y aún no está integrado.
+- **RF01:** registro y gestión de propiedades. Implementado crear, consultar, editar, eliminar y administrar fotografías propias.
+- **RF02:** contratos. Implementado.
+- **RF03:** pagos. Implementado.
+- **RF04:** reportes. Implementado como reporte de ingresos del propietario.
+- **RF05:** fallas. Implementado para reporte del arrendatario y gestión del propietario.
+- **RF06:** notificaciones. Implementado.
+- **RF07:** registro, autenticación y sesión. Implementado con bcrypt, JWT, sesiones versionadas y almacenamiento Android cifrado.
+- **RF08:** consulta y detalle de propiedades. Implementado con galería de fotografías.
+- **RF09:** solicitud de arriendo. Implementado para crear, consultar solicitudes recibidas y responderlas.
+- **RF10:** comunicación. Implementado mediante conversaciones y mensajes.
+- **RF11:** administración. Implementado para resumen y gestión de usuarios.
+- **RF12:** parcial. Existe una FAQ local integrada con buscador; no existe un chatbot funcional y no debe afirmarse lo contrario.
 
 ## Roles y normalización
 
 - En la interfaz Android, el usuario puede visualizar el rol como `inquilino`.
 - En la base de datos y en la API, el rol correspondiente se almacena como `arrendatario`.
-- El otro rol admitido es `propietario`.
+- Los roles funcionales son `arrendatario`, `propietario` y `administrador`. El registro público solo admite los dos primeros.
 - No romper ni eliminar esta normalización entre `inquilino` y `arrendatario`.
 
 ## Diseño visual oficial
@@ -124,7 +127,7 @@ Si el diseño de Figma contradice la base de datos o los requisitos actualmente 
 ## Propiedades y autorización
 
 - Un propietario debe trabajar únicamente sobre sus propias propiedades.
-- Toda edición o eliminación futura debe comprobar en el backend que `id_propietario` corresponde al usuario autenticado mediante JWT.
+- Toda edición o eliminación debe comprobar en el backend que `id_propietario` corresponde al usuario autenticado mediante JWT.
 - Obtener la identidad del propietario desde el JWT validado; no confiar en un `id_propietario` enviado por el cliente.
 - No confiar únicamente en controles de la interfaz Android para aplicar seguridad o autorización.
 - Las rutas actuales de propiedades están protegidas con middleware JWT. Conservar esa protección en las ampliaciones.
@@ -132,21 +135,25 @@ Si el diseño de Figma contradice la base de datos o los requisitos actualmente 
 ## Estado actual conocido
 
 - **DT-01**, unificación del modelo de propiedades, está completado.
-- **RF07** fue implementado y probado.
+- **RF01–RF11** están implementados. **RF12** permanece parcial como FAQ local con buscador, sin chatbot.
+- **RNF03** está implementado: bcrypt, JWT con sesión versionada, recuperación por código temporal y token Android cifrado mediante Keystore/AES-GCM.
+- Las fotografías de inmuebles están implementadas en backend y Android, y utilizan `propiedad_fotos` y `backend/storage/propiedades`.
 - El registro y el inicio de sesión usan el estilo visual de EVOHKA basado en Figma.
 - La pantalla de propiedades disponibles también fue actualizada visualmente.
 - Existen drawables, layouts, colores, temas y otros recursos visuales de EVOHKA que deben revisarse y reutilizarse cuando sea apropiado.
 - No reemplazar el diseño existente sin revisar primero los recursos visuales y las pantallas relacionadas.
-- El backend expone actualmente autenticación en `/api/auth/login` y `/api/auth/registro`, y consulta/registro de propiedades en `/api/propiedades`.
+- El backend expone autenticación, recuperación, propiedades y fotografías, solicitudes, contratos, pagos, reportes, notificaciones, fallas, mensajes y administración bajo `/api`.
 - Android consume esos servicios mediante Retrofit y Gson, usando la URL base configurada localmente.
-- La edición y eliminación de propiedades aún no están implementadas; no asumir endpoints o contratos para ellas sin inspeccionar y acordar el cambio.
+- La edición y eliminación de propiedades propias están implementadas. Conservar la autorización mediante JWT y no confiar en identificadores de propietario enviados por Android.
 
 ## Deuda técnica conocida
 
-- El sistema actual todavía compara y guarda contraseñas en texto plano.
-- No introducir bcrypt, hashing u otro esquema de contraseñas de forma aislada.
-- Existen usuarios con contraseñas en texto plano; una migración parcial o incompatible rompería el inicio de sesión.
-- La migración de contraseñas debe tratarse posteriormente como una tarea de seguridad planificada, integral y compatible con los datos existentes.
+- No reintroducir contraseñas en texto plano ni desactivar `contrasena_algoritmo`; los registros nuevos deben usar bcryptjs.
+- El dump `database/gestion_arriendos.sql` es el esquema base de ocho tablas. Una instalación final requiere las migraciones protegidas 002, 003 y 004.
+- RF12 no incluye un chatbot funcional.
+- La configuración de demostración utiliza HTTP en red local; un despliegue real requiere HTTPS y dominio estable.
+- El respaldo de MySQL no incluye las fotografías. Debe coordinarse con una copia de `backend/storage/propiedades`.
+- Los límites de recuperación en memoria no se comparten entre múltiples instancias del backend.
 
 ## Forma obligatoria de trabajo
 
