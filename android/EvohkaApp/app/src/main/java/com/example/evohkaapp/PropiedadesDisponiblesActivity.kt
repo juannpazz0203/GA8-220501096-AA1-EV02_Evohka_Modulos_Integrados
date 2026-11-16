@@ -6,10 +6,18 @@ import android.graphics.Color
 import android.graphics.Typeface
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
+import android.text.Editable
+import android.text.InputType
+import android.text.TextWatcher
 import android.view.Gravity
+import android.view.inputmethod.EditorInfo
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import android.widget.Button
+import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.ScrollView
+import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
 import retrofit2.Call
@@ -22,6 +30,14 @@ class PropiedadesDisponiblesActivity : EvohkaActivity() {
 
     private lateinit var txtEstadoPropiedades: TextView
     private lateinit var contenedorPropiedades: LinearLayout
+    private lateinit var etBuscarPropiedad: EditText
+    private lateinit var spinnerCiudad: Spinner
+    private lateinit var spinnerTipoInmueble: Spinner
+    private lateinit var etPrecioMinimo: EditText
+    private lateinit var etPrecioMaximo: EditText
+    private var propiedadesCargadas: List<Propiedad> = emptyList()
+    private var tokenCatalogo: String? = null
+    private var cambioProgramaticoFiltros = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,6 +80,25 @@ class PropiedadesDisponiblesActivity : EvohkaActivity() {
                 Color.parseColor("#C62828")
             )
         }
+    }
+
+    private fun crearCampoFiltro(
+        sugerencia: String,
+        tipoEntrada: Int
+    ): EditText = EditText(this).apply {
+        hint = sugerencia
+        textSize = 14f
+        setTextColor(Color.parseColor("#211A24"))
+        setHintTextColor(Color.parseColor("#777077"))
+        setBackgroundResource(R.drawable.bg_input_evohka)
+        setPadding(dp(14), 0, dp(14), 0)
+        inputType = tipoEntrada
+        isSingleLine = true
+    }
+
+    private fun crearSelectorFiltro(): Spinner = Spinner(this).apply {
+        setBackgroundResource(R.drawable.bg_input_evohka)
+        setPadding(dp(10), 0, dp(8), 0)
     }
 
     private fun crearInterfaz() {
@@ -133,6 +168,141 @@ class PropiedadesDisponiblesActivity : EvohkaActivity() {
             titulo,
             parametrosTitulo
         )
+
+        val panelFiltros = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            setBackgroundResource(R.drawable.bg_card_evohka)
+            setPadding(
+                dp(14),
+                dp(12),
+                dp(14),
+                dp(12)
+            )
+        }
+
+        panelFiltros.addView(TextView(this).apply {
+            text = "Buscar y filtrar"
+            textSize = 16f
+            setTextColor(Color.parseColor("#211A24"))
+            setTypeface(null, Typeface.BOLD)
+        })
+
+        etBuscarPropiedad = crearCampoFiltro(
+            "Buscar por nombre, ciudad o barrio",
+            InputType.TYPE_CLASS_TEXT
+        ).apply {
+            imeOptions = EditorInfo.IME_ACTION_SEARCH
+        }
+
+        panelFiltros.addView(
+            etBuscarPropiedad,
+            LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                dp(48)
+            ).apply {
+                topMargin = dp(10)
+            }
+        )
+
+        spinnerCiudad = crearSelectorFiltro()
+        spinnerTipoInmueble = crearSelectorFiltro()
+
+        val filaSelectores = LinearLayout(this).apply {
+            orientation = LinearLayout.HORIZONTAL
+            addView(
+                spinnerCiudad,
+                LinearLayout.LayoutParams(0, dp(48), 1f).apply {
+                    marginEnd = dp(5)
+                }
+            )
+            addView(
+                spinnerTipoInmueble,
+                LinearLayout.LayoutParams(0, dp(48), 1f).apply {
+                    marginStart = dp(5)
+                }
+            )
+        }
+
+        panelFiltros.addView(
+            filaSelectores,
+            LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            ).apply {
+                topMargin = dp(8)
+            }
+        )
+
+        etPrecioMinimo = crearCampoFiltro(
+            "Precio mínimo",
+            InputType.TYPE_CLASS_NUMBER or
+                InputType.TYPE_NUMBER_FLAG_DECIMAL
+        )
+        etPrecioMaximo = crearCampoFiltro(
+            "Precio máximo",
+            InputType.TYPE_CLASS_NUMBER or
+                InputType.TYPE_NUMBER_FLAG_DECIMAL
+        )
+
+        val filaPrecios = LinearLayout(this).apply {
+            orientation = LinearLayout.HORIZONTAL
+            addView(
+                etPrecioMinimo,
+                LinearLayout.LayoutParams(0, dp(48), 1f).apply {
+                    marginEnd = dp(5)
+                }
+            )
+            addView(
+                etPrecioMaximo,
+                LinearLayout.LayoutParams(0, dp(48), 1f).apply {
+                    marginStart = dp(5)
+                }
+            )
+        }
+
+        panelFiltros.addView(
+            filaPrecios,
+            LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            ).apply {
+                topMargin = dp(8)
+            }
+        )
+
+        val btnLimpiarFiltros = Button(this).apply {
+            text = "Limpiar filtros"
+            isAllCaps = false
+            textSize = 14f
+            setTextColor(Color.parseColor("#211A24"))
+            setBackgroundResource(R.drawable.bg_button_secondary_evohka)
+            backgroundTintList = null
+            setOnClickListener {
+                limpiarFiltros()
+            }
+        }
+
+        panelFiltros.addView(
+            btnLimpiarFiltros,
+            LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                dp(44)
+            ).apply {
+                topMargin = dp(8)
+            }
+        )
+
+        contenido.addView(
+            panelFiltros,
+            LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            ).apply {
+                topMargin = dp(10)
+            }
+        )
+
+        configurarEventosFiltros()
 
         txtEstadoPropiedades =
             TextView(this).apply {
@@ -285,6 +455,165 @@ class PropiedadesDisponiblesActivity : EvohkaActivity() {
         )
     }
 
+    private fun configurarEventosFiltros() {
+        cargarOpcionesSelector(
+            spinnerCiudad,
+            "Todas las ciudades",
+            emptyList()
+        )
+        cargarOpcionesSelector(
+            spinnerTipoInmueble,
+            "Todos los tipos",
+            emptyList()
+        )
+
+        val observadorTexto = object : TextWatcher {
+            override fun beforeTextChanged(
+                texto: CharSequence?,
+                inicio: Int,
+                cantidad: Int,
+                despues: Int
+            ) = Unit
+
+            override fun onTextChanged(
+                texto: CharSequence?,
+                inicio: Int,
+                antes: Int,
+                cantidad: Int
+            ) = Unit
+
+            override fun afterTextChanged(texto: Editable?) {
+                if (!cambioProgramaticoFiltros) {
+                    aplicarFiltros()
+                }
+            }
+        }
+
+        etBuscarPropiedad.addTextChangedListener(observadorTexto)
+        etPrecioMinimo.addTextChangedListener(observadorTexto)
+        etPrecioMaximo.addTextChangedListener(observadorTexto)
+
+        val observadorSelector = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(
+                padre: AdapterView<*>?,
+                vista: android.view.View?,
+                posicion: Int,
+                id: Long
+            ) {
+                if (!cambioProgramaticoFiltros) {
+                    aplicarFiltros()
+                }
+            }
+
+            override fun onNothingSelected(padre: AdapterView<*>?) = Unit
+        }
+
+        spinnerCiudad.onItemSelectedListener = observadorSelector
+        spinnerTipoInmueble.onItemSelectedListener = observadorSelector
+    }
+
+    private fun actualizarOpcionesFiltros(
+        propiedades: List<Propiedad>
+    ) {
+        cambioProgramaticoFiltros = true
+        try {
+            cargarOpcionesSelector(
+                spinnerCiudad,
+                "Todas las ciudades",
+                FiltroPropiedades.ciudadesDisponibles(propiedades)
+            )
+            cargarOpcionesSelector(
+                spinnerTipoInmueble,
+                "Todos los tipos",
+                FiltroPropiedades.tiposDisponibles(propiedades)
+            )
+        } finally {
+            cambioProgramaticoFiltros = false
+        }
+    }
+
+    private fun cargarOpcionesSelector(
+        selector: Spinner,
+        opcionGeneral: String,
+        opciones: List<String>
+    ) {
+        selector.adapter = ArrayAdapter(
+            this,
+            android.R.layout.simple_spinner_item,
+            listOf(opcionGeneral) + opciones
+        ).apply {
+            setDropDownViewResource(
+                android.R.layout.simple_spinner_dropdown_item
+            )
+        }
+        selector.setSelection(0, false)
+    }
+
+    private fun limpiarFiltros() {
+        cambioProgramaticoFiltros = true
+        try {
+            etBuscarPropiedad.text.clear()
+            etPrecioMinimo.text.clear()
+            etPrecioMaximo.text.clear()
+            etPrecioMinimo.error = null
+            etPrecioMaximo.error = null
+            spinnerCiudad.setSelection(0, false)
+            spinnerTipoInmueble.setSelection(0, false)
+        } finally {
+            cambioProgramaticoFiltros = false
+        }
+        aplicarFiltros()
+    }
+
+    private fun aplicarFiltros() {
+        val token = tokenCatalogo ?: return
+        val rango = FiltroPropiedades.validarRangoPrecio(
+            etPrecioMinimo.text?.toString().orEmpty(),
+            etPrecioMaximo.text?.toString().orEmpty()
+        )
+
+        etPrecioMinimo.error = null
+        etPrecioMaximo.error = null
+        if (!rango.esValido) {
+            val mensaje = rango.mensajeError.orEmpty()
+            contenedorPropiedades.removeAllViews()
+            txtEstadoPropiedades.text = mensaje
+            when {
+                mensaje.contains("mínimo") && mensaje.contains("máximo") -> {
+                    etPrecioMinimo.error = mensaje
+                    etPrecioMaximo.error = mensaje
+                }
+
+                mensaje.contains("mínimo") -> etPrecioMinimo.error = mensaje
+                else -> etPrecioMaximo.error = mensaje
+            }
+            return
+        }
+
+        val criterios = CriteriosFiltroPropiedades(
+            texto = etBuscarPropiedad.text?.toString().orEmpty(),
+            ciudad = seleccionFiltro(spinnerCiudad),
+            tipoInmueble = seleccionFiltro(spinnerTipoInmueble),
+            precioMinimo = rango.minimo,
+            precioMaximo = rango.maximo
+        )
+        val propiedadesFiltradas = FiltroPropiedades.filtrar(
+            propiedadesCargadas,
+            criterios
+        )
+
+        mostrarPropiedades(
+            propiedadesFiltradas,
+            token,
+            criterios.tieneFiltrosActivos()
+        )
+    }
+
+    private fun seleccionFiltro(selector: Spinner): String? =
+        selector.selectedItem
+            ?.toString()
+            ?.takeIf { selector.selectedItemPosition > 0 }
+
     private fun cargarPropiedades() {
 
         val token = SesionSegura.obtenerToken()
@@ -329,10 +658,10 @@ class PropiedadesDisponiblesActivity : EvohkaActivity() {
                                     ?.datos
                                     ?: emptyList()
 
-                            mostrarPropiedades(
-                                propiedades,
-                                token
-                            )
+                            propiedadesCargadas = propiedades
+                            tokenCatalogo = token
+                            actualizarOpcionesFiltros(propiedades)
+                            aplicarFiltros()
 
                         } else {
 
@@ -369,7 +698,8 @@ class PropiedadesDisponiblesActivity : EvohkaActivity() {
 
     private fun mostrarPropiedades(
         propiedades: List<Propiedad>,
-        token: String
+        token: String,
+        filtrosActivos: Boolean
     ) {
 
         contenedorPropiedades
@@ -378,13 +708,21 @@ class PropiedadesDisponiblesActivity : EvohkaActivity() {
         if (propiedades.isEmpty()) {
 
             txtEstadoPropiedades.text =
-                "No hay propiedades disponibles"
+                if (filtrosActivos && propiedadesCargadas.isNotEmpty()) {
+                    "No encontramos inmuebles con estos filtros"
+                } else {
+                    "No hay propiedades disponibles"
+                }
 
             return
         }
 
         txtEstadoPropiedades.text =
-            "${propiedades.size} propiedades disponibles"
+            if (propiedades.size == 1) {
+                "1 propiedad encontrada"
+            } else {
+                "${propiedades.size} propiedades encontradas"
+            }
 
         val formatoMoneda =
             NumberFormat.getCurrencyInstance(
@@ -582,17 +920,20 @@ class PropiedadesDisponiblesActivity : EvohkaActivity() {
                 direccion
             )
 
-            val canon =
-                formatoMoneda.format(
-                    propiedad.canon
-                        ?: 0.0
-                )
+            val canonValido = propiedad.canon
+                ?.takeIf { it.isFinite() && it >= 0.0 }
+            val canon = canonValido?.let { formatoMoneda.format(it) }
+                ?: "Canon no disponible"
 
             val precio =
                 TextView(this).apply {
 
                     text =
-                        "$canon / mes"
+                        if (canonValido != null) {
+                            "$canon / mes"
+                        } else {
+                            canon
+                        }
 
                     textSize = 18f
 
