@@ -12,13 +12,10 @@ const recuperacionRepository = require('../repositories/recuperacionRepository')
 const {
   correoRecuperacionService
 } = require('./correoRecuperacionService');
+const { normalizarCorreo } = require('../utils/correo');
 
 const ESTADO_INVALIDO = 'invalido';
 const ESTADO_EXITOSO = 'exitoso';
-
-function normalizarCorreo(correo) {
-  return String(correo || '').trim().toLowerCase();
-}
 
 function generarCodigo() {
   return crypto

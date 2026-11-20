@@ -2,6 +2,7 @@ const crypto = require('node:crypto');
 const {
   VENTANA_LIMITES_MS
 } = require('../config/recuperacion');
+const { normalizarCorreo } = require('../utils/correo');
 
 const LIMITES = Object.freeze({
   solicitudCuenta: 3,
@@ -16,7 +17,7 @@ const MAXIMO_CLAVES = 10000;
 function huellaCuenta(correo) {
   return crypto
     .createHash('sha256')
-    .update(String(correo || '').trim().toLowerCase(), 'utf8')
+    .update(normalizarCorreo(correo), 'utf8')
     .digest('hex');
 }
 

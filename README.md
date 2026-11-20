@@ -107,17 +107,26 @@ El orden de preparación es:
    `003_rnf03_jwt_recuperacion.sql`.
 6. Auditar y aplicar una copia privada autorizada de
    `004_propiedad_fotos.sql`.
-7. Verificar estructura, índices, claves foráneas y conteos antes de iniciar la
+7. Probar en una restauración aislada y, solo con autorización específica,
+   aplicar una copia privada de `005_usuarios_correo_unico.sql`.
+8. Verificar estructura, índices, claves foráneas y conteos antes de iniciar la
    API.
 
 `001_rnf03_contrasena_algoritmo.sql` es exclusiva para la base de validación
 `gestion_arriendos_respaldo_test`; no debe ejecutarse sobre producción.
 
-Las migraciones 002–004 están bloqueadas de forma intencional. Validan la base
+Las migraciones 002–005 están bloqueadas de forma intencional. Validan la base
 activa, el esquema esperado y confirmaciones explícitas antes de cualquier
 DDL/DML. No se deben eliminar sus guardas ni versionar copias con las
 autorizaciones habilitadas. Consulte [database/README.md](database/README.md)
 para el procedimiento detallado.
+
+La migración 005 permanece preparada y bloqueada en el repositorio. En la
+instancia local auditada de `gestion_arriendos` fue aplicada y verificada el
+20 de noviembre de 2026; cualquier otra instancia debe comprobarse de forma
+independiente en `information_schema`. El backend conserva compatibilidad antes
+y después de la migración, pero la garantía definitiva frente a escrituras
+concurrentes depende de que el índice único exista en la base utilizada.
 
 ## Configurar el backend
 
@@ -131,11 +140,20 @@ para el procedimiento detallado.
 3. Copiar `.env.example` como `.env`.
 4. Completar localmente los valores privados. `.env` está ignorado por Git.
 5. Confirmar que las migraciones requeridas ya fueron aplicadas.
-6. Iniciar la API:
+6. Iniciar la API sin configuración privada adicional:
 
    ```powershell
    npm start
    ```
+
+En el equipo local de EVOHKA, el procedimiento oficial para iniciar RNF03 con
+sesiones versionadas y recuperación habilitadas es ejecutar el iniciador
+privado `Iniciar-EvohkaRecuperacion.ps1`, conservado fuera del repositorio. El
+iniciador carga la configuración privada únicamente en el proceso hijo y luego
+ejecuta el mismo arranque de npm. No copie al repositorio el iniciador, su
+almacén protegido, rutas privadas, credenciales ni valores de configuración.
+Ejecutar `npm start` directamente utiliza solo el entorno y `.env` disponibles
+en esa consola.
 
 El arranque valida la configuración JWT, `usuarios.contrasena_algoritmo` y,
 cuando las sesiones versionadas están activas, las estructuras de la migración
@@ -245,14 +263,14 @@ cd android/EvohkaApp
 .\gradlew.bat assembleDebug
 ```
 
-Último estado validado antes de esta actualización documental:
+Último estado automatizado validado el 20 de noviembre de 2026:
 
-- Backend: 73 pruebas aprobadas.
-- Android: 35 pruebas aprobadas.
-- Fotografías y recuperación verificadas en tablet física.
+- Backend: 86 pruebas aprobadas, 0 fallidas y 0 omitidas.
+- Android: 45 pruebas aprobadas, 0 fallidas y 0 omitidas.
+- Total: 131 pruebas aprobadas; `assembleDebug` completado correctamente.
 
-Estos valores describen una ejecución anterior; una entrega nueva debe guardar
-un informe fechado de la ejecución consolidada.
+Una entrega nueva debe guardar un informe fechado de su propia ejecución
+consolidada.
 
 ## Respaldo y restauración
 
@@ -276,6 +294,10 @@ pero pierde los archivos; restaurar solo `storage` deja archivos sin metadatos.
 - `backend/storage` requiere volumen persistente y respaldo coordinado.
 - Los límites globales/IP de recuperación viven en memoria y no se comparten
   entre múltiples instancias.
+- `usuarios.correo` conserva `utf8mb4_general_ci`. Su índice único aplica las
+  equivalencias de esa collation, que no son idénticas a todas las reglas
+  Unicode de `toLowerCase()` de JavaScript; esta limitación se acepta para el
+  alcance académico actual y no implica cambiar la collation.
 - Deben revisarse dependencias y vulnerabilidades antes de cada entrega, sin
   aplicar actualizaciones forzadas sin revisión.
 - Deben definirse dominio, certificados, servidor, monitoreo, rotación de
