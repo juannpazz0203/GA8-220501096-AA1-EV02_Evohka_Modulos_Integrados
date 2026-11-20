@@ -1,6 +1,11 @@
 const { pool } = require('../config/db');
 const contrasenaService = require('./contrasenaService');
 const sesionService = require('./sesionService');
+const { normalizarCorreo } = require('../utils/correo');
+
+function esEntradaDuplicada(error) {
+  return error?.code === 'ER_DUP_ENTRY' || Number(error?.errno) === 1062;
+}
 
 const SELECCION_USUARIO = `SELECT
   id_usuario,
@@ -31,7 +36,7 @@ async function listarUsuarios() {
 }
 
 async function correoEnUso(correo, idExcluido = null, ejecutor = pool) {
-  const parametros = [correo.trim().toLowerCase()];
+  const parametros = [normalizarCorreo(correo)];
   let exclusion = '';
 
   if (idExcluido) {
@@ -51,7 +56,7 @@ async function correoEnUso(correo, idExcluido = null, ejecutor = pool) {
 }
 
 async function crearUsuario(datos) {
-  const correo = datos.correo.trim().toLowerCase();
+  const correo = normalizarCorreo(datos.correo);
   if (await correoEnUso(correo)) {
     return { error: 'correo_duplicado' };
   }
@@ -67,13 +72,21 @@ async function crearUsuario(datos) {
     contrasenaService.ALGORITMO_BCRYPT
   ];
 
-  const [resultado] = await pool.execute(
-    `INSERT INTO usuarios
-      (nombre, apellido, correo, contrasena, telefono, rol, fecha_registro,
-       contrasena_algoritmo)
-     VALUES (?, ?, ?, ?, ?, ?, CURDATE(), ?)`,
-    parametros
-  );
+  let resultado;
+  try {
+    [resultado] = await pool.execute(
+      `INSERT INTO usuarios
+        (nombre, apellido, correo, contrasena, telefono, rol, fecha_registro,
+         contrasena_algoritmo)
+       VALUES (?, ?, ?, ?, ?, ?, CURDATE(), ?)`,
+      parametros
+    );
+  } catch (error) {
+    if (esEntradaDuplicada(error)) {
+      return { error: 'correo_duplicado' };
+    }
+    throw error;
+  }
 
   return {
     datos: await obtenerUsuarioPorId(resultado.insertId)
@@ -139,7 +152,7 @@ async function actualizarUsuario(idUsuario, idAdministrador, datos) {
       [
         datos.nombre.trim(),
         datos.apellido.trim(),
-        datos.correo.trim().toLowerCase(),
+        normalizarCorreo(datos.correo),
         datos.telefono,
         datos.rol,
         Number(idUsuario)
@@ -165,6 +178,9 @@ async function actualizarUsuario(idUsuario, idAdministrador, datos) {
     return { datos: actualizado };
   } catch (error) {
     await conexion.rollback();
+    if (esEntradaDuplicada(error)) {
+      return { error: 'correo_duplicado' };
+    }
     throw error;
   } finally {
     conexion.release();

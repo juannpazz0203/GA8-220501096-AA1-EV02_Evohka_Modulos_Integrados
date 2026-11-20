@@ -9,7 +9,10 @@ La guía integral de instalación se encuentra en el [README principal](../READM
 ## Requisitos
 
 - Node.js 20.9 o posterior.
-- MySQL con el esquema base y las migraciones 002, 003 y 004 aplicadas.
+- MySQL con el esquema base y las migraciones 002, 003, 004 y 005 aplicadas.
+  La instancia local auditada recibió la 005 el 20 de noviembre de 2026; en
+  cualquier otra instancia se debe comprobar por separado la existencia de sus
+  restricciones.
 - Un archivo `.env` privado creado a partir de `.env.example`.
 
 ## Instalación y ejecución
@@ -19,6 +22,13 @@ npm ci
 npm test
 npm start
 ```
+
+En el entorno local oficial con RNF03 habilitado, el backend se inicia mediante
+el iniciador privado `Iniciar-EvohkaRecuperacion.ps1`, ubicado fuera del
+repositorio. Este carga sesiones versionadas, recuperación, pepper y SMTP en el
+entorno del proceso hijo antes de ejecutar npm. No traslade el iniciador, su
+archivo DPAPI ni valores privados al repositorio. `npm start` directo no
+reemplaza ese procedimiento cuando se requiere la configuración privada.
 
 El servidor valida antes de escuchar el puerto:
 
@@ -52,6 +62,11 @@ Son obligatorios `nombre`, `apellido`, `correo`, `contrasena` y `rol`. El rol
 público admite `arrendatario`, `inquilino` —normalizado a `arrendatario`— o
 `propietario`; no permite crear administradores. No reutilice contraseñas
 personales y elimine las cuentas temporales al finalizar.
+
+El backend normaliza el correo con `trim` y minúsculas, valida su formato y el
+límite de 150 caracteres, y responde HTTP 409 ante una colisión. Nombre,
+apellido y teléfono se validan contra los límites del esquema MySQL. Estos
+controles del servidor son obligatorios aunque Android ya valide la interfaz.
 
 ## Recuperación RNF03
 
@@ -90,8 +105,12 @@ respaldo propio coordinado con el dump de MySQL.
 npm test
 ```
 
-Las pruebas utilizan dobles o repositorios simulados; no deben apuntar a la
-base real. El último resultado consolidado informado fue 73 pruebas aprobadas.
+Las pruebas utilizan dobles o repositorios simulados; no apuntan a la base real.
+Las fotografías de prueba se escriben exclusivamente en un directorio temporal
+del sistema y se eliminan al finalizar.
+
+La ejecución consolidada del 20 de noviembre de 2026 aprobó las 86 pruebas del
+backend, sin fallos ni omisiones.
 
 ## Seguridad operativa
 

@@ -33,6 +33,7 @@ Este archivo aplica a todo el repositorio. Su propósito es conservar el context
 - No crear, recuperar ni volver a utilizar `propiedades_servicio`.
 - No inventar tablas, relaciones o columnas. Comprobar primero el esquema vigente y el código que lo consume.
 - El esquema final incluye `recuperaciones_contrasena` y `propiedad_fotos`, creadas por las migraciones versionadas 003 y 004.
+- La migración 005 prepara la unicidad y normalización canónica de `usuarios.correo`. Está versionada y bloqueada; fue aplicada y verificada en la instancia local auditada el 20 de noviembre de 2026, pero cualquier otra base desplegada debe comprobarse de forma independiente.
 - Las fotografías se almacenan como archivos bajo `backend/storage/propiedades`; MySQL conserva rutas relativas y metadatos.
 
 La estructura oficial actual de `propiedades` es:
@@ -53,6 +54,7 @@ La estructura oficial actual de `propiedades` es:
 - Nunca modificar, borrar, mostrar, copiar a documentación ni versionar `.env`.
 - Nunca modificar ni eliminar `android/EvohkaApp/evohka.properties` salvo instrucción expresa del usuario.
 - `.env` contiene la configuración local del backend y está ignorado por Git.
+- En el equipo local con RNF03 habilitado, el arranque oficial utiliza el iniciador privado `Iniciar-EvohkaRecuperacion.ps1`, conservado fuera del repositorio. No copiarlo, modificarlo ni versionar su almacén DPAPI o sus valores privados.
 - `android/EvohkaApp/evohka.properties` contiene la configuración Android local y está ignorado por Git.
 - No borrar `.env`, `evohka.properties` ni `node_modules` por considerarlos temporales.
 - No ejecutar `npm audit fix --force`.
@@ -145,15 +147,17 @@ Si el diseño de Figma contradice la base de datos o los requisitos actualmente 
 - El backend expone autenticación, recuperación, propiedades y fotografías, solicitudes, contratos, pagos, reportes, notificaciones, fallas, mensajes y administración bajo `/api`.
 - Android consume esos servicios mediante Retrofit y Gson, usando la URL base configurada localmente.
 - La edición y eliminación de propiedades propias están implementadas. Conservar la autorización mediante JWT y no confiar en identificadores de propietario enviados por Android.
+- La instancia local auditada contiene `uq_usuarios_correo` y `chk_usuarios_correo_normalizado`; la migración 005 resultó idempotente y no cambió los conteos ni checksums de datos.
 
 ## Deuda técnica conocida
 
 - No reintroducir contraseñas en texto plano ni desactivar `contrasena_algoritmo`; los registros nuevos deben usar bcryptjs.
-- El dump `database/gestion_arriendos.sql` es el esquema base de ocho tablas. Una instalación final requiere las migraciones protegidas 002, 003 y 004.
+- El dump `database/gestion_arriendos.sql` es el esquema base de ocho tablas. Una instalación final requiere las migraciones protegidas 002, 003, 004 y 005, cada una probada y aplicada con autorización.
 - RF12 no incluye un chatbot funcional.
 - La configuración de demostración utiliza HTTP en red local; un despliegue real requiere HTTPS y dominio estable.
 - El respaldo de MySQL no incluye las fotografías. Debe coordinarse con una copia de `backend/storage/propiedades`.
 - Los límites de recuperación en memoria no se comparten entre múltiples instancias del backend.
+- `usuarios.correo` conserva `utf8mb4_general_ci`; sus equivalencias no coinciden con todas las reglas Unicode de `trim().toLowerCase()` de JavaScript. Esta limitación está aceptada para el alcance académico y no autoriza cambiar la collation.
 
 ## Forma obligatoria de trabajo
 

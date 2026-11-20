@@ -10,16 +10,14 @@ const {
 const {
   recuperacionLimiteService
 } = require('../services/recuperacionLimiteService');
+const {
+  normalizarCorreo,
+  correoValido
+} = require('../utils/correo');
 
 const MENSAJE_NEUTRAL =
   'Si el correo está registrado, recibirá un código de recuperación.';
 const MENSAJE_CODIGO_INVALIDO = 'El código es inválido o venció.';
-
-function correoValido(correo) {
-  return typeof correo === 'string' &&
-    correo.trim().length <= 150 &&
-    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(correo.trim());
-}
 
 function ipSolicitud(req) {
   return req.ip || req.socket?.remoteAddress || 'desconocida';
@@ -44,7 +42,7 @@ function crearRecuperacionController({
       });
     }
 
-    const correo = req.body?.correo;
+    const correo = normalizarCorreo(req.body?.correo);
     const permitida = limites.consumirSolicitud({
       correo,
       ip: ipSolicitud(req)
@@ -75,10 +73,11 @@ function crearRecuperacionController({
     }
 
     const {
-      correo,
+      correo: correoRecibido,
       codigo,
       nueva_contrasena: nuevaContrasena
     } = req.body || {};
+    const correo = normalizarCorreo(correoRecibido);
     const codigoValido = typeof codigo === 'string' &&
       new RegExp(`^\\d{${CODIGO_DIGITOS}}$`).test(codigo);
     const validacionContrasena =

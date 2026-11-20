@@ -1,6 +1,83 @@
 const authService = require('../services/authService');
 const contrasenaService = require('../services/contrasenaService');
 const jwtService = require('../services/jwtService');
+const {
+    normalizarCorreo,
+    correoValido
+} = require('../utils/correo');
+
+const ROLES_REGISTRO_PUBLICO = new Set([
+    'arrendatario',
+    'propietario'
+]);
+
+function validarRegistroPublico(datos = {}) {
+    const nombre = typeof datos.nombre === 'string'
+        ? datos.nombre.trim()
+        : '';
+    const apellido = typeof datos.apellido === 'string'
+        ? datos.apellido.trim()
+        : '';
+    const correo = normalizarCorreo(datos.correo);
+    const contrasena = typeof datos.contrasena === 'string'
+        ? datos.contrasena
+        : '';
+    const rolRecibido = typeof datos.rol === 'string'
+        ? datos.rol.trim().toLowerCase()
+        : '';
+    const rol = rolRecibido === 'inquilino'
+        ? 'arrendatario'
+        : rolRecibido;
+
+    if (!nombre || nombre.length > 100) {
+        return {
+            error: 'El nombre es obligatorio y no puede superar 100 caracteres'
+        };
+    }
+    if (!apellido || apellido.length > 100) {
+        return {
+            error: 'El apellido es obligatorio y no puede superar 100 caracteres'
+        };
+    }
+    if (!correoValido(correo)) {
+        return { error: 'El correo no tiene un formato válido' };
+    }
+    if (!ROLES_REGISTRO_PUBLICO.has(rol)) {
+        return {
+            error: 'El rol debe ser arrendatario o propietario'
+        };
+    }
+
+    const validacionContrasena =
+        contrasenaService.validarNuevaContrasena(contrasena);
+    if (!validacionContrasena.valida) {
+        return { error: validacionContrasena.mensaje };
+    }
+
+    let telefono = null;
+    if (datos.telefono !== undefined && datos.telefono !== null) {
+        if (typeof datos.telefono !== 'string') {
+            return { error: 'El teléfono debe ser texto' };
+        }
+        telefono = datos.telefono.trim() || null;
+        if (telefono && telefono.length > 20) {
+            return {
+                error: 'El teléfono no puede superar 20 caracteres'
+            };
+        }
+    }
+
+    return {
+        datos: {
+            nombre,
+            apellido,
+            correo,
+            contrasena,
+            telefono,
+            rol
+        }
+    };
+}
 
 const login = async (req, res) => {
     try {
@@ -62,64 +139,18 @@ const sesion = async (req, res) => {
 
 const registro = async (req, res) => {
     try {
-        const {
-            nombre,
-            apellido,
-            correo,
-            contrasena,
-            telefono,
-            rol
-        } = req.body || {};
-
-        if (
-            !nombre ||
-            !apellido ||
-            !correo ||
-            !contrasena ||
-            !rol
-        ) {
+        const validacion = validarRegistroPublico(req.body);
+        if (validacion.error) {
             return res.status(400).json({
                 ok: false,
-                mensaje:
-                    'Nombre, apellido, correo, contrasena y rol son obligatorios'
+                mensaje: validacion.error
             });
         }
-
-        const correoNormalizado =
-            correo.trim().toLowerCase();
-
-        const rolRecibido =
-            rol.trim().toLowerCase();
-
-        const rolNormalizado =
-            rolRecibido === 'inquilino'
-                ? 'arrendatario'
-                : rolRecibido;
-
-        if (
-            rolNormalizado !== 'arrendatario' &&
-            rolNormalizado !== 'propietario'
-        ) {
-            return res.status(400).json({
-                ok: false,
-                mensaje:
-                    'El rol debe ser arrendatario o propietario'
-            });
-        }
-
-        const validacionContrasena =
-            contrasenaService.validarNuevaContrasena(contrasena);
-
-        if (!validacionContrasena.valida) {
-            return res.status(400).json({
-                ok: false,
-                mensaje: validacionContrasena.mensaje
-            });
-        }
+        const datos = validacion.datos;
 
         const correoExiste =
             await authService.buscarUsuarioPorCorreo(
-                correoNormalizado
+                datos.correo
             );
 
         if (correoExiste) {
@@ -131,14 +162,15 @@ const registro = async (req, res) => {
         }
 
         const usuario =
-            await authService.registrarUsuario({
-                nombre,
-                apellido,
-                correo: correoNormalizado,
-                contrasena,
-                telefono,
-                rol: rolNormalizado
+            await authService.registrarUsuario(datos);
+
+        if (usuario.error === 'correo_duplicado') {
+            return res.status(409).json({
+                ok: false,
+                mensaje:
+                    'Ya existe un usuario registrado con ese correo'
             });
+        }
 
         return res.status(201).json({
             ok: true,
@@ -161,5 +193,6 @@ const registro = async (req, res) => {
 module.exports = {
     login,
     registro,
-    sesion
+    sesion,
+    validarRegistroPublico
 };

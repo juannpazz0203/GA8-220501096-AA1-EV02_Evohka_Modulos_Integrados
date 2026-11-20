@@ -3,6 +3,11 @@ const contrasenaService = require('./contrasenaService');
 const {
   sesionesVersionadasActivas
 } = require('../config/seguridad');
+const { normalizarCorreo } = require('../utils/correo');
+
+function esEntradaDuplicada(error) {
+  return error?.code === 'ER_DUP_ENTRY' || Number(error?.errno) === 1062;
+}
 
 async function buscarCredencialPorCorreo(correo) {
   const incluirVersion = sesionesVersionadasActivas();
@@ -22,7 +27,7 @@ async function buscarCredencialPorCorreo(correo) {
      FROM usuarios
      WHERE correo = ?
      LIMIT 1`,
-    [correo.trim().toLowerCase()]
+    [normalizarCorreo(correo)]
   );
 
   const usuario = usuarios[0];
@@ -125,7 +130,7 @@ async function buscarUsuarioPorCorreo(correo) {
      FROM usuarios
      WHERE correo = ?
      LIMIT 1`,
-    [correo.trim().toLowerCase()]
+    [normalizarCorreo(correo)]
   );
 
   return usuarios.length > 0;
@@ -140,7 +145,7 @@ async function registrarUsuario(datosUsuario) {
     telefono,
     rol
   } = datosUsuario;
-  const correoNormalizado = correo.trim().toLowerCase();
+  const correoNormalizado = normalizarCorreo(correo);
   const hash = await contrasenaService.crearHash(contrasena);
   const parametros = [
     nombre.trim(),
@@ -152,21 +157,29 @@ async function registrarUsuario(datosUsuario) {
     contrasenaService.ALGORITMO_BCRYPT
   ];
 
-  const [resultado] = await pool.execute(
-    `INSERT INTO usuarios
-      (
-        nombre,
-        apellido,
-        correo,
-        contrasena,
-        telefono,
-        rol,
-        fecha_registro,
-        contrasena_algoritmo
-      )
-     VALUES (?, ?, ?, ?, ?, ?, CURDATE(), ?)`,
-    parametros
-  );
+  let resultado;
+  try {
+    [resultado] = await pool.execute(
+      `INSERT INTO usuarios
+        (
+          nombre,
+          apellido,
+          correo,
+          contrasena,
+          telefono,
+          rol,
+          fecha_registro,
+          contrasena_algoritmo
+        )
+       VALUES (?, ?, ?, ?, ?, ?, CURDATE(), ?)`,
+      parametros
+    );
+  } catch (error) {
+    if (esEntradaDuplicada(error)) {
+      return { error: 'correo_duplicado' };
+    }
+    throw error;
+  }
 
   return {
     id_usuario: resultado.insertId,

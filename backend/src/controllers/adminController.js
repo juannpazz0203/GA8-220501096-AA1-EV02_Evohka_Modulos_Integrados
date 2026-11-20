@@ -1,5 +1,9 @@
 const adminService = require('../services/adminService');
 const contrasenaService = require('../services/contrasenaService');
+const {
+  normalizarCorreo,
+  correoValido
+} = require('../utils/correo');
 
 const ROLES_PERMITIDOS = new Set([
   'arrendatario',
@@ -20,16 +24,10 @@ function obtenerId(valor) {
   return Number.isInteger(id) && id > 0 ? id : null;
 }
 
-function correoValido(correo) {
-  return correo.length <= 150 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(correo);
-}
-
 function validarUsuario(datos = {}, incluirContrasena = false) {
   const nombre = typeof datos.nombre === 'string' ? datos.nombre.trim() : '';
   const apellido = typeof datos.apellido === 'string' ? datos.apellido.trim() : '';
-  const correo = typeof datos.correo === 'string'
-    ? datos.correo.trim().toLowerCase()
-    : '';
+  const correo = normalizarCorreo(datos.correo);
   const rol = typeof datos.rol === 'string' ? datos.rol.trim().toLowerCase() : '';
 
   if (!nombre || nombre.length > 100) {
